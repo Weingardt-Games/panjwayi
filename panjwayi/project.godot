@@ -8,15 +8,29 @@
 
 config_version=4
 
-_global_script_classes=[  ]
+_global_script_classes=[ {
+"base": "",
+"class": "GamePiece",
+"language": "GDScript",
+"path": "res://game_pieces/gamepiece.gd"
+} ]
 _global_script_class_icons={
-
+"GamePiece": ""
 }
 
 [application]
 
 config/name="panjwayi"
+run/main_scene="res://scenes/GameBoard.tscn"
 config/icon="res://icon.png"
+
+[input]
+
+ui_select_piece={
+"deadzone": 0.5,
+"events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":1,"pressed":false,"doubleclick":false,"script":null)
+ ]
+}
 
 [rendering]
 
