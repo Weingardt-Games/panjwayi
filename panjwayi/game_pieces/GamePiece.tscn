@@ -9,6 +9,19 @@ extents = Vector2( 32, 32 )
 
 [node name="GamePiece" type="Node2D"]
 script = ExtResource( 1 )
+type = 2
+
+[node name="Line2D" type="Line2D" parent="."]
+visible = false
+modulate = Color( 1, 1, 1, 0.501961 )
+points = PoolVector2Array( 0, 0, 0, 0 )
+width = 64.0
+end_cap_mode = 2
+
+[node name="Ghost" type="Sprite" parent="."]
+visible = false
+modulate = Color( 1, 1, 1, 0.501961 )
+texture = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 2 )

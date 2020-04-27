@@ -3,54 +3,40 @@ class_name GamePiece
 
 onready var Grid = get_parent()
 
-var start_position = Vector2()
-var previous_mouse_position = Vector2()
 var is_dragging = false
 
 func _ready() -> void:
 	pass
-	
-func _process(delta):
-	update()
 	
 func _input(event):
 	if not is_dragging:
 		return
 		
 	if event.is_action_released("ui_select_piece"):
-		start_position = position
-		previous_mouse_position = Vector2()
 		is_dragging = false
-		$Highlight.visible = false
+		reset_line()
+		reset_ghost()
+		var target_position = Grid.request_move(self, get_global_mouse_position(), true)
+		if target_position:
+			position = target_position
 		
 	if is_dragging and event is InputEventMouseMotion:
-#		var want_to_go_to = position + event.position # - previous_mouse_position
 		var want_to_go_to = get_global_mouse_position()
 		var target_position = Grid.request_move(self, want_to_go_to)
-		print("Position", position)
-		print("Target:", target_position)
-		print("Global mouse:", want_to_go_to)
 		if target_position and target_position != position:
-			print("moving!")
-#			previous_mouse_position = event.position
-			move_to(target_position)
+			update_ghost(target_position)
+			update_line(target_position)
 		else:
 			# Indicate illegal move
 			pass
-		previous_mouse_position = event.position
-
+			
 	
 ############ SIGNALS ######################
 
-func _on_Area2D_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
+func _on_Area2D_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event.is_action_pressed("ui_select_piece"):
-		print(event)
 		get_tree().set_input_as_handled()
-		start_position = position
-		previous_mouse_position = event.position
 		is_dragging = true
-		$Highlight.visible = true
-		
 
 ########### CUSTOM METHODS ##############
 
@@ -65,3 +51,21 @@ func update_look_direction(direction):
 
 func move_to(target_position):
 	position = target_position
+	
+func update_line(target_position):
+	$Line2D.visible = true
+	$Line2D.set_point_position(1, target_position - position)
+	
+func reset_line():
+	$Line2D.visible = false
+	$Line2D.set_point_position(1, Vector2.ZERO)
+	
+func update_ghost(target_position):
+	$Highlight.visible = true
+	$Ghost.visible = true
+	$Ghost.position = target_position - position
+	
+func reset_ghost():
+	$Highlight.visible = false
+	$Ghost.visible = false
+	$Ghost.position = Vector2.ZERO
