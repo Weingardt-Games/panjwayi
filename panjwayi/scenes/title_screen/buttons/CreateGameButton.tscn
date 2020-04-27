@@ -2,5 +2,6 @@
 
 [ext_resource path="res://scenes/title_screen/buttons/MenuButton.tscn" type="PackedScene" id=1]
 
-[node name="RulebookButton" instance=ExtResource( 1 )]
-text = "Rulebook"
+[node name="CreateGameButton" instance=ExtResource( 1 )]
+text = "Create Game"
+scene_to_load = "res://scenes/GameBoard.tscn"

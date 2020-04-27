@@ -2,5 +2,5 @@
 
 [ext_resource path="res://scenes/title_screen/buttons/MenuButton.tscn" type="PackedScene" id=1]
 
-[node name="RulebookButton" instance=ExtResource( 1 )]
-text = "Rulebook"
+[node name="DesignerNotesButton" instance=ExtResource( 1 )]
+text = "Designer Notes"
