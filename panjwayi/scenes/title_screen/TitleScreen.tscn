@@ -126,7 +126,7 @@ disabled = true
 margin_top = 181.0
 margin_right = 360.0
 margin_bottom = 241.0
-uri_to_open = "res://assets/docs/PanjwayiRulebook.pdf"
+uri_to_open = "assets/docs/PanjwayiRulebook.pdf"
 
 [node name="DesignerNotesButton" parent="Menu/CenterRow/Buttons" instance=ExtResource( 3 )]
 margin_top = 261.0
@@ -144,7 +144,7 @@ uri_to_open = "mailto:feedback@weingardtgames.com?subject=Feedback"
 margin_top = 421.0
 margin_right = 360.0
 margin_bottom = 481.0
-disabled = true
+uri_to_open = "https://www.thegamecrafter.com/games/panjwayi:-counterinsurgency-in-afghanistan"
 
 [node name="FadeIn" parent="." instance=ExtResource( 8 )]
 visible = false
