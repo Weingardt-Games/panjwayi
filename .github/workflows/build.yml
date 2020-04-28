@@ -10,7 +10,7 @@ jobs:
     # Always use ubuntu-latest for this action
     runs-on: ubuntu-latest
     # Job name, can be anything
-    name: Build and Export Game
+    name: Export and Deploy Game
     steps:
       # Always include the checkout step so that 
       # your project is available for Godot to export
@@ -18,7 +18,7 @@ jobs:
       uses: actions/checkout@v2.1.0
 
     # https://github.com/firebelley/godot-export
-    - name: build and export game
+    - name: Export Game
       # Use latest version (see releases for all versions)
       uses: firebelley/godot-export@v1.4.0
       with:
