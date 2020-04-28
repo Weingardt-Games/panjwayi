@@ -6,17 +6,19 @@ on:
 
 jobs:
   # job id, can be anything
-  export_game:
+  build_and_export_game:
     # Always use ubuntu-latest for this action
     runs-on: ubuntu-latest
     # Job name, can be anything
-    name: Export Game Job
+    name: Build and Export Game
     steps:
       # Always include the checkout step so that 
       # your project is available for Godot to export
     - name: checkout
       uses: actions/checkout@v2.1.0
-    - name: export game
+
+    # https://github.com/firebelley/godot-export
+    - name: build and export game
       # Use latest version (see releases for all versions)
       uses: firebelley/godot-export@v1.4.0
       with:
@@ -25,6 +27,16 @@ jobs:
         godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/3.2.1/Godot_v3.2.1-stable_linux_headless.64.zip
         godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/3.2.1/Godot_v3.2.1-stable_export_templates.tpz
         relative_project_path: ./panjwayi/
-        generate_release_notes: true
+        generate_release_notes: false
+        create_release: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    # https://github.com/JamesIves/github-pages-deploy-action
+    - name: Deploy 🚀
+      uses: JamesIves/github-pages-deploy-action@releases/v3
+      with:
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages # The branch the action should deploy to.
+        FOLDER: exports # The folder the action should deploy.
