@@ -14,11 +14,11 @@ jobs:
     steps:
       # Always include the checkout step so that 
       # your project is available for Godot to export
-    - name: checkout
+    - name: Checkout 🛎️
       uses: actions/checkout@v2.1.0
 
     # https://github.com/firebelley/godot-export
-    - name: Export Game
+    - name: Export Game 🔧
       # Use latest version (see releases for all versions)
       uses: firebelley/godot-export@v1.5.0
       with:
@@ -34,14 +34,14 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     # https://github.com/stefanzweifel/git-auto-commit-action
-    - name: Commit Export
+    - name: Commit Export 💾
       uses: stefanzweifel/git-auto-commit-action@v4.1.6
       with:
         commit_message: Automated HTML5 export
 
         # Optional name of the branch the commit should be pushed to
         # Required if Action is used in Workflow listening to the `pull_request` event
-        branch: ${{ github.head_ref }}
+        branch: export #${{ github.head_ref }} 
 
         # Optional git params
         commit_options: '--no-verify --signoff'
@@ -60,11 +60,16 @@ jobs:
         # Optional tag message. Will create and push a new tag to the remote repository
         # tagging_message: 'v1.0.0'
 
+    - name: Checkout Export 🛎️
+      uses: actions/checkout@v2.1.0
+      with:
+        ref: export # the branch to checkout
     
-    # # https://github.com/JamesIves/github-pages-deploy-action
+    # https://github.com/JamesIves/github-pages-deploy-action
     - name: Deploy 🚀
       uses: JamesIves/github-pages-deploy-action@releases/v3
       with:
+        # REPOSITORY_NAME:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BRANCH: gh-pages # The branch the action should deploy to.
