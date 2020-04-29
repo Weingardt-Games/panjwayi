@@ -127,7 +127,7 @@ disabled = true
 margin_top = 181.0
 margin_right = 360.0
 margin_bottom = 241.0
-uri_to_open = "assets/docs/PanjwayiRulebook.pdf"
+uri_to_open = "https://github.com/Weingardt-Games/panjwayi/raw/master/panjwayi/assets/docs/PanjwayiRulebook.pdf"
 
 [node name="DesignerNotesButton" parent="Menu/CenterRow/Buttons" instance=ExtResource( 3 )]
 margin_top = 261.0
