@@ -47,7 +47,7 @@ jobs:
         commit_options: '--no-verify --signoff'
 
         # Optional glob pattern of files which should be added to the commit
-        # file_pattern: src/*.js tests/*.js
+        file_pattern: exports/*
 
         # Optional local file path to the repository
         # repository: .
@@ -62,10 +62,10 @@ jobs:
 
     
     # # https://github.com/JamesIves/github-pages-deploy-action
-    # - name: Deploy 🚀
-    #   uses: JamesIves/github-pages-deploy-action@releases/v3
-    #   with:
-    #     ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #     BRANCH: gh-pages # The branch the action should deploy to.
-    #     FOLDER: exports # The folder the action should deploy.
+    - name: Deploy 🚀
+      uses: JamesIves/github-pages-deploy-action@releases/v3
+      with:
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages # The branch the action should deploy to.
+        FOLDER: panjwayi/exports/0 # The folder the action should deploy.
