@@ -41,7 +41,7 @@ jobs:
 
         # Optional name of the branch the commit should be pushed to
         # Required if Action is used in Workflow listening to the `pull_request` event
-        branch: export #${{ github.head_ref }} 
+        branch: ${{ github.head_ref }} #export # 
 
         # Optional git params
         commit_options: '--no-verify --signoff'
@@ -60,10 +60,10 @@ jobs:
         # Optional tag message. Will create and push a new tag to the remote repository
         # tagging_message: 'v1.0.0'
 
-    - name: Checkout Export 🛎️
-      uses: actions/checkout@v2.1.0
-      with:
-        ref: export # the branch to checkout
+    # - name: Checkout Export 🛎️
+    #   uses: actions/checkout@v2.1.0
+    #   with:
+    #     ref: export # the branch to checkout
     
     # https://github.com/JamesIves/github-pages-deploy-action
     - name: Deploy 🚀
