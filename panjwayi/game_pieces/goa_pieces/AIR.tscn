@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://game_pieces/goa_pieces/GoAPiece.tscn" type="PackedScene" id=1]
+[ext_resource path="res://assets/tokens/air.png" type="Texture" id=2]
+
+[node name="AIR" instance=ExtResource( 1 )]
+sprite = ExtResource( 2 )
+actor_name = "Air Support"

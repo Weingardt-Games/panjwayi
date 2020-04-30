@@ -1,15 +1,16 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://game_pieces/gamepiece.gd" type="Script" id=1]
+[ext_resource path="res://game_pieces/actor.gd" type="Script" id=1]
 [ext_resource path="res://assets/tokens/ana.png" type="Texture" id=2]
 [ext_resource path="res://assets/effects/highlight.png" type="Texture" id=3]
+[ext_resource path="res://icon.png" type="Texture" id=4]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 32, 32 )
 
-[node name="GamePiece" type="Node2D"]
+[node name="Actor" type="Node2D"]
 script = ExtResource( 1 )
-type = 2
+sprite = ExtResource( 4 )
 
 [node name="Line2D" type="Line2D" parent="."]
 visible = false
@@ -24,7 +25,7 @@ modulate = Color( 1, 1, 1, 0.501961 )
 texture = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
-texture = ExtResource( 2 )
+texture = ExtResource( 4 )
 
 [node name="Highlight" type="Sprite" parent="."]
 visible = false

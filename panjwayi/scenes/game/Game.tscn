@@ -1,0 +1,139 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://game_pieces/goa_pieces/AIR.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/game/DisabledZone.gd" type="Script" id=2]
+[ext_resource path="res://assets/board1024.jpg" type="Texture" id=3]
+[ext_resource path="res://scenes/game/grid/Grid.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scenes/game/PhaseController.gd" type="Script" id=5]
+[ext_resource path="res://scenes/game/hud/PhaseLabel.gd" type="Script" id=6]
+[ext_resource path="res://game_pieces/goa_pieces/ANA.tscn" type="PackedScene" id=7]
+[ext_resource path="res://game_pieces/goa_pieces/ANP.tscn" type="PackedScene" id=8]
+[ext_resource path="res://game_pieces/goa_pieces/LAV.tscn" type="PackedScene" id=9]
+
+[node name="Game" type="Node2D"]
+
+[node name="sprite" type="Sprite" parent="."]
+texture = ExtResource( 3 )
+centered = false
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="DisabledZone" type="ColorRect" parent="."]
+visible = false
+margin_right = 768.0
+margin_bottom = 1024.0
+mouse_filter = 2
+color = Color( 0, 0, 0, 0.501961 )
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Grid" parent="." instance=ExtResource( 4 )]
+cell_custom_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+cell_tile_origin = 1
+
+[node name="AIR" parent="Grid" instance=ExtResource( 1 )]
+position = Vector2( 352, 96 )
+
+[node name="ANP" parent="Grid" instance=ExtResource( 8 )]
+position = Vector2( 352, 160 )
+
+[node name="ANA" parent="Grid" instance=ExtResource( 7 )]
+position = Vector2( 352, 288 )
+
+[node name="ANP2" parent="Grid" instance=ExtResource( 8 )]
+position = Vector2( 352, 224 )
+
+[node name="ANA2" parent="Grid" instance=ExtResource( 7 )]
+position = Vector2( 352, 352 )
+
+[node name="LAV" parent="Grid" instance=ExtResource( 9 )]
+position = Vector2( 352, 416 )
+
+[node name="LAV2" parent="Grid" instance=ExtResource( 9 )]
+position = Vector2( 352, 480 )
+
+[node name="HUD" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD"]
+margin_left = 15.0
+margin_top = 15.0
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HUD/VBoxContainer"]
+margin_right = 285.0
+margin_bottom = 20.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="HUD/VBoxContainer/HBoxContainer"]
+margin_top = 3.0
+margin_right = 42.0
+margin_bottom = 17.0
+text = "Phase:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PhaseLabel" type="Label" parent="HUD/VBoxContainer/HBoxContainer"]
+margin_left = 46.0
+margin_top = 3.0
+margin_right = 156.0
+margin_bottom = 17.0
+text = "GoA Player Setup"
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PhaseCompleteButton" type="Button" parent="HUD/VBoxContainer/HBoxContainer"]
+margin_left = 160.0
+margin_right = 276.0
+margin_bottom = 20.0
+text = "Phase Complete"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="HUD/VBoxContainer"]
+margin_top = 24.0
+margin_right = 285.0
+margin_bottom = 72.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="HUD/VBoxContainer/HBoxContainer2"]
+margin_right = 43.0
+margin_bottom = 48.0
+size_flags_vertical = 5
+text = "Status:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="StatusLabel" type="Label" parent="HUD/VBoxContainer/HBoxContainer2"]
+margin_left = 47.0
+margin_right = 285.0
+margin_bottom = 48.0
+text = "Click to place your seven Goa Pieces:
+- to the North of the red line 
+- max one piece per square."
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PhaseController" type="Node" parent="."]
+script = ExtResource( 5 )
+[connection signal="pressed" from="HUD/VBoxContainer/HBoxContainer/PhaseCompleteButton" to="PhaseController" method="_on_PhaseCompleteButton_pressed"]
+[connection signal="phase_changed" from="PhaseController" to="HUD/VBoxContainer/HBoxContainer/PhaseLabel" method="_on_PhaseController_phase_changed"]
+[connection signal="phase_changed" from="PhaseController" to="DisabledZone" method="_on_PhaseController_phase_changed"]
