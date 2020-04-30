@@ -36,9 +36,16 @@ cell_tile_origin = 1
 
 [node name="AIR" parent="Grid" instance=ExtResource( 1 )]
 position = Vector2( 352, 96 )
+moves = "Any number of squares in a straight line (Like a Queen in chess).  Can pass over friendly units/IEDs.  Cannot pass over/enter Population suqares."
+attacks = "Insurgent."
+Special = "Cannot be destroyed."
 
 [node name="ANP" parent="Grid" instance=ExtResource( 8 )]
 position = Vector2( 352, 160 )
+moves = "One square, straight or diagonal (like a KING in chess)"
+attacks = "Population"
+captures_villages = true
+Special = "If no ANA or ANP left on the board, Taliban wins."
 
 [node name="ANA" parent="Grid" instance=ExtResource( 7 )]
 position = Vector2( 352, 288 )

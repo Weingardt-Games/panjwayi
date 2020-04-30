@@ -8,6 +8,10 @@ class_name Actor
 enum TEAM{ NONE, GOA, TALIBAN }
 export(TEAM) var team = TEAM.NONE
 export(String) var actor_name
+export(String) var moves
+export(String) var attacks
+export(bool) var captures_villages
+export(String) var Special
 
 var is_dragging = false
 
@@ -31,6 +35,11 @@ func _input(event):
 	if is_dragging and event is InputEventMouseMotion:
 		var new_location = get_global_mouse_position()
 		emit_signal("game_piece_dragged", self, new_location)
+		
+	
+	if event.is_action_pressed("ui_menu"):
+		print("popping up!")
+		$PopupMenu.popup()
 
 ##### GETTERS AND SETTERS ########
 
