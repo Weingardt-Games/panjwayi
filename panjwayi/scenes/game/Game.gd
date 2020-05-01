@@ -14,20 +14,32 @@ var in_menu = false
 var current_tile = Vector2()
 
 
-# GoA Piece Scenes
-export(Array, PackedScene) var goa_pieces
-export(Array, PackedScene) var taliban_pieces
+# Piece Scenes
+export(Array, PackedScene) var pieces
+
+export(int, 8, 10) var number_of_taliban = 9
+export(PackedScene) var taliban_piece
+
 var current_piece
 var current_button
 
 
 func _ready():
-	generate_placement_buttons()
+	_ready_placement(pieces)
 
 
 func _process(delta: float) -> void:
 	_process_placement()
 
+
+func _on_PhaseController_phase_changed(phase) -> void:
+	if phase == PhaseController.PHASES.TALIBAN_SETUP:
+		# fill out the taliban pieces:
+		pieces = []
+		for i in number_of_taliban:
+			pieces.append(taliban_piece)
+
+		_ready_placement(pieces)
 
 ######### PLACEMENT / SETUP ####################
 
@@ -55,6 +67,9 @@ func _update_placement_tool():
 		current_color = invalid_color
 		can_place = false
 		$PlacementTool/ColorRect.color = current_color
+		
+func is_all_pieces_placed():
+	return PlacementButtonContainer.get_child_count() == 0
 	
 func place_piece():
 	if can_place and not in_menu:
@@ -64,6 +79,9 @@ func place_piece():
 		$GoAPieceContainer.add_child(new_piece)
 		PlacementButtonContainer.remove_child(current_button)
 		cancel_placement()
+		
+		if is_all_pieces_placed():
+			$PhaseController.next_phase()
 	
 func cancel_placement(replace=false):
 	placement_mode = false
@@ -71,7 +89,7 @@ func cancel_placement(replace=false):
 
 func _on_Select_Piece_button_down(button: PlacementButton) -> void:
 	placement_mode = true
-	current_piece = goa_pieces[button.goa_piece_index]
+	current_piece = pieces[button.goa_piece_index]
 	current_button = button
 	$PlacementTool/TextureRect.texture = button.get_node("TextureRect").texture
 	$PlacementTool.show()
@@ -88,9 +106,10 @@ func _on_Select_Piece_button_mouse_exited() -> void:
 onready var PlacementButtonContainer = $UI/PlacementUI/HBoxContainer
 onready var PlacementButton = preload("res://scenes/game/hud/PlacementButton.tscn")
 
-func generate_placement_buttons():
-	for i in goa_pieces.size():
-		var piece = goa_pieces[i]
+func _ready_placement(pieces):
+	# generate all the placement buttons
+	for i in pieces.size():
+		var piece = pieces[i]
 		piece = piece.instance()
 		print("generating placement buttons for: ", piece.actor_name)
 		var button = PlacementButton.instance()
@@ -101,3 +120,5 @@ func generate_placement_buttons():
 		button.connect("selected", self, "_on_Select_Piece_button_down")
 		button.connect("mouse_entered", self, "_on_Select_Piece_button_mouse_entered")
 		button.connect("mouse_exited", self, "_on_Select_Piece_button_mouse_exited")
+
+
