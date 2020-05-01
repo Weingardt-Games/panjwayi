@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=27 format=2]
 
 [ext_resource path="res://game_pieces/goa_pieces/AIR.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/game/DisabledZone.gd" type="Script" id=2]
@@ -9,8 +9,36 @@
 [ext_resource path="res://game_pieces/goa_pieces/ANA.tscn" type="PackedScene" id=7]
 [ext_resource path="res://game_pieces/goa_pieces/ANP.tscn" type="PackedScene" id=8]
 [ext_resource path="res://game_pieces/goa_pieces/LAV.tscn" type="PackedScene" id=9]
+[ext_resource path="res://scenes/game/Game.gd" type="Script" id=10]
+[ext_resource path="res://game_pieces/goa_pieces/GoAPiece.tscn" type="PackedScene" id=11]
+[ext_resource path="res://assets/tokens/air.png" type="Texture" id=12]
+[ext_resource path="res://assets/tokens/pop.png" type="Texture" id=13]
+[ext_resource path="res://assets/tokens/anp.png" type="Texture" id=14]
+[ext_resource path="res://assets/tokens/ana.png" type="Texture" id=15]
+[ext_resource path="res://game_pieces/goa_pieces/INF.tscn" type="PackedScene" id=16]
+[ext_resource path="res://assets/tokens/ins.png" type="Texture" id=17]
+[ext_resource path="res://assets/tokens/ied.png" type="Texture" id=18]
+[ext_resource path="res://assets/tokens/inf.png" type="Texture" id=19]
+[ext_resource path="res://assets/tokens/lav.png" type="Texture" id=20]
+[ext_resource path="res://game_pieces/taliban_pieces/INS.tscn" type="PackedScene" id=21]
+[ext_resource path="res://game_pieces/taliban_pieces/POP.tscn" type="PackedScene" id=22]
+[ext_resource path="res://assets/gui/PNG/Main menu/Button BG.png" type="Texture" id=23]
+[ext_resource path="res://assets/gui/PNG/Bonus/Bonus 03.png" type="Texture" id=24]
+[ext_resource path="res://assets/gui/PNG/Main menu/Button BG shadow.png" type="Texture" id=25]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Pawn
+
+func _ready() -> void:
+	pass
+"
 
 [node name="Game" type="Node2D"]
+script = ExtResource( 10 )
+goa_textures = [ ExtResource( 12 ), ExtResource( 15 ), ExtResource( 14 ), ExtResource( 19 ), ExtResource( 20 ) ]
+taliban_textures = [ ExtResource( 13 ), ExtResource( 17 ), ExtResource( 18 ) ]
+goa_pieces = [ ExtResource( 1 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 11 ), ExtResource( 16 ), ExtResource( 9 ) ]
+taliban_pieces = [ ExtResource( 21 ), ExtResource( 22 ) ]
 
 [node name="sprite" type="Sprite" parent="."]
 texture = ExtResource( 3 )
@@ -33,34 +61,7 @@ __meta__ = {
 [node name="Grid" parent="." instance=ExtResource( 4 )]
 cell_custom_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
 cell_tile_origin = 1
-
-[node name="AIR" parent="Grid" instance=ExtResource( 1 )]
-position = Vector2( 352, 96 )
-moves = "Any number of squares in a straight line (Like a Queen in chess).  Can pass over friendly units/IEDs.  Cannot pass over/enter Population suqares."
-attacks = "Insurgent."
-Special = "Cannot be destroyed."
-
-[node name="ANP" parent="Grid" instance=ExtResource( 8 )]
-position = Vector2( 352, 160 )
-moves = "One square, straight or diagonal (like a KING in chess)"
-attacks = "Population"
-captures_villages = true
-Special = "If no ANA or ANP left on the board, Taliban wins."
-
-[node name="ANA" parent="Grid" instance=ExtResource( 7 )]
-position = Vector2( 352, 288 )
-
-[node name="ANP2" parent="Grid" instance=ExtResource( 8 )]
-position = Vector2( 352, 224 )
-
-[node name="ANA2" parent="Grid" instance=ExtResource( 7 )]
-position = Vector2( 352, 352 )
-
-[node name="LAV" parent="Grid" instance=ExtResource( 9 )]
-position = Vector2( 352, 416 )
-
-[node name="LAV2" parent="Grid" instance=ExtResource( 9 )]
-position = Vector2( 352, 480 )
+script = SubResource( 1 )
 
 [node name="HUD" type="Control" parent="."]
 anchor_right = 1.0
@@ -139,8 +140,78 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="GoAPieceContainer" type="Node2D" parent="."]
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="PlacementUI" type="NinePatchRect" parent="UI"]
+self_modulate = Color( 1, 1, 1, 0.831373 )
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -80.0
+rect_min_size = Vector2( 0, 80 )
+texture = ExtResource( 24 )
+patch_margin_left = 10
+patch_margin_top = 10
+patch_margin_right = 10
+patch_margin_bottom = 10
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/PlacementUI"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/separation = 15
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AIRButton" type="TextureButton" parent="UI/PlacementUI/HBoxContainer"]
+margin_left = 608.0
+margin_right = 672.0
+margin_bottom = 80.0
+rect_min_size = Vector2( 64, 0 )
+texture_normal = ExtResource( 23 )
+texture_pressed = ExtResource( 23 )
+texture_hover = ExtResource( 25 )
+expand = true
+
+[node name="TextureRect" type="TextureRect" parent="UI/PlacementUI/HBoxContainer/AIRButton"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -32.0
+margin_top = -32.0
+margin_right = 32.0
+margin_bottom = 32.0
+texture = ExtResource( 12 )
+expand = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PlacementTool" type="Node2D" parent="."]
+visible = false
+
+[node name="ColorRect" type="ColorRect" parent="PlacementTool"]
+self_modulate = Color( 1, 1, 1, 0.501961 )
+margin_left = -32.0
+margin_top = -32.0
+margin_right = 32.0
+margin_bottom = 32.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="PhaseController" type="Node" parent="."]
 script = ExtResource( 5 )
 [connection signal="pressed" from="HUD/VBoxContainer/HBoxContainer/PhaseCompleteButton" to="PhaseController" method="_on_PhaseCompleteButton_pressed"]
+[connection signal="button_down" from="UI/PlacementUI/HBoxContainer/AIRButton" to="." method="_on_Select_Piece_button_down" binds= [ "piece" ]]
+[connection signal="mouse_entered" from="UI/PlacementUI/HBoxContainer/AIRButton" to="." method="_on_Select_Piece_button_mouse_entered"]
+[connection signal="mouse_exited" from="UI/PlacementUI/HBoxContainer/AIRButton" to="." method="_on_Select_Piece_button_mouse_exited"]
 [connection signal="phase_changed" from="PhaseController" to="HUD/VBoxContainer/HBoxContainer/PhaseLabel" method="_on_PhaseController_phase_changed"]
 [connection signal="phase_changed" from="PhaseController" to="DisabledZone" method="_on_PhaseController_phase_changed"]

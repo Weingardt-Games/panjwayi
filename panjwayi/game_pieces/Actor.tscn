@@ -49,4 +49,11 @@ margin_bottom = 40.0
 margin_right = 139.0
 margin_bottom = 14.0
 text = "Test this Popup Menu"
+
+[node name="Control" type="Control" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="input_event" from="Area2D" to="." method="_on_Area2D_input_event"]
