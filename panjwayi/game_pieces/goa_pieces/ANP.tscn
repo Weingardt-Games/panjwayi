@@ -5,4 +5,5 @@
 
 [node name="ANP" instance=ExtResource( 1 )]
 sprite = ExtResource( 2 )
+actor_type = 4
 actor_name = "Afghan National Police"

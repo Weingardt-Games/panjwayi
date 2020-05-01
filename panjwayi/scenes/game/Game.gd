@@ -13,6 +13,16 @@ var can_place = false
 var in_menu = false
 var current_tile = Vector2()
 
+var ACTOR_SCENES_DICT = {
+	Actor.ACTOR_TYPES.AIR: load("res://game_pieces/goa_pieces/AIR.tscn"),
+	Actor.ACTOR_TYPES.LAV: load("res://game_pieces/goa_pieces/LAV.tscn"),
+	Actor.ACTOR_TYPES.INY: load("res://game_pieces/goa_pieces/INF.tscn"),
+	Actor.ACTOR_TYPES.ANA: load("res://game_pieces/goa_pieces/ANA.tscn"),
+	Actor.ACTOR_TYPES.ANP: load("res://game_pieces/goa_pieces/ANP.tscn"),
+	Actor.ACTOR_TYPES.INS: load("res://game_pieces/taliban_pieces/INS.tscn"),
+	Actor.ACTOR_TYPES.POP: load("res://game_pieces/taliban_pieces/POP.tscn"),
+	Actor.ACTOR_TYPES.IED: load("res://game_pieces/taliban_pieces/IED.tscn"),
+}
 
 # Piece Scenes
 export(Array, PackedScene) var pieces
@@ -67,12 +77,13 @@ func _update_placement_tool():
 	else:
 		legal_placement_cell = Pawn.CELL_TYPES.LEGAL_TALIBAN_PLACEMENT
 
-	if Grid.get_cellv(current_tile) == legal_placement_cell and current_color != valid_color:
+	var current_cell_type = Grid.get_cellv(current_tile)
+	if current_cell_type == legal_placement_cell and current_color != valid_color:
 		current_color = valid_color
 		can_place = true
 		$PlacementTool/ColorRect.color = current_color
 
-	if Grid.get_cellv(current_tile) != legal_placement_cell and current_color != invalid_color:
+	if current_cell_type != legal_placement_cell and current_color != invalid_color:
 		current_color = invalid_color
 		can_place = false
 
@@ -85,7 +96,9 @@ func place_piece():
 	if can_place and not in_menu:
 		Grid.set_cellv(current_tile, Pawn.CELL_TYPES.ACTOR)
 		current_piece.global_position = Grid.get_world_position(current_tile)
-		Grid.add_child(current_piece)
+		
+		insert_actor(current_piece)
+		
 		PlacementButtonContainer.remove_child(current_button)
 		cancel_placement()
 		
@@ -96,6 +109,19 @@ func cancel_placement(replace=false):
 	placement_mode = false
 	current_piece = null
 	PlacementTool.hide()
+	
+func insert_actor(actor: Actor):
+	# connect to the flip signal if needed
+	actor.connect("game_piece_flip_pressed", self, "_on_GamePiece_flip_pressed")
+	Grid.add_child(actor)
+	
+	
+func _on_GamePiece_flip_pressed(actor: Actor):
+	var flip_scene = ACTOR_SCENES_DICT.get(actor.flip_side)
+	var flip_piece = flip_scene.instance()
+	flip_piece.global_position = actor.global_position
+	insert_actor(flip_piece)
+	actor.queue_free()
 
 func _on_Select_Piece_button_down(button: PlacementButton) -> void:
 	placement_mode = true

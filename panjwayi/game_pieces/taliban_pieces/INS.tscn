@@ -5,4 +5,6 @@
 
 [node name="INS" instance=ExtResource( 1 )]
 sprite = ExtResource( 2 )
+actor_type = 7
 actor_name = "Insurgent"
+flip_side = 6

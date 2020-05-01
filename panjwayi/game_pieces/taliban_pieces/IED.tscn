@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://assets/tokens/ied.png" type="Texture" id=1]
+[ext_resource path="res://game_pieces/taliban_pieces/TalibanPiece.tscn" type="PackedScene" id=2]
+
+[node name="IED" instance=ExtResource( 2 )]
+sprite = ExtResource( 1 )
+actor_type = 8
+flip_side = 8

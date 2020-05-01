@@ -5,4 +5,5 @@
 
 [node name="ANA" instance=ExtResource( 1 )]
 sprite = ExtResource( 2 )
+actor_type = 3
 actor_name = "Afghan National Army"

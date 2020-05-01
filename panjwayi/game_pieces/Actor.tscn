@@ -4,9 +4,7 @@
 [ext_resource path="res://assets/tokens/ana.png" type="Texture" id=2]
 [ext_resource path="res://assets/effects/highlight.png" type="Texture" id=3]
 [ext_resource path="res://icon.png" type="Texture" id=4]
-
-[sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 32, 32 )
+[ext_resource path="res://assets/tokens/Swap.png" type="Texture" id=5]
 
 [node name="Actor" type="Node2D"]
 script = ExtResource( 1 )
@@ -31,29 +29,12 @@ texture = ExtResource( 4 )
 visible = false
 texture = ExtResource( 3 )
 
-[node name="Area2D" type="Area2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-modulate = Color( 0, 0.133333, 1, 0.568627 )
-shape = SubResource( 1 )
-
-[node name="PopupMenu" type="PopupMenu" parent="."]
-margin_right = 20.0
-margin_bottom = 20.0
-
-[node name="VBoxContainer" type="VBoxContainer" parent="PopupMenu"]
-margin_right = 40.0
-margin_bottom = 40.0
-
-[node name="Label" type="Label" parent="PopupMenu/VBoxContainer"]
-margin_right = 139.0
-margin_bottom = 14.0
-text = "Test this Popup Menu"
-
-[node name="Control" type="Control" parent="."]
-margin_right = 40.0
-margin_bottom = 40.0
+[node name="FlipButton" type="TextureButton" parent="."]
+margin_top = -36.0
+margin_right = 32.0
+margin_bottom = -4.0
+texture_normal = ExtResource( 5 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-[connection signal="input_event" from="Area2D" to="." method="_on_Area2D_input_event"]
+[connection signal="pressed" from="FlipButton" to="." method="_on_FlipButton_pressed"]

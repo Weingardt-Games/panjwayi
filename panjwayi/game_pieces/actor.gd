@@ -5,6 +5,20 @@ An Actor is any Pawn (gameboard piece) that can be placed on a gameboard tile
 extends Pawn
 class_name Actor
 
+enum ACTOR_TYPES{
+	NONE,
+	AIR,
+	LAV,
+	ANA,
+	ANP,
+	INY, # INF is reserved?
+	POP,
+	INS,
+	IED,
+}
+
+export(ACTOR_TYPES) var actor_type = ACTOR_TYPES.NONE
+
 enum TEAM{ NONE, GOA, TALIBAN }
 export(TEAM) var team = TEAM.NONE
 export(String) var actor_name
@@ -12,16 +26,24 @@ export(String) var moves
 export(String) var attacks
 export(bool) var captures_villages
 export(String) var Special
+export(ACTOR_TYPES) var flip_side = ACTOR_TYPES.NONE
 
 var is_dragging = false
 
 signal game_piece_dropped(actor, new_location)
 signal game_piece_dragged(actor, new_location)
 signal game_piece_selected(actor)
+signal game_piece_flip_pressed(actor)
 
 func _ready() -> void:
-	pass
 	$Sprite.texture = sprite
+	
+	if flip_side != ACTOR_TYPES.NONE:
+		$FlipButton.visible = true
+	else:
+		$FlipButton.visible = false
+		
+	
 	
 func _input(event):
 	if not is_dragging:
@@ -36,10 +58,6 @@ func _input(event):
 		var new_location = get_global_mouse_position()
 		emit_signal("game_piece_dragged", self, new_location)
 		
-	
-	if event.is_action_pressed("ui_menu"):
-		print("popping up!")
-		$PopupMenu.popup()
 
 ##### GETTERS AND SETTERS ########
 
@@ -86,3 +104,10 @@ func reset_ghost():
 	$Highlight.visible = false
 	$Ghost.visible = false
 	$Ghost.position = Vector2.ZERO
+
+
+func _on_FlipButton_pressed() -> void:
+	# Flip to new actor type
+	print("flipping!")
+	emit_signal("game_piece_flip_pressed", self)
+	

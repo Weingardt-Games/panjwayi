@@ -5,4 +5,6 @@
 
 [node name="INF" instance=ExtResource( 1 )]
 sprite = ExtResource( 2 )
+actor_type = 5
 actor_name = "Infantry"
+flip_side = 2
