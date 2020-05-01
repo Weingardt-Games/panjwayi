@@ -25,13 +25,7 @@
 [ext_resource path="res://assets/gui/PNG/Main menu/Button BG.png" type="Texture" id=23]
 [ext_resource path="res://assets/gui/PNG/Bonus/Bonus 03.png" type="Texture" id=24]
 [ext_resource path="res://assets/gui/PNG/Main menu/Button BG shadow.png" type="Texture" id=25]
-
-[sub_resource type="GDScript" id=1]
-script/source = "extends Pawn
-
-func _ready() -> void:
-	pass
-"
+[ext_resource path="res://scenes/game/Camera2D.gd" type="Script" id=26]
 
 [node name="Game" type="Node2D"]
 script = ExtResource( 10 )
@@ -59,9 +53,6 @@ __meta__ = {
 }
 
 [node name="Grid" parent="." instance=ExtResource( 4 )]
-cell_custom_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
-cell_tile_origin = 1
-script = SubResource( 1 )
 
 [node name="HUD" type="Control" parent="."]
 anchor_right = 1.0
@@ -209,9 +200,15 @@ __meta__ = {
 
 [node name="PhaseController" type="Node" parent="."]
 script = ExtResource( 5 )
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+current = true
+zoom = Vector2( 0.75, 0.75 )
+script = ExtResource( 26 )
 [connection signal="pressed" from="HUD/VBoxContainer/HBoxContainer/PhaseCompleteButton" to="PhaseController" method="_on_PhaseCompleteButton_pressed"]
 [connection signal="button_down" from="UI/PlacementUI/HBoxContainer/AIRButton" to="." method="_on_Select_Piece_button_down" binds= [ "piece" ]]
 [connection signal="mouse_entered" from="UI/PlacementUI/HBoxContainer/AIRButton" to="." method="_on_Select_Piece_button_mouse_entered"]
 [connection signal="mouse_exited" from="UI/PlacementUI/HBoxContainer/AIRButton" to="." method="_on_Select_Piece_button_mouse_exited"]
-[connection signal="phase_changed" from="PhaseController" to="HUD/VBoxContainer/HBoxContainer/PhaseLabel" method="_on_PhaseController_phase_changed"]
 [connection signal="phase_changed" from="PhaseController" to="DisabledZone" method="_on_PhaseController_phase_changed"]
+[connection signal="phase_changed" from="PhaseController" to="HUD/VBoxContainer/HBoxContainer/PhaseLabel" method="_on_PhaseController_phase_changed"]
