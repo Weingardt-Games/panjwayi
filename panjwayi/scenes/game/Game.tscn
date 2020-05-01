@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://game_pieces/goa_pieces/AIR.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/game/DisabledZone.gd" type="Script" id=2]
@@ -10,16 +10,6 @@
 [ext_resource path="res://game_pieces/goa_pieces/ANP.tscn" type="PackedScene" id=8]
 [ext_resource path="res://game_pieces/goa_pieces/LAV.tscn" type="PackedScene" id=9]
 [ext_resource path="res://scenes/game/Game.gd" type="Script" id=10]
-[ext_resource path="res://game_pieces/goa_pieces/GoAPiece.tscn" type="PackedScene" id=11]
-[ext_resource path="res://assets/tokens/air.png" type="Texture" id=12]
-[ext_resource path="res://assets/tokens/pop.png" type="Texture" id=13]
-[ext_resource path="res://assets/tokens/anp.png" type="Texture" id=14]
-[ext_resource path="res://assets/tokens/ana.png" type="Texture" id=15]
-[ext_resource path="res://game_pieces/goa_pieces/INF.tscn" type="PackedScene" id=16]
-[ext_resource path="res://assets/tokens/ins.png" type="Texture" id=17]
-[ext_resource path="res://assets/tokens/ied.png" type="Texture" id=18]
-[ext_resource path="res://assets/tokens/inf.png" type="Texture" id=19]
-[ext_resource path="res://assets/tokens/lav.png" type="Texture" id=20]
 [ext_resource path="res://game_pieces/taliban_pieces/INS.tscn" type="PackedScene" id=21]
 [ext_resource path="res://game_pieces/taliban_pieces/POP.tscn" type="PackedScene" id=22]
 [ext_resource path="res://assets/gui/PNG/Bonus/Bonus 03.png" type="Texture" id=24]
@@ -27,9 +17,7 @@
 
 [node name="Game" type="Node2D"]
 script = ExtResource( 10 )
-goa_textures = [ ExtResource( 12 ), ExtResource( 15 ), ExtResource( 14 ), ExtResource( 19 ), ExtResource( 20 ) ]
-taliban_textures = [ ExtResource( 13 ), ExtResource( 17 ), ExtResource( 18 ) ]
-goa_pieces = [ ExtResource( 1 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 11 ), ExtResource( 16 ), ExtResource( 9 ) ]
+goa_pieces = [ ExtResource( 1 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 8 ) ]
 taliban_pieces = [ ExtResource( 21 ), ExtResource( 22 ) ]
 
 [node name="sprite" type="Sprite" parent="."]

@@ -13,14 +13,12 @@ var can_place = false
 var in_menu = false
 var current_tile = Vector2()
 
-#Placement Mode Textures
-export(Array, Texture) var goa_textures
-export(Array, Texture) var taliban_textures
 
 # GoA Piece Scenes
 export(Array, PackedScene) var goa_pieces
 export(Array, PackedScene) var taliban_pieces
 var current_piece
+var current_button
 
 
 func _ready():
@@ -28,15 +26,19 @@ func _ready():
 
 
 func _process(delta: float) -> void:
+	_process_placement()
+
+
+######### PLACEMENT / SETUP ####################
+
+func _process_placement():
 	if placement_mode:
 		_update_placement_tool()
 		if Input.is_action_just_pressed("ui_accept"):
 			place_piece()
-			pass
 			
 		if Input.is_action_just_pressed("ui_cancel"):
-			placement_mode = false
-			PlacementTool.hide()
+			cancel_placement(true)
 
 func _update_placement_tool():
 	var mouse_pos = get_global_mouse_position()
@@ -60,14 +62,19 @@ func place_piece():
 		var new_piece = current_piece.instance()
 		new_piece.global_position = Grid.get_world_position(current_tile)
 		$GoAPieceContainer.add_child(new_piece)
+		PlacementButtonContainer.remove_child(current_button)
+		cancel_placement()
 	
+func cancel_placement(replace=false):
+	placement_mode = false
+	PlacementTool.hide()
 
 func _on_Select_Piece_button_down(button: PlacementButton) -> void:
 	placement_mode = true
 	current_piece = goa_pieces[button.goa_piece_index]
+	current_button = button
 	$PlacementTool/TextureRect.texture = button.get_node("TextureRect").texture
 	$PlacementTool.show()
-
 
 func _on_Select_Piece_button_mouse_entered() -> void:
 	in_menu = true
@@ -75,15 +82,6 @@ func _on_Select_Piece_button_mouse_entered() -> void:
 func _on_Select_Piece_button_mouse_exited() -> void:
 	in_menu = false
 	
-
-
-
-
-
-
-
-
-
 
 ################ SETUP ###################
 
