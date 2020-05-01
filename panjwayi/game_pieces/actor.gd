@@ -37,6 +37,7 @@ signal game_piece_flip_pressed(actor)
 
 func _ready() -> void:
 	$Sprite.texture = sprite
+	$Ghost.texture = sprite
 	
 	if flip_side != ACTOR_TYPES.NONE:
 		$FlipButton.visible = true
@@ -67,6 +68,7 @@ func _input(event):
 
 func _on_Area2D_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event.is_action_pressed("ui_select_piece"):
+		print("selecting piece")
 		get_tree().set_input_as_handled()
 		set_selected()
 

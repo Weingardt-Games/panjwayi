@@ -1,11 +1,13 @@
 [gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://game_pieces/actor.gd" type="Script" id=1]
-[ext_resource path="res://assets/tokens/ana.png" type="Texture" id=2]
 [ext_resource path="res://assets/effects/highlight.png" type="Texture" id=3]
 [ext_resource path="res://icon.png" type="Texture" id=4]
 [ext_resource path="res://assets/tokens/swap_highlight.png" type="Texture" id=5]
 [ext_resource path="res://assets/tokens/swap.png" type="Texture" id=6]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 32, 32 )
 
 [node name="Actor" type="Node2D"]
 script = ExtResource( 1 )
@@ -21,7 +23,6 @@ end_cap_mode = 2
 [node name="Ghost" type="Sprite" parent="."]
 visible = false
 modulate = Color( 1, 1, 1, 0.501961 )
-texture = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 4 )
@@ -41,4 +42,10 @@ texture_hover = ExtResource( 5 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource( 1 )
 [connection signal="pressed" from="FlipButton" to="." method="_on_FlipButton_pressed"]
+[connection signal="input_event" from="Area2D" to="." method="_on_Area2D_input_event"]

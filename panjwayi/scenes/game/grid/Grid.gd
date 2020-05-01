@@ -14,7 +14,13 @@ func _ready():
 				set_cellv(Vector2(x, y), Pawn.CELL_TYPES.LEGAL_TALIBAN_PLACEMENT)
 			else:
 				set_cellv(Vector2(x, y), Pawn.CELL_TYPES.ILLEGAL_PLACEMENT)
-			
+				
+func prepare_board_for_game_start():
+	for x in BOARD_SIZE.x:
+		for y in BOARD_SIZE.y:
+			if get_cellv(Vector2(x, y)) != Pawn.CELL_TYPES.ACTOR:
+				set_cellv(Vector2(x, y), Pawn.CELL_TYPES.OPEN)
+
 				
 func get_cell_pawn(coordinates):
 	for node in get_children():
@@ -28,19 +34,18 @@ func request_move(pawn, new_position, final=false):
 	var cell_target_type = get_cellv(cell_target)
 	
 	match cell_target_type:
-		EMPTY:
+		Pawn.CELL_TYPES.OPEN:
 			if final:
 				return update_pawn_position(pawn, cell_start, cell_target)
 			else:
 				return get_world_position(cell_target)
-		OBJECT:
-			if final:
-				var object_pawn = get_cell_pawn(cell_target)
-				object_pawn.queue_free()
-				return update_pawn_position(pawn, cell_start, cell_target)
-			else:
-				return get_world_position(cell_target)
-
+#		OBJECT:
+#			if final:
+#				var object_pawn = get_cell_pawn(cell_target)
+#				object_pawn.queue_free()
+#				return update_pawn_position(pawn, cell_start, cell_target)
+#			else:
+#				return get_world_position(cell_target)
 		ACTOR:
 #			var pawn_name = get_cell_pawn(cell_target).name
 #			print("Cell %s contains %s" % [cell_target, pawn_name])

@@ -12,6 +12,7 @@ var current_color
 var can_place = false
 var in_menu = false
 var current_tile = Vector2()
+var current_phase = PhaseController.PHASES.GOA_SETUP
 
 var ACTOR_SCENES_DICT = {
 	Actor.ACTOR_TYPES.AIR: load("res://game_pieces/goa_pieces/AIR.tscn"),
@@ -27,12 +28,11 @@ var ACTOR_SCENES_DICT = {
 # Piece Scenes
 export(Array, PackedScene) var pieces
 
-export(int, 8, 10) var number_of_taliban = 9
+export(int, 1, 10) var number_of_taliban = 9
 export(PackedScene) var taliban_piece
 
 var current_piece: Actor
 var current_button
-
 
 func _ready():
 	_ready_placement(pieces)
@@ -43,13 +43,24 @@ func _process(delta: float) -> void:
 
 
 func _on_PhaseController_phase_changed(phase) -> void:
-	if phase == PhaseController.PHASES.TALIBAN_SETUP:
-		# fill out the taliban pieces:
-		pieces = []
-		for i in number_of_taliban:
-			pieces.append(taliban_piece)
-
-		_ready_placement(pieces)
+	current_phase = phase
+	match current_phase:
+		
+		PhaseController.PHASES.TALIBAN_SETUP:
+			# fill out the taliban pieces:
+			pieces = []
+			for i in number_of_taliban:
+				pieces.append(taliban_piece)
+	
+			_ready_placement(pieces)
+		
+		PhaseController.PHASES.GOA_TURN:
+			#_ready_goa_turn()
+			pass
+		PhaseController.PHASES.TALIBAN_TURN:
+			pass
+		_:
+			pass
 
 ######### PLACEMENT / SETUP ####################
 
@@ -103,7 +114,14 @@ func place_piece():
 		cancel_placement()
 		
 		if is_all_pieces_placed():
+			if current_phase == PhaseController.PHASES.TALIBAN_SETUP:
+				placement_complete()
+				_ready_turns()
 			$PhaseController.next_phase()
+	
+func placement_complete():
+	# remove placement container?  or reuse for Reinforcemnts box?
+	pass
 	
 func cancel_placement(replace=false):
 	placement_mode = false
@@ -113,6 +131,7 @@ func cancel_placement(replace=false):
 func insert_actor(actor: Actor):
 	# connect to the flip signal if needed
 	actor.connect("game_piece_flip_pressed", self, "_on_GamePiece_flip_pressed")
+	
 	Grid.add_child(actor)
 	
 	
@@ -156,5 +175,46 @@ func _ready_placement(pieces):
 		button.connect("selected", self, "_on_Select_Piece_button_down")
 		button.connect("mouse_entered", self, "_on_Select_Piece_button_mouse_entered")
 		button.connect("mouse_exited", self, "_on_Select_Piece_button_mouse_exited")
+		
+
+############### GOA TURN ######################
+func _ready_turns():
+	# connect_movement signals to all the actors
+	var actors = get_current_actors_on_board()
+	for a in actors:
+#		print(a)
+		var actor = a as Actor
+		a.connect("game_piece_dragged", self, "_on_GamePiece_dragged")
+		a.connect("game_piece_dropped", self, "_on_GamePiece_dropped")
+		
+	# reset the Grid for movement:
+	Grid.prepare_board_for_game_start()
+		
+		
+#signal game_piece_dropped(actor, new_location)
+#signal game_piece_dragged(actor, new_location)
+#signal game_piece_selected(actor)
+
+func _on_GamePiece_dropped(actor, new_location) -> void:
+	var potential_location = Grid.request_move(actor, new_location)
+	if potential_location:
+		actor.move(potential_location)
+	else:
+		print("Can't go there!")
+
+func _on_GamePiece_dragged(actor, new_location) -> void:
+	var potential_location = Grid.request_move(actor, new_location)
+	if potential_location:
+		actor.potential_move(potential_location)
+	else:
+		print("Can't go there!")
+	
+func get_current_actors_on_board() -> Array:
+	var actors: Array
+	for child in Grid.get_children():
+		if child is Actor:
+			actors.append(child)
+	return actors
+
 
 

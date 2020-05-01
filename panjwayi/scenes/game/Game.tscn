@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://game_pieces/goa_pieces/AIR.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/game/DisabledZone.gd" type="Script" id=2]
@@ -6,8 +6,6 @@
 [ext_resource path="res://scenes/game/grid/Grid.tscn" type="PackedScene" id=4]
 [ext_resource path="res://scenes/game/PhaseController.gd" type="Script" id=5]
 [ext_resource path="res://scenes/game/hud/PhaseLabel.gd" type="Script" id=6]
-[ext_resource path="res://game_pieces/goa_pieces/ANA.tscn" type="PackedScene" id=7]
-[ext_resource path="res://game_pieces/goa_pieces/ANP.tscn" type="PackedScene" id=8]
 [ext_resource path="res://game_pieces/goa_pieces/LAV.tscn" type="PackedScene" id=9]
 [ext_resource path="res://scenes/game/Game.gd" type="Script" id=10]
 [ext_resource path="res://game_pieces/taliban_pieces/INS.tscn" type="PackedScene" id=21]
@@ -16,7 +14,8 @@
 
 [node name="Game" type="Node2D"]
 script = ExtResource( 10 )
-pieces = [ ExtResource( 1 ), ExtResource( 9 ), ExtResource( 9 ), ExtResource( 7 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 8 ) ]
+pieces = [ ExtResource( 1 ), ExtResource( 9 ) ]
+number_of_taliban = 1
 taliban_piece = ExtResource( 21 )
 
 [node name="sprite" type="Sprite" parent="."]
