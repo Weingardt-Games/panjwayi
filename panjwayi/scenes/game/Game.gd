@@ -23,6 +23,10 @@ export(Array, PackedScene) var taliban_pieces
 var current_piece
 
 
+func _ready():
+	generate_placement_buttons()
+
+
 func _process(delta: float) -> void:
 	if placement_mode:
 		_update_placement_tool()
@@ -37,7 +41,7 @@ func _process(delta: float) -> void:
 func _update_placement_tool():
 	var mouse_pos = get_global_mouse_position()
 	current_tile = Grid.world_to_map(mouse_pos)
-	print("CURRENT TILE: ", current_tile)
+#	print("CURRENT TILE: ", current_tile)
 	PlacementTool.position = Grid.get_world_position(current_tile)
 	
 	if Grid.get_cellv(current_tile) != Pawn.CELL_TYPES.ACTOR and current_color != valid_color:
@@ -56,13 +60,12 @@ func place_piece():
 		var new_piece = current_piece.instance()
 		new_piece.global_position = Grid.get_world_position(current_tile)
 		$GoAPieceContainer.add_child(new_piece)
-		
 	
 
-
-func _on_Select_Piece_button_down(piece: String) -> void:
-	print(piece) 
+func _on_Select_Piece_button_down(button: PlacementButton) -> void:
 	placement_mode = true
+	current_piece = goa_pieces[button.goa_piece_index]
+	$PlacementTool/TextureRect.texture = button.get_node("TextureRect").texture
 	$PlacementTool.show()
 
 
@@ -71,4 +74,32 @@ func _on_Select_Piece_button_mouse_entered() -> void:
 	
 func _on_Select_Piece_button_mouse_exited() -> void:
 	in_menu = false
+	
 
+
+
+
+
+
+
+
+
+
+################ SETUP ###################
+
+onready var PlacementButtonContainer = $UI/PlacementUI/HBoxContainer
+onready var PlacementButton = preload("res://scenes/game/hud/PlacementButton.tscn")
+
+func generate_placement_buttons():
+	for i in goa_pieces.size():
+		var piece = goa_pieces[i]
+		piece = piece.instance()
+		print("generating placement buttons for: ", piece.actor_name)
+		var button = PlacementButton.instance()
+		button.get_node("TextureRect").texture = piece.sprite
+		button.goa_piece_index = i
+		PlacementButtonContainer.add_child(button)
+		
+		button.connect("selected", self, "_on_Select_Piece_button_down")
+		button.connect("mouse_entered", self, "_on_Select_Piece_button_mouse_entered")
+		button.connect("mouse_exited", self, "_on_Select_Piece_button_mouse_exited")
