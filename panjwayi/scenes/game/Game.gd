@@ -20,7 +20,7 @@ export(Array, PackedScene) var pieces
 export(int, 8, 10) var number_of_taliban = 9
 export(PackedScene) var taliban_piece
 
-var current_piece
+var current_piece: Actor
 var current_button
 
 
@@ -58,14 +58,24 @@ func _update_placement_tool():
 #	print("CURRENT TILE: ", current_tile)
 	PlacementTool.position = Grid.get_world_position(current_tile)
 	
-	if Grid.get_cellv(current_tile) != Pawn.CELL_TYPES.ACTOR and current_color != valid_color:
+	print(Grid.get_cellv(current_tile))
+	print(current_tile)
+	
+	var legal_placement_cell
+	if current_piece.team == Actor.TEAM.GOA:
+		legal_placement_cell = Pawn.CELL_TYPES.LEGAL_GOA_PLACEMENT
+	else:
+		legal_placement_cell = Pawn.CELL_TYPES.LEGAL_TALIBAN_PLACEMENT
+
+	if Grid.get_cellv(current_tile) == legal_placement_cell and current_color != valid_color:
 		current_color = valid_color
 		can_place = true
 		$PlacementTool/ColorRect.color = current_color
 
-	if Grid.get_cellv(current_tile) == Pawn.CELL_TYPES.ACTOR and current_color != invalid_color:
+	if Grid.get_cellv(current_tile) != legal_placement_cell and current_color != invalid_color:
 		current_color = invalid_color
 		can_place = false
+
 		$PlacementTool/ColorRect.color = current_color
 		
 func is_all_pieces_placed():
@@ -74,9 +84,8 @@ func is_all_pieces_placed():
 func place_piece():
 	if can_place and not in_menu:
 		Grid.set_cellv(current_tile, Pawn.CELL_TYPES.ACTOR)
-		var new_piece = current_piece.instance()
-		new_piece.global_position = Grid.get_world_position(current_tile)
-		$GoAPieceContainer.add_child(new_piece)
+		current_piece.global_position = Grid.get_world_position(current_tile)
+		Grid.add_child(current_piece)
 		PlacementButtonContainer.remove_child(current_button)
 		cancel_placement()
 		
@@ -85,11 +94,12 @@ func place_piece():
 	
 func cancel_placement(replace=false):
 	placement_mode = false
+	current_piece = null
 	PlacementTool.hide()
 
 func _on_Select_Piece_button_down(button: PlacementButton) -> void:
 	placement_mode = true
-	current_piece = pieces[button.goa_piece_index]
+	current_piece = pieces[button.goa_piece_index].instance()
 	current_button = button
 	$PlacementTool/TextureRect.texture = button.get_node("TextureRect").texture
 	$PlacementTool.show()

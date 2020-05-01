@@ -2,13 +2,20 @@ extends TileMap
 
 enum { EMPTY = -1, ACTOR, OBSTACLE, OBJECT}
 
+const BOARD_SIZE = Vector2(16, 16)
+
 func _ready():
-	for child in get_children():
-		if child is Actor:
-			set_cellv(world_to_map(child.position), child.type)
-			child.connect("game_piece_dragged", self, "_on_GamePiece_dragged")
-			child.connect("game_piece_dropped", self, "_on_GamePiece_dropped")
-		
+	# Fill the TileMap Grid with PLACEMENT_CELL_TYPES
+	for x in BOARD_SIZE.x:
+		for y in BOARD_SIZE.y:
+			if x < 4:
+				set_cellv(Vector2(x, y), Pawn.CELL_TYPES.LEGAL_GOA_PLACEMENT)
+			elif x >= 12:
+				set_cellv(Vector2(x, y), Pawn.CELL_TYPES.LEGAL_TALIBAN_PLACEMENT)
+			else:
+				set_cellv(Vector2(x, y), Pawn.CELL_TYPES.ILLEGAL_PLACEMENT)
+			
+				
 func get_cell_pawn(coordinates):
 	for node in get_children():
 		if world_to_map(node.position) == coordinates:
