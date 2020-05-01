@@ -204,7 +204,6 @@ script = ExtResource( 5 )
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
 current = true
-zoom = Vector2( 0.8, 0.8 )
 script = ExtResource( 26 )
 [connection signal="pressed" from="HUD/VBoxContainer/HBoxContainer/PhaseCompleteButton" to="PhaseController" method="_on_PhaseCompleteButton_pressed"]
 [connection signal="button_down" from="UI/PlacementUI/HBoxContainer/AIRButton" to="." method="_on_Select_Piece_button_down" binds= [ "piece" ]]
