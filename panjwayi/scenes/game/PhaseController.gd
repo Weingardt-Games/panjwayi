@@ -11,7 +11,8 @@ var phase setget set_phase
 
 signal phase_changed(phase)
 
-func _ready() -> void:
+func start() -> void:
+	# call setter
 	self.phase = PHASES.GOA_SETUP
 
 func set_phase(new_phase):

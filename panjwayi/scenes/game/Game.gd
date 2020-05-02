@@ -35,16 +35,34 @@ var current_piece: Actor
 var current_button
 
 func _ready():
-	_ready_placement(pieces)
-
+	# Wait till the game is ready or signals can fire before the game is ready for them!
+	$PhaseController.start()
 
 func _process(delta: float) -> void:
-	_process_placement()
-
+	
+	match current_phase:
+		PhaseController.PHASES.GOA_SETUP:
+			_process_placement()
+			
+		PhaseController.PHASES.TALIBAN_SETUP:
+			_process_placement()
+			
+		PhaseController.PHASES.GOA_TURN:
+			pass
+			
+		PhaseController.PHASES.TALIBAN_TURN:
+			pass
+			
+		_:
+			pass
 
 func _on_PhaseController_phase_changed(phase) -> void:
 	current_phase = phase
+	print("Game current pahse:", current_phase)
 	match current_phase:
+		PhaseController.PHASES.GOA_SETUP:
+			#pieces start with all the GoA scenes as an export	
+			_ready_placement(pieces)
 		
 		PhaseController.PHASES.TALIBAN_SETUP:
 			# fill out the taliban pieces:
@@ -53,12 +71,14 @@ func _on_PhaseController_phase_changed(phase) -> void:
 				pieces.append(taliban_piece)
 	
 			_ready_placement(pieces)
-		
-		PhaseController.PHASES.GOA_TURN:
-			#_ready_goa_turn()
-			pass
+					
 		PhaseController.PHASES.TALIBAN_TURN:
-			pass
+			print("ready turn taliban")
+			_ready_turn(Actor.TEAM.TALIBAN)
+			
+		PhaseController.PHASES.GOA_TURN:
+			_ready_turn(Actor.TEAM.GOA)
+
 		_:
 			pass
 
@@ -79,8 +99,8 @@ func _update_placement_tool():
 #	print("CURRENT TILE: ", current_tile)
 	PlacementTool.position = Grid.get_world_position(current_tile)
 	
-	print(Grid.get_cellv(current_tile))
-	print(current_tile)
+#	print(Grid.get_cellv(current_tile))
+#	print(current_tile)
 	
 	var legal_placement_cell
 	if current_piece.team == Actor.TEAM.GOA:
@@ -116,11 +136,12 @@ func place_piece():
 		if is_all_pieces_placed():
 			if current_phase == PhaseController.PHASES.TALIBAN_SETUP:
 				placement_complete()
-				_ready_turns()
+				_ready_game_for_turns()
 			$PhaseController.next_phase()
 	
 func placement_complete():
 	# remove placement container?  or reuse for Reinforcemnts box?
+	$DisabledZone.visible = false
 	pass
 	
 func cancel_placement(replace=false):
@@ -131,6 +152,8 @@ func cancel_placement(replace=false):
 func insert_actor(actor: Actor):
 	# connect to the flip signal if needed
 	actor.connect("game_piece_flip_pressed", self, "_on_GamePiece_flip_pressed")
+	actor.connect("game_piece_dragged", self, "_on_GamePiece_dragged")
+	actor.connect("game_piece_dropped", self, "_on_GamePiece_dropped")
 	
 	Grid.add_child(actor)
 	
@@ -162,7 +185,7 @@ onready var PlacementButtonContainer = $UI/PlacementUI/HBoxContainer
 onready var PlacementButton = preload("res://scenes/game/hud/PlacementButton.tscn")
 
 func _ready_placement(pieces):
-	# generate all the placement buttons
+
 	for i in pieces.size():
 		var piece = pieces[i]
 		piece = piece.instance()
@@ -178,25 +201,16 @@ func _ready_placement(pieces):
 		
 
 ############### GOA TURN ######################
-func _ready_turns():
+func _ready_game_for_turns():
 	# connect_movement signals to all the actors
 	var actors = get_current_actors_on_board()
-	for a in actors:
-#		print(a)
-		var actor = a as Actor
-		a.connect("game_piece_dragged", self, "_on_GamePiece_dragged")
-		a.connect("game_piece_dropped", self, "_on_GamePiece_dropped")
 		
 	# reset the Grid for movement:
 	Grid.prepare_board_for_game_start()
-		
-		
-#signal game_piece_dropped(actor, new_location)
-#signal game_piece_dragged(actor, new_location)
-#signal game_piece_selected(actor)
+
 
 func _on_GamePiece_dropped(actor, new_location) -> void:
-	var potential_location = Grid.request_move(actor, new_location)
+	var potential_location = Grid.request_move(actor, new_location, true)
 	if potential_location:
 		actor.move(potential_location)
 	else:
@@ -216,5 +230,14 @@ func get_current_actors_on_board() -> Array:
 			actors.append(child)
 	return actors
 
-
-
+func _ready_turn(team_turn):
+	for a in get_current_actors_on_board():
+		print(a.actor_name, a.name)
+		var actor = a as Actor
+		if actor.team == team_turn:
+			actor.is_enabled = true
+		else:
+			actor.is_enabled = false
+	pass
+	
+	

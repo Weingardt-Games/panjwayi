@@ -53,22 +53,8 @@ func request_move(pawn, new_position, final=false):
 
 func update_pawn_position(pawn, cell_start, cell_target):
 	set_cellv(cell_target, pawn.type)
-	set_cellv(cell_start, EMPTY)
+	set_cellv(cell_start, Pawn.CELL_TYPES.OPEN)
 	return get_world_position(cell_target)
 	
 func get_world_position(cell_target):
 	return map_to_world(cell_target) + cell_size / 2
-	
-func _on_GamePiece_dropped(actor, new_location) -> void:
-	var potential_location = request_move(actor, new_location)
-	if potential_location:
-		actor.move(potential_location)
-	else:
-		print("Can't go there!")
-
-func _on_GamePiece_dragged(actor, new_location) -> void:
-	var potential_location = request_move(actor, new_location)
-	if potential_location:
-		actor.potential_move(potential_location)
-	else:
-		print("Can't go there!")

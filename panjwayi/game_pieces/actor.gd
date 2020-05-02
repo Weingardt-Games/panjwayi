@@ -29,6 +29,7 @@ export(String) var Special
 export(ACTOR_TYPES) var flip_side = ACTOR_TYPES.NONE
 
 var is_dragging = false
+var is_enabled = true setget _set_is_enabled
 
 signal game_piece_dropped(actor, new_location)
 signal game_piece_dragged(actor, new_location)
@@ -47,17 +48,19 @@ func _ready() -> void:
 	
 	
 func _input(event):
-	if not is_dragging:
-		return
-	
-	if event.is_action_released("ui_select_piece"):
-		var new_location = get_global_mouse_position()
-		emit_signal("game_piece_dropped", self, new_location)
-
+	if is_dragging:
+		if event.is_action_released("ui_select_piece"):
+			var new_location = get_global_mouse_position()
+			emit_signal("game_piece_dropped", self, new_location)
+			
+		if event is InputEventMouseMotion:
+			print("dragging")
+			var new_location = get_global_mouse_position()
+			emit_signal("game_piece_dragged", self, new_location)
+			
+		if event.is_action_pressed("ui_cancel"):
+			cancel_move()
 		
-	if is_dragging and event is InputEventMouseMotion:
-		var new_location = get_global_mouse_position()
-		emit_signal("game_piece_dragged", self, new_location)
 		
 
 ##### GETTERS AND SETTERS ########
@@ -67,16 +70,20 @@ func _input(event):
 ############ SIGNALS ######################
 
 func _on_Area2D_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
-	if event.is_action_pressed("ui_select_piece"):
-		print("selecting piece")
-		get_tree().set_input_as_handled()
-		set_selected()
+	if is_enabled:
+		if event.is_action_pressed("ui_select_piece"):
+			print("selecting piece", actor_name)
+			get_tree().set_input_as_handled()
+			set_selected()
 
 func move(new_location):
 	is_dragging = false
 	position = new_location
 	reset_line()
 	reset_ghost()	
+	
+func cancel_move():
+	move(self.position)
 	
 func potential_move(potential_location):
 	update_ghost(potential_location)
@@ -106,10 +113,16 @@ func reset_ghost():
 	$Highlight.visible = false
 	$Ghost.visible = false
 	$Ghost.position = Vector2.ZERO
+	
 
-
+func _set_is_enabled(value: bool):
+	""" This team's turn!"""
+	print("is_enabled ", value, actor_name)
+	is_enabled = value	
+	
 func _on_FlipButton_pressed() -> void:
 	# Flip to new actor type
-	print("flipping!")
-	emit_signal("game_piece_flip_pressed", self)
+	if is_enabled:
+		print("flipping!")
+		emit_signal("game_piece_flip_pressed", self)
 	
