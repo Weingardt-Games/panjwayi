@@ -1,0 +1,174 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://assets/gui/HeadingLabel.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/game/hud/TeamGUI.gd" type="Script" id=2]
+[ext_resource path="res://assets/gui/LargeLabel.tscn" type="PackedScene" id=3]
+[ext_resource path="res://assets/tokens/afghan.png" type="Texture" id=4]
+[ext_resource path="res://assets/tokens/tal.png" type="Texture" id=5]
+[ext_resource path="res://assets/gui/PNG/Pause menu/BG.png" type="Texture" id=6]
+[ext_resource path="res://assets/gui/MediumLabel.tscn" type="PackedScene" id=7]
+
+[node name="TeamGUI" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -1422.0
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+team_name = "Team"
+flag = ExtResource( 5 )
+starting_villages = 5
+
+[node name="Control" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color( 0, 0, 0, 0.501961 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Control" type="Control" parent="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 16.0
+margin_top = 16.0
+margin_right = -16.0
+margin_bottom = -16.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Control/Control/VBoxContainer"]
+margin_right = 366.0
+margin_bottom = 75.0
+
+[node name="Flag2" type="TextureRect" parent="Control/Control/VBoxContainer/HBoxContainer2"]
+margin_right = 64.0
+margin_bottom = 75.0
+texture = ExtResource( 4 )
+
+[node name="TeamHeading" parent="Control/Control/VBoxContainer/HBoxContainer2" instance=ExtResource( 1 )]
+margin_left = 68.0
+margin_right = 298.0
+margin_bottom = 75.0
+text = "Team"
+
+[node name="Flag" type="TextureRect" parent="Control/Control/VBoxContainer/HBoxContainer2"]
+margin_left = 302.0
+margin_right = 366.0
+margin_bottom = 75.0
+texture = ExtResource( 4 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/Control/VBoxContainer"]
+margin_top = 79.0
+margin_right = 366.0
+margin_bottom = 117.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LargeLabel" parent="Control/Control/VBoxContainer/HBoxContainer" instance=ExtResource( 3 )]
+margin_right = 233.0
+margin_bottom = 38.0
+text = "Villages Controlled: "
+
+[node name="Villages" parent="Control/Control/VBoxContainer/HBoxContainer" instance=ExtResource( 3 )]
+margin_left = 237.0
+margin_right = 315.0
+margin_bottom = 38.0
+size_flags_horizontal = 3
+text = "8"
+align = 2
+
+[node name="LargeLabel2" parent="Control/Control/VBoxContainer/HBoxContainer" instance=ExtResource( 3 )]
+margin_left = 319.0
+margin_right = 366.0
+margin_bottom = 38.0
+text = " / 10"
+
+[node name="NinePatchRect" type="NinePatchRect" parent="Control/Control/VBoxContainer"]
+margin_top = 121.0
+margin_right = 366.0
+margin_bottom = 554.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 6 )
+patch_margin_left = 8
+patch_margin_top = 30
+patch_margin_right = 8
+patch_margin_bottom = 8
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/Control/VBoxContainer/NinePatchRect"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MediumLabel" parent="Control/Control/VBoxContainer/NinePatchRect/VBoxContainer" instance=ExtResource( 7 )]
+margin_right = 366.0
+margin_bottom = 36.0
+text = "Reinforcements"
+align = 1
+
+[node name="GridContainer" type="GridContainer" parent="Control/Control/VBoxContainer/NinePatchRect/VBoxContainer"]
+margin_top = 40.0
+margin_right = 366.0
+margin_bottom = 433.0
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="NinePatchRect2" type="NinePatchRect" parent="Control/Control/VBoxContainer"]
+margin_top = 558.0
+margin_right = 366.0
+margin_bottom = 992.0
+size_flags_vertical = 3
+texture = ExtResource( 6 )
+patch_margin_left = 8
+patch_margin_top = 30
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Control/Control/VBoxContainer/NinePatchRect2"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MediumLabel" parent="Control/Control/VBoxContainer/NinePatchRect2/VBoxContainer2" instance=ExtResource( 7 )]
+margin_right = 366.0
+margin_bottom = 36.0
+text = "Destroyed"
+align = 1
+
+[node name="GridContainer" type="GridContainer" parent="Control/Control/VBoxContainer/NinePatchRect2/VBoxContainer2"]
+margin_top = 40.0
+margin_right = 366.0
+margin_bottom = 434.0
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}

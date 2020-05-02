@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://assets/fonts/CarterOne18.tres" type="DynamicFont" id=1]
+
+[node name="MediumLabel" type="Label"]
+margin_right = 37.0
+margin_bottom = 28.0
+custom_fonts/font = ExtResource( 1 )
+custom_colors/font_color = Color( 0.701961, 0.6, 0.32549, 1 )
+text = "Med"
+__meta__ = {
+"_edit_use_anchors_": false
+}

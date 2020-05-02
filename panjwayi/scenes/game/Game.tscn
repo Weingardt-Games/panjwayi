@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://game_pieces/goa_pieces/AIR.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/game/DisabledZone.gd" type="Script" id=2]
@@ -6,8 +6,11 @@
 [ext_resource path="res://scenes/game/grid/Grid.tscn" type="PackedScene" id=4]
 [ext_resource path="res://scenes/game/PhaseController.gd" type="Script" id=5]
 [ext_resource path="res://scenes/game/hud/PhaseLabel.gd" type="Script" id=6]
+[ext_resource path="res://scenes/game/hud/TeamGUI.tscn" type="PackedScene" id=7]
+[ext_resource path="res://assets/tokens/afghan.png" type="Texture" id=8]
 [ext_resource path="res://game_pieces/goa_pieces/LAV.tscn" type="PackedScene" id=9]
 [ext_resource path="res://scenes/game/Game.gd" type="Script" id=10]
+[ext_resource path="res://assets/tokens/taliban-flag.png" type="Texture" id=11]
 [ext_resource path="res://game_pieces/taliban_pieces/INS.tscn" type="PackedScene" id=21]
 [ext_resource path="res://assets/gui/PNG/Bonus/Bonus 03.png" type="Texture" id=24]
 [ext_resource path="res://scenes/game/Camera2D.gd" type="Script" id=26]
@@ -26,6 +29,7 @@ __meta__ = {
 }
 
 [node name="DisabledZone" type="ColorRect" parent="."]
+visible = false
 margin_right = 1024.0
 margin_bottom = 768.0
 mouse_filter = 2
@@ -116,6 +120,23 @@ __meta__ = {
 
 [node name="UI" type="CanvasLayer" parent="."]
 
+[node name="GoaGUI" parent="UI" instance=ExtResource( 7 )]
+team_name = "GOA"
+flag = ExtResource( 8 )
+starting_villages = 8
+
+[node name="TalibanGUI" parent="UI" instance=ExtResource( 7 )]
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_bottom = 0.5
+margin_left = -398.0
+margin_top = -512.0
+margin_right = 0.0
+margin_bottom = 512.0
+team_name = "Taliban"
+flag = ExtResource( 11 )
+starting_villages = 2
+
 [node name="PlacementUI" type="NinePatchRect" parent="UI"]
 self_modulate = Color( 1, 1, 1, 0.831373 )
 anchor_top = 1.0
@@ -173,5 +194,5 @@ __meta__ = {
 }
 [connection signal="pressed" from="HUD/VBoxContainer/HBoxContainer/PhaseCompleteButton" to="PhaseController" method="_on_PhaseCompleteButton_pressed"]
 [connection signal="phase_changed" from="PhaseController" to="." method="_on_PhaseController_phase_changed"]
-[connection signal="phase_changed" from="PhaseController" to="DisabledZone" method="_on_PhaseController_phase_changed"]
 [connection signal="phase_changed" from="PhaseController" to="HUD/VBoxContainer/HBoxContainer/PhaseLabel" method="_on_PhaseController_phase_changed"]
+[connection signal="phase_changed" from="PhaseController" to="DisabledZone" method="_on_PhaseController_phase_changed"]
