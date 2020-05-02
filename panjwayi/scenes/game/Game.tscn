@@ -26,7 +26,6 @@ __meta__ = {
 }
 
 [node name="DisabledZone" type="ColorRect" parent="."]
-visible = false
 margin_right = 1024.0
 margin_bottom = 768.0
 mouse_filter = 2

@@ -3,6 +3,7 @@ extends TileMap
 enum { EMPTY = -1, ACTOR, OBSTACLE, OBJECT}
 
 const BOARD_SIZE = Vector2(16, 16)
+const BOARD_OFFSET = Vector2(398, 0)
 
 func _ready():
 	# Fill the TileMap Grid with PLACEMENT_CELL_TYPES
