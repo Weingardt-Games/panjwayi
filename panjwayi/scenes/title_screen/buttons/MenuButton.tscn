@@ -1,13 +1,15 @@
 [gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://scenes/title_screen/buttons/MenuButtons.gd" type="Script" id=1]
-[ext_resource path="res://assets/fonts/CarterOne24.tres" type="DynamicFont" id=2]
+[ext_resource path="res://assets/fonts/CarterOne48.tres" type="DynamicFont" id=2]
 [ext_resource path="res://scenes/title_screen/buttons/BasicButtonStyle.tres" type="StyleBox" id=3]
 [ext_resource path="res://scenes/title_screen/buttons/BasicButtonStyle-Hover.tres" type="StyleBox" id=4]
 [ext_resource path="res://scenes/title_screen/buttons/BasicButtonStyle-Focus.tres" type="StyleBox" id=5]
 
 [node name="MenuButton" type="Button"]
-rect_min_size = Vector2( 360, 60 )
+margin_right = 480.0
+margin_bottom = 80.0
+rect_min_size = Vector2( 480, 0 )
 mouse_default_cursor_shape = 2
 size_flags_horizontal = 3
 custom_styles/hover = ExtResource( 4 )

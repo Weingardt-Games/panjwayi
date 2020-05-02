@@ -1,11 +1,11 @@
 extends Control
 
 var scene_change_to
-onready var default_button = $Menu/CenterRow/Buttons/CreateGameButton
+onready var default_button = find_node("CreateGameButton")
 
 func _ready() -> void:
 	default_button.grab_focus()
-	for button in $Menu/CenterRow/Buttons.get_children():
+	for button in find_node("Buttons").get_children():
 		button.connect("pressed", self, "_on_Button_pressed", [button.scene_to_load, button.uri_to_open])
 
 func _on_Button_pressed(scene_to_load: PackedScene, uri_to_open: String):

@@ -4,8 +4,8 @@
 
 [node name="LargeLabel" type="Label"]
 modulate = Color( 0.94902, 0.847059, 0.741176, 1 )
-margin_right = 40.0
-margin_bottom = 14.0
+margin_right = 27.0
+margin_bottom = 38.0
 custom_fonts/font = ExtResource( 1 )
 text = "Lg"
 __meta__ = {

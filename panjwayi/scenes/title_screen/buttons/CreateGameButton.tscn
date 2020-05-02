@@ -4,4 +4,3 @@
 
 [node name="CreateGameButton" instance=ExtResource( 1 )]
 text = "Create Game"
-scene_to_load = "res://scenes/GameBoard.tscn"

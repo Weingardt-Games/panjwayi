@@ -86,13 +86,11 @@ __meta__ = {
 
 [node name="LargeLabel" parent="Control/Control/VBoxContainer/HBoxContainer" instance=ExtResource( 3 )]
 margin_right = 233.0
-margin_bottom = 38.0
 text = "Villages Controlled: "
 
 [node name="Villages" parent="Control/Control/VBoxContainer/HBoxContainer" instance=ExtResource( 3 )]
 margin_left = 237.0
 margin_right = 315.0
-margin_bottom = 38.0
 size_flags_horizontal = 3
 text = "8"
 align = 2
@@ -100,7 +98,6 @@ align = 2
 [node name="LargeLabel2" parent="Control/Control/VBoxContainer/HBoxContainer" instance=ExtResource( 3 )]
 margin_left = 319.0
 margin_right = 366.0
-margin_bottom = 38.0
 text = " / 10"
 
 [node name="NinePatchRect" type="NinePatchRect" parent="Control/Control/VBoxContainer"]
@@ -127,12 +124,12 @@ __meta__ = {
 
 [node name="MediumLabel" parent="Control/Control/VBoxContainer/NinePatchRect/VBoxContainer" instance=ExtResource( 7 )]
 margin_right = 366.0
-margin_bottom = 36.0
+margin_bottom = 33.0
 text = "Reinforcements"
 align = 1
 
 [node name="GridContainer" type="GridContainer" parent="Control/Control/VBoxContainer/NinePatchRect/VBoxContainer"]
-margin_top = 40.0
+margin_top = 37.0
 margin_right = 366.0
 margin_bottom = 433.0
 size_flags_vertical = 3
@@ -160,12 +157,12 @@ __meta__ = {
 
 [node name="MediumLabel" parent="Control/Control/VBoxContainer/NinePatchRect2/VBoxContainer2" instance=ExtResource( 7 )]
 margin_right = 366.0
-margin_bottom = 36.0
+margin_bottom = 33.0
 text = "Destroyed"
 align = 1
 
 [node name="GridContainer" type="GridContainer" parent="Control/Control/VBoxContainer/NinePatchRect2/VBoxContainer2"]
-margin_top = 40.0
+margin_top = 37.0
 margin_right = 366.0
 margin_bottom = 434.0
 size_flags_vertical = 3
