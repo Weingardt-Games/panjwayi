@@ -124,6 +124,7 @@ __meta__ = {
 team_name = "GOA"
 flag = ExtResource( 8 )
 starting_villages = 8
+team_color = Color( 0.992157, 0.396078, 0.396078, 1 )
 
 [node name="TalibanGUI" parent="UI" instance=ExtResource( 7 )]
 anchor_left = 1.0
@@ -193,6 +194,6 @@ __meta__ = {
 "_edit_group_": true
 }
 [connection signal="pressed" from="HUD/VBoxContainer/HBoxContainer/PhaseCompleteButton" to="PhaseController" method="_on_PhaseCompleteButton_pressed"]
-[connection signal="phase_changed" from="PhaseController" to="." method="_on_PhaseController_phase_changed"]
 [connection signal="phase_changed" from="PhaseController" to="HUD/VBoxContainer/HBoxContainer/PhaseLabel" method="_on_PhaseController_phase_changed"]
 [connection signal="phase_changed" from="PhaseController" to="DisabledZone" method="_on_PhaseController_phase_changed"]
+[connection signal="phase_changed" from="PhaseController" to="." method="_on_PhaseController_phase_changed"]

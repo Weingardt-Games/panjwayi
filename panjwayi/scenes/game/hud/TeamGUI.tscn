@@ -5,7 +5,7 @@
 [ext_resource path="res://assets/gui/LargeLabel.tscn" type="PackedScene" id=3]
 [ext_resource path="res://assets/tokens/afghan.png" type="Texture" id=4]
 [ext_resource path="res://assets/tokens/tal.png" type="Texture" id=5]
-[ext_resource path="res://assets/gui/PNG/Pause menu/BG.png" type="Texture" id=6]
+[ext_resource path="res://assets/gui/used/panel.png" type="Texture" id=6]
 [ext_resource path="res://assets/gui/MediumLabel.tscn" type="PackedScene" id=7]
 
 [node name="TeamGUI" type="Control"]
@@ -63,6 +63,7 @@ margin_bottom = 75.0
 margin_right = 64.0
 margin_bottom = 75.0
 texture = ExtResource( 4 )
+stretch_mode = 4
 
 [node name="TeamHeading" parent="Control/Control/VBoxContainer/HBoxContainer2" instance=ExtResource( 1 )]
 margin_left = 68.0
@@ -75,8 +76,9 @@ margin_left = 302.0
 margin_right = 366.0
 margin_bottom = 75.0
 texture = ExtResource( 4 )
+stretch_mode = 4
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/Control/VBoxContainer"]
+[node name="WinConditionContainer" type="HBoxContainer" parent="Control/Control/VBoxContainer"]
 margin_top = 79.0
 margin_right = 366.0
 margin_bottom = 117.0
@@ -84,87 +86,92 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="LargeLabel" parent="Control/Control/VBoxContainer/HBoxContainer" instance=ExtResource( 3 )]
+[node name="LargeLabel" parent="Control/Control/VBoxContainer/WinConditionContainer" instance=ExtResource( 3 )]
 margin_right = 233.0
 text = "Villages Controlled: "
 
-[node name="Villages" parent="Control/Control/VBoxContainer/HBoxContainer" instance=ExtResource( 3 )]
+[node name="Villages" parent="Control/Control/VBoxContainer/WinConditionContainer" instance=ExtResource( 3 )]
 margin_left = 237.0
 margin_right = 315.0
 size_flags_horizontal = 3
 text = "8"
 align = 2
 
-[node name="LargeLabel2" parent="Control/Control/VBoxContainer/HBoxContainer" instance=ExtResource( 3 )]
+[node name="LargeLabel2" parent="Control/Control/VBoxContainer/WinConditionContainer" instance=ExtResource( 3 )]
 margin_left = 319.0
 margin_right = 366.0
 text = " / 10"
 
-[node name="NinePatchRect" type="NinePatchRect" parent="Control/Control/VBoxContainer"]
+[node name="ReinforcementsRect" type="NinePatchRect" parent="Control/Control/VBoxContainer"]
 margin_top = 121.0
 margin_right = 366.0
-margin_bottom = 554.0
+margin_bottom = 544.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource( 6 )
-patch_margin_left = 8
-patch_margin_top = 30
-patch_margin_right = 8
-patch_margin_bottom = 8
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/Control/VBoxContainer/NinePatchRect"]
+[node name="ReinforcementsContainer" type="VBoxContainer" parent="Control/Control/VBoxContainer/ReinforcementsRect"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="MediumLabel" parent="Control/Control/VBoxContainer/NinePatchRect/VBoxContainer" instance=ExtResource( 7 )]
+[node name="ReinforcementsLabel" parent="Control/Control/VBoxContainer/ReinforcementsRect/ReinforcementsContainer" instance=ExtResource( 7 )]
 margin_right = 366.0
-margin_bottom = 33.0
+margin_bottom = 80.0
+rect_min_size = Vector2( 0, 80 )
 text = "Reinforcements"
 align = 1
+valign = 1
 
-[node name="GridContainer" type="GridContainer" parent="Control/Control/VBoxContainer/NinePatchRect/VBoxContainer"]
-margin_top = 37.0
+[node name="ReinforcementsBox" type="GridContainer" parent="Control/Control/VBoxContainer/ReinforcementsRect/ReinforcementsContainer"]
+margin_top = 84.0
 margin_right = 366.0
-margin_bottom = 433.0
+margin_bottom = 423.0
 size_flags_vertical = 3
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="NinePatchRect2" type="NinePatchRect" parent="Control/Control/VBoxContainer"]
-margin_top = 558.0
+[node name="MarginContainer" type="MarginContainer" parent="Control/Control/VBoxContainer"]
+margin_top = 548.0
+margin_right = 366.0
+margin_bottom = 564.0
+rect_min_size = Vector2( 20, 16 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="DestroyedRect" type="NinePatchRect" parent="Control/Control/VBoxContainer"]
+margin_top = 568.0
 margin_right = 366.0
 margin_bottom = 992.0
 size_flags_vertical = 3
 texture = ExtResource( 6 )
-patch_margin_left = 8
-patch_margin_top = 30
-patch_margin_right = 8
-patch_margin_bottom = 8
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="Control/Control/VBoxContainer/NinePatchRect2"]
+[node name="DestroyedContainer" type="VBoxContainer" parent="Control/Control/VBoxContainer/DestroyedRect"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="MediumLabel" parent="Control/Control/VBoxContainer/NinePatchRect2/VBoxContainer2" instance=ExtResource( 7 )]
+[node name="DestroyedLabel" parent="Control/Control/VBoxContainer/DestroyedRect/DestroyedContainer" instance=ExtResource( 7 )]
 margin_right = 366.0
-margin_bottom = 33.0
+margin_bottom = 80.0
+rect_min_size = Vector2( 0, 80 )
 text = "Destroyed"
 align = 1
+valign = 1
 
-[node name="GridContainer" type="GridContainer" parent="Control/Control/VBoxContainer/NinePatchRect2/VBoxContainer2"]
-margin_top = 37.0
+[node name="DestroyedBox" type="GridContainer" parent="Control/Control/VBoxContainer/DestroyedRect/DestroyedContainer"]
+margin_top = 84.0
 margin_right = 366.0
-margin_bottom = 434.0
+margin_bottom = 424.0
 size_flags_vertical = 3
 __meta__ = {
 "_edit_use_anchors_": false
