@@ -20,7 +20,7 @@ jobs:
     # https://github.com/firebelley/godot-export
     - name: Export Game 🔧
       # Use latest version (see releases for all versions)
-      uses: firebelley/godot-export@v1.5.0
+      uses: firebelley/godot-export@v2.0.0
       with:
         # Defining all the required inputs
         # I used the mono version of Godot in this example
@@ -29,7 +29,8 @@ jobs:
         relative_project_path: ./panjwayi/
         generate_release_notes: false
         create_release: false
-        zip_export: false
+        archive_export_output: false
+        relative_export_path: 'docs'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -37,7 +38,7 @@ jobs:
     - name: Commit Export 💾
       uses: stefanzweifel/git-auto-commit-action@v4.1.6
       with:
-        commit_message: Automated HTML5 export [bot]
+        commit_message: Automated HTML5 export to docs [bot]
 
         # Optional name of the branch the commit should be pushed to
         # Required if Action is used in Workflow listening to the `pull_request` event
@@ -60,17 +61,18 @@ jobs:
         # Optional tag message. Will create and push a new tag to the remote repository
         # tagging_message: 'v1.0.0'
 
-    # - name: Checkout Export 🛎️
-    #   uses: actions/checkout@v2.1.0
-    #   with:
-    #     ref: export # the branch to checkout
+    # Don't need the gh-pages anymore since we can export and commit directly to /docs
+    # # - name: Checkout Export 🛎️
+    # #   uses: actions/checkout@v2.1.0
+    # #   with:
+    # #     ref: export # the branch to checkout
     
-    # https://github.com/JamesIves/github-pages-deploy-action
-    - name: Deploy 🚀
-      uses: JamesIves/github-pages-deploy-action@releases/v3
-      with:
-        # REPOSITORY_NAME:
-        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        BRANCH: gh-pages # The branch the action should deploy to.
-        FOLDER: panjwayi/exports/0 # The folder the action should deploy.
+    # # https://github.com/JamesIves/github-pages-deploy-action
+    # - name: Deploy 🚀
+    #   uses: JamesIves/github-pages-deploy-action@releases/v3
+    #   with:
+    #     # REPOSITORY_NAME:
+    #     ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #     BRANCH: gh-pages # The branch the action should deploy to.
+    #     FOLDER: panjwayi/exports/0 # The folder the action should deploy.
