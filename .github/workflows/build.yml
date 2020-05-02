@@ -60,19 +60,3 @@ jobs:
 
         # Optional tag message. Will create and push a new tag to the remote repository
         # tagging_message: 'v1.0.0'
-
-    # Don't need the gh-pages anymore since we can export and commit directly to /docs
-    # # - name: Checkout Export 🛎️
-    # #   uses: actions/checkout@v2.1.0
-    # #   with:
-    # #     ref: export # the branch to checkout
-    
-    # # https://github.com/JamesIves/github-pages-deploy-action
-    # - name: Deploy 🚀
-    #   uses: JamesIves/github-pages-deploy-action@releases/v3
-    #   with:
-    #     # REPOSITORY_NAME:
-    #     ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #     BRANCH: gh-pages # The branch the action should deploy to.
-    #     FOLDER: panjwayi/exports/0 # The folder the action should deploy.
