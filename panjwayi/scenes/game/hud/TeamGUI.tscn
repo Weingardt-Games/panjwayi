@@ -1,12 +1,11 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://assets/gui/HeadingLabel.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/game/hud/TeamGUI.gd" type="Script" id=2]
 [ext_resource path="res://assets/gui/LargeLabel.tscn" type="PackedScene" id=3]
 [ext_resource path="res://assets/tokens/afghan.png" type="Texture" id=4]
 [ext_resource path="res://assets/tokens/tal.png" type="Texture" id=5]
-[ext_resource path="res://assets/gui/used/panel.png" type="Texture" id=6]
-[ext_resource path="res://assets/gui/MediumLabel.tscn" type="PackedScene" id=7]
+[ext_resource path="res://scenes/game/hud/UIPanel.tscn" type="PackedScene" id=8]
 
 [node name="TeamGUI" type="Control"]
 anchor_right = 1.0
@@ -51,6 +50,7 @@ __meta__ = {
 [node name="VBoxContainer" type="VBoxContainer" parent="Control/Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+custom_constants/separation = 16
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -79,9 +79,9 @@ texture = ExtResource( 4 )
 stretch_mode = 4
 
 [node name="WinConditionContainer" type="HBoxContainer" parent="Control/Control/VBoxContainer"]
-margin_top = 79.0
+margin_top = 91.0
 margin_right = 366.0
-margin_bottom = 117.0
+margin_bottom = 129.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -102,77 +102,16 @@ margin_left = 319.0
 margin_right = 366.0
 text = " / 10"
 
-[node name="ReinforcementsRect" type="NinePatchRect" parent="Control/Control/VBoxContainer"]
-margin_top = 121.0
-margin_right = 366.0
-margin_bottom = 544.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-texture = ExtResource( 6 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="ReinforcementsPanel" parent="Control/Control/VBoxContainer" instance=ExtResource( 8 )]
+margin_top = 145.0
+margin_bottom = 560.0
+panel_heading = "Reinforcements"
 
-[node name="ReinforcementsContainer" type="VBoxContainer" parent="Control/Control/VBoxContainer/ReinforcementsRect"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="ReinforcementsLabel" parent="Control/Control/VBoxContainer/ReinforcementsRect/ReinforcementsContainer" instance=ExtResource( 7 )]
-margin_right = 366.0
-margin_bottom = 80.0
-rect_min_size = Vector2( 0, 80 )
-text = "Reinforcements"
-align = 1
-valign = 1
-
-[node name="ReinforcementsBox" type="GridContainer" parent="Control/Control/VBoxContainer/ReinforcementsRect/ReinforcementsContainer"]
-margin_top = 84.0
-margin_right = 366.0
-margin_bottom = 423.0
-size_flags_vertical = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="MarginContainer" type="MarginContainer" parent="Control/Control/VBoxContainer"]
-margin_top = 548.0
-margin_right = 366.0
-margin_bottom = 564.0
-rect_min_size = Vector2( 20, 16 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="DestroyedRect" type="NinePatchRect" parent="Control/Control/VBoxContainer"]
-margin_top = 568.0
-margin_right = 366.0
+[node name="DestroyedPanel" parent="Control/Control/VBoxContainer" instance=ExtResource( 8 )]
+margin_top = 576.0
 margin_bottom = 992.0
-size_flags_vertical = 3
-texture = ExtResource( 6 )
+panel_heading = "Destroyed"
 
-[node name="DestroyedContainer" type="VBoxContainer" parent="Control/Control/VBoxContainer/DestroyedRect"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[editable path="Control/Control/VBoxContainer/ReinforcementsPanel"]
 
-[node name="DestroyedLabel" parent="Control/Control/VBoxContainer/DestroyedRect/DestroyedContainer" instance=ExtResource( 7 )]
-margin_right = 366.0
-margin_bottom = 80.0
-rect_min_size = Vector2( 0, 80 )
-text = "Destroyed"
-align = 1
-valign = 1
-
-[node name="DestroyedBox" type="GridContainer" parent="Control/Control/VBoxContainer/DestroyedRect/DestroyedContainer"]
-margin_top = 84.0
-margin_right = 366.0
-margin_bottom = 424.0
-size_flags_vertical = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[editable path="Control/Control/VBoxContainer/DestroyedPanel"]

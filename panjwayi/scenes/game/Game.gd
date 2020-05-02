@@ -4,6 +4,7 @@ var placement_mode = false
 
 onready var Grid = $Grid
 onready var PlacementTool = $PlacementTool
+onready var PlacementUI = find_node("PlacementUI")
 
 # Placement Mode Variables
 var valid_color = Color.greenyellow
@@ -63,6 +64,8 @@ func _on_PhaseController_phase_changed(phase) -> void:
 		PhaseController.PHASES.GOA_SETUP:
 			#pieces start with all the GoA scenes as an export	
 			_ready_placement(pieces)
+			PlacementUI.visible = true
+			PlacementUI.rect_position = $PositionMarkers/PlacementUIGoA.rect_position
 		
 		PhaseController.PHASES.TALIBAN_SETUP:
 			# fill out the taliban pieces:
@@ -71,6 +74,9 @@ func _on_PhaseController_phase_changed(phase) -> void:
 				pieces.append(taliban_piece)
 	
 			_ready_placement(pieces)
+			PlacementUI.visible = true
+			PlacementUI.rect_position = $PositionMarkers/PlacementUITaliban.rect_position
+		
 					
 		PhaseController.PHASES.TALIBAN_TURN:
 			print("ready turn taliban")
@@ -83,6 +89,7 @@ func _on_PhaseController_phase_changed(phase) -> void:
 			pass
 
 ######### PLACEMENT / SETUP ####################
+
 
 func _process_placement():
 	if placement_mode:
@@ -142,6 +149,7 @@ func place_piece():
 func placement_complete():
 	# remove placement container?  or reuse for Reinforcemnts box?
 	$DisabledZone.visible = false
+	PlacementUI.visible = false
 	pass
 	
 func cancel_placement(replace=false):
@@ -181,7 +189,7 @@ func _on_Select_Piece_button_mouse_exited() -> void:
 
 ################ SETUP ###################
 
-onready var PlacementButtonContainer = $UI/PlacementUI/HBoxContainer
+onready var PlacementButtonContainer = find_node("PlacementUI").find_node("Container")
 onready var PlacementButton = preload("res://scenes/game/hud/PlacementButton.tscn")
 
 func _ready_placement(pieces):

@@ -11,8 +11,8 @@
 [ext_resource path="res://game_pieces/goa_pieces/LAV.tscn" type="PackedScene" id=9]
 [ext_resource path="res://scenes/game/Game.gd" type="Script" id=10]
 [ext_resource path="res://assets/tokens/taliban-flag.png" type="Texture" id=11]
+[ext_resource path="res://scenes/game/hud/UIPanel.tscn" type="PackedScene" id=13]
 [ext_resource path="res://game_pieces/taliban_pieces/INS.tscn" type="PackedScene" id=21]
-[ext_resource path="res://assets/gui/PNG/Bonus/Bonus 03.png" type="Texture" id=24]
 [ext_resource path="res://scenes/game/Camera2D.gd" type="Script" id=26]
 
 [node name="Game" type="Node2D"]
@@ -124,7 +124,7 @@ __meta__ = {
 team_name = "GOA"
 flag = ExtResource( 8 )
 starting_villages = 8
-team_color = Color( 0.992157, 0.396078, 0.396078, 1 )
+team_color = Color( 0.976471, 0.709804, 0.709804, 1 )
 
 [node name="TalibanGUI" parent="UI" instance=ExtResource( 7 )]
 anchor_left = 1.0
@@ -138,30 +138,12 @@ team_name = "Taliban"
 flag = ExtResource( 11 )
 starting_villages = 2
 
-[node name="PlacementUI" type="NinePatchRect" parent="UI"]
-self_modulate = Color( 1, 1, 1, 0.831373 )
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_top = -80.0
-rect_min_size = Vector2( 0, 80 )
-texture = ExtResource( 24 )
-patch_margin_left = 4
-patch_margin_top = 4
-patch_margin_right = 4
-patch_margin_bottom = 10
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/PlacementUI"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-custom_constants/separation = 15
-alignment = 1
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="PlacementUI" parent="UI" instance=ExtResource( 13 )]
+margin_left = 26.0
+margin_top = 307.0
+margin_right = 392.0
+margin_bottom = 730.0
+panel_heading = "Starting Pieces"
 
 [node name="PlacementTool" type="Node2D" parent="."]
 visible = false
@@ -192,6 +174,33 @@ current = true
 script = ExtResource( 26 )
 __meta__ = {
 "_edit_group_": true
+}
+
+[node name="PositionMarkers" type="Control" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PlacementUIGoA" type="Control" parent="PositionMarkers"]
+margin_left = 27.0
+margin_top = 309.0
+margin_right = 67.0
+margin_bottom = 349.0
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="PlacementUITaliban" type="Control" parent="PositionMarkers"]
+margin_left = 1424.0
+margin_top = 309.0
+margin_right = 1464.0
+margin_bottom = 349.0
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
 }
 [connection signal="pressed" from="HUD/VBoxContainer/HBoxContainer/PhaseCompleteButton" to="PhaseController" method="_on_PhaseCompleteButton_pressed"]
 [connection signal="phase_changed" from="PhaseController" to="HUD/VBoxContainer/HBoxContainer/PhaseLabel" method="_on_PhaseController_phase_changed"]
