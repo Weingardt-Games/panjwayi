@@ -15,6 +15,7 @@ enum ACTOR_TYPES {
 	POP,
 	INS,
 	IED,
+	ALL,
 }
 
 enum MOVEMENT_TYPES {
@@ -33,6 +34,7 @@ export(String) var actor_name
 export(String) var moves
 export(MOVEMENT_TYPES) var movement_type = MOVEMENT_TYPES.KING
 export(String) var attacks
+export(Array, ACTOR_TYPES) var attackable_units = [ACTOR_TYPES.NONE]
 export(bool) var captures_villages
 export(String) var Special
 export(ACTOR_TYPES) var flip_side = ACTOR_TYPES.NONE
@@ -178,7 +180,7 @@ func get_movement_array() -> Array:
 				for x in range(width):
 					if Vector2(x, y) == center:
 						move_array[y].append(0)
-					elif x == center.x or y == center.y or abs(x) == abs(y):
+					elif x == center.x or y == center.y or abs(x - center.x) == abs(y - center.y):
 						move_array[y].append(1)
 					else:
 						move_array[y].append(0)	
