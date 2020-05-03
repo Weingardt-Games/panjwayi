@@ -3,7 +3,7 @@
 [ext_resource path="res://assets/effects/highlight-full.png" type="Texture" id=1]
 
 [node name="Indicator" type="Sprite" groups=[
-"map_indicator",
+"map_indicators",
 ]]
 position = Vector2( 32, 32 )
 texture = ExtResource( 1 )

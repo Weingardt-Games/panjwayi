@@ -1,6 +1,5 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=13 format=2]
 
-[ext_resource path="res://game_pieces/goa_pieces/AIR.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/game/DisabledZone.gd" type="Script" id=2]
 [ext_resource path="res://assets/board1024-v2.png" type="Texture" id=3]
 [ext_resource path="res://scenes/game/grid/Grid.tscn" type="PackedScene" id=4]
@@ -8,7 +7,6 @@
 [ext_resource path="res://scenes/game/hud/PhaseLabel.gd" type="Script" id=6]
 [ext_resource path="res://scenes/game/hud/TeamGUI.tscn" type="PackedScene" id=7]
 [ext_resource path="res://assets/tokens/afghan.png" type="Texture" id=8]
-[ext_resource path="res://game_pieces/goa_pieces/LAV.tscn" type="PackedScene" id=9]
 [ext_resource path="res://scenes/game/Game.gd" type="Script" id=10]
 [ext_resource path="res://assets/tokens/taliban-flag.png" type="Texture" id=11]
 [ext_resource path="res://scenes/game/hud/UIPanel.tscn" type="PackedScene" id=13]
@@ -17,8 +15,6 @@
 
 [node name="Game" type="Node2D"]
 script = ExtResource( 10 )
-pieces = [ ExtResource( 1 ), ExtResource( 9 ) ]
-number_of_taliban = 1
 taliban_piece = ExtResource( 21 )
 
 [node name="sprite" type="Sprite" parent="."]

@@ -28,8 +28,10 @@ enum MOVEMENT_TYPES {
 
 export(ACTOR_TYPES) var actor_type = ACTOR_TYPES.NONE
 
+# Might not need TEAM, can use groups instead
 enum TEAM{ NONE, GOA, TALIBAN }
 export(TEAM) var team = TEAM.NONE
+
 export(String) var actor_name
 export(String) var moves
 export(MOVEMENT_TYPES) var movement_type = MOVEMENT_TYPES.KING

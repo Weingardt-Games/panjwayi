@@ -27,7 +27,18 @@ var ACTOR_SCENES_DICT = {
 }
 
 # Piece Scenes
-export(Array, PackedScene) var pieces
+#export(Array, PackedScene) var pieces
+
+onready var pieces: Array = [
+	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.AIR],
+	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
+	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
+	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
+	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
+	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
+	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
+]
+	
 
 export(int, 1, 10) var number_of_taliban = 9
 export(PackedScene) var taliban_piece
