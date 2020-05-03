@@ -5,6 +5,8 @@ enum { EMPTY = -1, ACTOR, OBSTACLE, OBJECT}
 const BOARD_SIZE = Vector2(16, 16)
 const BOARD_OFFSET = Vector2(398, 0)
 
+onready var movement_highlight = load("res://scenes/game/grid/MovementHighlight.tscn")
+
 func _ready():
 	# Fill the TileMap Grid with PLACEMENT_CELL_TYPES
 	for x in BOARD_SIZE.x:
@@ -59,3 +61,25 @@ func update_pawn_position(pawn, cell_start, cell_target):
 	
 func get_world_position(cell_target):
 	return map_to_world(cell_target) + cell_size / 2
+	
+#### INDICATORS / HIGLIGHTS
+
+func highlight_movements(actor: Actor):
+	# clear previous highlights:
+	get_tree().call_group("map_movement_highlights", "queue_free")
+	var cell = world_to_map(actor.position)
+	var move_array = actor.get_movement_array()
+	var offset = Vector2(int(len(move_array)/2), int(len(move_array)/2))
+	var max_distance = len(move_array)
+	
+	for y in max_distance:
+		for x in max_distance:
+			if move_array[x][y] == 1:
+				var valid_move_cell = cell + Vector2(x, y) - offset
+				if get_cellv(valid_move_cell) == Pawn.CELL_TYPES.OPEN:
+					var highlight = movement_highlight.instance()
+					highlight.position = get_world_position(valid_move_cell)
+					add_child(highlight)
+
+func clear_highlights():
+	get_tree().call_group("map_movement_highlights", "queue_free")

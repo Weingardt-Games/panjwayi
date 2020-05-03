@@ -7,4 +7,5 @@
 sprite = ExtResource( 2 )
 actor_type = 2
 actor_name = "Light Armoured Vehicle"
+movement_type = 4
 flip_side = 5

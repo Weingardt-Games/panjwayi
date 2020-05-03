@@ -203,6 +203,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 [connection signal="pressed" from="HUD/VBoxContainer/HBoxContainer/PhaseCompleteButton" to="PhaseController" method="_on_PhaseCompleteButton_pressed"]
-[connection signal="phase_changed" from="PhaseController" to="HUD/VBoxContainer/HBoxContainer/PhaseLabel" method="_on_PhaseController_phase_changed"]
-[connection signal="phase_changed" from="PhaseController" to="DisabledZone" method="_on_PhaseController_phase_changed"]
 [connection signal="phase_changed" from="PhaseController" to="." method="_on_PhaseController_phase_changed"]
+[connection signal="phase_changed" from="PhaseController" to="DisabledZone" method="_on_PhaseController_phase_changed"]
+[connection signal="phase_changed" from="PhaseController" to="HUD/VBoxContainer/HBoxContainer/PhaseLabel" method="_on_PhaseController_phase_changed"]

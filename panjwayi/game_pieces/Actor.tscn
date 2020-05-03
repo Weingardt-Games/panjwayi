@@ -10,6 +10,7 @@
 extents = Vector2( 32, 32 )
 
 [node name="Actor" type="Node2D"]
+z_index = 1
 script = ExtResource( 1 )
 sprite = ExtResource( 4 )
 

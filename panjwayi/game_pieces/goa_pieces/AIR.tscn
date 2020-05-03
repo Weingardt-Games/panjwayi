@@ -7,3 +7,4 @@
 sprite = ExtResource( 2 )
 actor_type = 1
 actor_name = "Air Support"
+movement_type = 3

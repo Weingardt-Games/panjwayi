@@ -5,7 +5,7 @@ An Actor is any Pawn (gameboard piece) that can be placed on a gameboard tile
 extends Pawn
 class_name Actor
 
-enum ACTOR_TYPES{
+enum ACTOR_TYPES {
 	NONE,
 	AIR,
 	LAV,
@@ -17,12 +17,21 @@ enum ACTOR_TYPES{
 	IED,
 }
 
+enum MOVEMENT_TYPES {
+	STATIONARY,
+	KING,
+	KING_TWICE, 
+	QUEEN,
+	ROOK	
+}
+
 export(ACTOR_TYPES) var actor_type = ACTOR_TYPES.NONE
 
 enum TEAM{ NONE, GOA, TALIBAN }
 export(TEAM) var team = TEAM.NONE
 export(String) var actor_name
 export(String) var moves
+export(MOVEMENT_TYPES) var movement_type = MOVEMENT_TYPES.KING
 export(String) var attacks
 export(bool) var captures_villages
 export(String) var Special
@@ -126,3 +135,49 @@ func _on_FlipButton_pressed() -> void:
 		print("flipping!")
 		emit_signal("game_piece_flip_pressed", self)
 	
+
+############## MOVEMENT ###################
+
+func get_movement_array() -> Array:
+	var width = 31
+	var center = Vector2(15,15) 
+	var move_array: Array = []
+	match movement_type:
+		MOVEMENT_TYPES.STATIONARY:
+			pass
+		MOVEMENT_TYPES.KING:
+			move_array = [
+				[1, 1, 1],
+				[1, 0, 1],
+				[1, 1, 1]
+			]
+		MOVEMENT_TYPES.KING_TWICE:
+			move_array = [
+				[1, 1, 1, 1, 1],
+				[1, 1, 1, 1, 1],
+				[1, 1, 0, 1, 1],
+				[1, 1, 1, 1, 1],
+				[1, 1, 1, 1, 1]
+			]
+		MOVEMENT_TYPES.QUEEN:
+			for y in range(width):
+				move_array.append([])
+				for x in range(width):
+					if Vector2(x, y) == center:
+						move_array[y].append(0)
+					elif x == center.x or y == center.y or abs(x) == abs(y):
+						move_array[y].append(1)
+					else:
+						move_array[y].append(0)	
+		MOVEMENT_TYPES.ROOK:
+			# generate 31 x 31 array in a loop
+			for y in range(width):
+				move_array.append([])
+				for x in range(width):
+					if Vector2(x, y) == center:
+						move_array[y].append(0)
+					elif x == center.x or y == center.y:
+						move_array[y].append(1)
+					else:
+						move_array[y].append(0)
+	return move_array	

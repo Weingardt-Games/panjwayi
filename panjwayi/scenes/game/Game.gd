@@ -219,12 +219,14 @@ func _ready_game_for_turns():
 
 func _on_GamePiece_dropped(actor, new_location) -> void:
 	var potential_location = Grid.request_move(actor, new_location, true)
+	Grid.clear_highlights()
 	if potential_location:
 		actor.move(potential_location)
 	else:
 		print("Can't go there!")
 
 func _on_GamePiece_dragged(actor, new_location) -> void:
+	Grid.highlight_movements(actor)
 	var potential_location = Grid.request_move(actor, new_location)
 	if potential_location:
 		actor.potential_move(potential_location)

@@ -6,4 +6,5 @@
 [node name="IED" instance=ExtResource( 2 )]
 sprite = ExtResource( 1 )
 actor_type = 8
+movement_type = 0
 flip_side = 8
