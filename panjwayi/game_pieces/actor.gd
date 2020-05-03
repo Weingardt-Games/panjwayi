@@ -39,11 +39,13 @@ export(ACTOR_TYPES) var flip_side = ACTOR_TYPES.NONE
 
 var is_dragging = false
 var is_enabled = true setget _set_is_enabled
+var is_selected = false
 
 signal game_piece_dropped(actor, new_location)
 signal game_piece_dragged(actor, new_location)
 signal game_piece_selected(actor)
 signal game_piece_flip_pressed(actor)
+signal game_piece_movement_cancelled()
 
 func _ready() -> void:
 	$Sprite.texture = sprite
@@ -55,22 +57,29 @@ func _ready() -> void:
 		$FlipButton.visible = false
 		
 	
-	
 func _input(event):
-	if is_dragging:
-		if event.is_action_released("ui_select_piece"):
-			var new_location = get_global_mouse_position()
-			emit_signal("game_piece_dropped", self, new_location)
+	# ALL input events
+	
+	# There is no _is_action_just_pressed here because of the echo thing...
+	#https://godotengine.org/qa/45910/how-to-get-key_a-or-any-other-key-just-pressed
+	var just_pressed = event.is_pressed() and not event.is_echo()
+	
+	if is_selected:
+		if event.is_action_released("ui_select"): # or (event.is_action_pressed("ui_select") and just_pressed): 
+			# place the piece if left-click or equivalent is:
+			# released (if they are holding the button)
+			# just pressed (if they were not holding the button)
+			print("Released: ", actor_name)
+			emit_signal("game_piece_dropped", self, get_global_mouse_position())
 			
 		if event is InputEventMouseMotion:
-			print("dragging")
-			var new_location = get_global_mouse_position()
-			emit_signal("game_piece_dragged", self, new_location)
+#			print("Dragged: ", actor_name)
+			emit_signal("game_piece_dragged", self, get_global_mouse_position())
 			
 		if event.is_action_pressed("ui_cancel"):
 			cancel_move()
-		
-		
+			print("Cancelled: ", actor_name)
+			emit_signal("game_piece_movement_cancelled")
 
 ##### GETTERS AND SETTERS ########
 
@@ -80,19 +89,22 @@ func _input(event):
 
 func _on_Area2D_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if is_enabled:
-		if event.is_action_pressed("ui_select_piece"):
-			print("selecting piece", actor_name)
+		if not is_dragging and event.is_action_pressed("ui_select"):
+			print("Selected: ", actor_name)
 			get_tree().set_input_as_handled()
 			set_selected()
 
 func move(new_location):
+	print("Moved: ", actor_name)
 	is_dragging = false
+	is_selected = false
 	position = new_location
 	reset_line()
-	reset_ghost()	
+	reset_ghost()
 	
 func cancel_move():
 	move(self.position)
+#	is_selected = false
 	
 func potential_move(potential_location):
 	update_ghost(potential_location)
@@ -104,6 +116,7 @@ func update_look_direction(direction):
 func set_selected():
 	emit_signal("game_piece_selected", self)
 	$Highlight.visible = true
+	is_selected = true
 	is_dragging = true
 	
 func update_line(target_position):

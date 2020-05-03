@@ -94,7 +94,7 @@ func _on_PhaseController_phase_changed(phase) -> void:
 func _process_placement():
 	if placement_mode:
 		_update_placement_tool()
-		if Input.is_action_just_pressed("ui_accept"):
+		if Input.is_action_just_pressed("ui_place"):
 			place_piece()
 			
 		if Input.is_action_just_pressed("ui_cancel"):
@@ -162,10 +162,12 @@ func insert_actor(actor: Actor):
 	actor.connect("game_piece_flip_pressed", self, "_on_GamePiece_flip_pressed")
 	actor.connect("game_piece_dragged", self, "_on_GamePiece_dragged")
 	actor.connect("game_piece_dropped", self, "_on_GamePiece_dropped")
+	actor.connect("game_piece_selected", self, "_on_GamePiece_selected")
+	actor.connect("game_piece_movement_cancelled", self, "_on_GamePiece_movement_cancelled")
 	
 	Grid.add_child(actor)
 	
-	
+
 func _on_GamePiece_flip_pressed(actor: Actor):
 	var flip_scene = ACTOR_SCENES_DICT.get(actor.flip_side)
 	var flip_piece = flip_scene.instance()
@@ -208,29 +210,32 @@ func _ready_placement(pieces):
 		button.connect("mouse_exited", self, "_on_Select_Piece_button_mouse_exited")
 		
 
-############### GOA TURN ######################
+###############  TURN ######################
 func _ready_game_for_turns():
-	# connect_movement signals to all the actors
-	var actors = get_current_actors_on_board()
-		
 	# reset the Grid for movement:
 	Grid.prepare_board_for_game_start()
 
+func _on_GamePiece_movement_cancelled():
+	Grid.clear_movement()
+	
+func _on_GamePiece_selected(actor: Actor):
+	Grid.prep_movement(actor)
 
-func _on_GamePiece_dropped(actor, new_location) -> void:
+func _on_GamePiece_dropped(actor: Actor, new_location: Vector2) -> void:
 	var potential_location = Grid.request_move(actor, new_location, true)
-	Grid.clear_highlights()
+	Grid.clear_movement()
 	if potential_location:
 		actor.move(potential_location)
 	else:
+		actor.cancel_move()
 		print("Can't go there!")
 
-func _on_GamePiece_dragged(actor, new_location) -> void:
-	Grid.highlight_movements(actor)
+func _on_GamePiece_dragged(actor: Actor, new_location: Vector2) -> void:
 	var potential_location = Grid.request_move(actor, new_location)
 	if potential_location:
 		actor.potential_move(potential_location)
 	else:
+		actor.potential_move(actor.position)
 		print("Can't go there!")
 	
 func get_current_actors_on_board() -> Array:
