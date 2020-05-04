@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://assets/fonts/CarterOne24.tres" type="DynamicFont" id=1]
+[ext_resource path="res://assets/fonts/LargeLabel.tres" type="DynamicFont" id=1]
 
 [node name="LargeLabel" type="Label"]
 margin_right = 27.0
