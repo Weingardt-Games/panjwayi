@@ -5,6 +5,8 @@ var placement_mode = false
 onready var Grid = $Grid
 onready var PlacementTool = $PlacementTool
 onready var PlacementUI = find_node("PlacementUI")
+onready var GoaGUI = find_node("GoaGUI")
+onready var TalibanGUI = find_node("TalibanGUI")
 
 # Placement Mode Variables
 var valid_color = Color.greenyellow
@@ -75,6 +77,7 @@ func _on_PhaseController_phase_changed(phase) -> void:
 		PhaseController.PHASES.GOA_SETUP:
 			#pieces start with all the GoA scenes as an export	
 			_ready_placement(pieces)
+			PlacementUI.set_color(GoaGUI.team_color)
 			PlacementUI.visible = true
 			PlacementUI.rect_position = $PositionMarkers/PlacementUIGoA.rect_position
 		
@@ -85,6 +88,7 @@ func _on_PhaseController_phase_changed(phase) -> void:
 				pieces.append(taliban_piece)
 	
 			_ready_placement(pieces)
+			PlacementUI.set_color(TalibanGUI.team_color)
 			PlacementUI.visible = true
 			PlacementUI.rect_position = $PositionMarkers/PlacementUITaliban.rect_position
 		

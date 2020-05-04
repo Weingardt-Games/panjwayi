@@ -15,15 +15,12 @@ func _ready() -> void:
 	color_gui()
 	
 func color_gui():
-	var destroyed_panel = find_node("DestroyedPanel")
-	var reinforcements_panel = find_node("ReinforcementsPanel")
-	var nodes_to_color = [
-		destroyed_panel,
-		destroyed_panel.find_node("Label"),
-		reinforcements_panel,
-		reinforcements_panel.find_node("Label")
-	]
-	nodes_to_color += find_node("WinConditionContainer").get_children()
+	var destroyed_panel: UIPanel = find_node("DestroyedPanel")
+	var reinforcements_panel: UIPanel = find_node("ReinforcementsPanel")
+	reinforcements_panel.set_color(team_color)
+	destroyed_panel.set_color(team_color)
+	var nodes_to_color: Array = find_node("WinConditionContainer").get_children()
+	nodes_to_color.append(find_node("TeamHeading"))
 	
 	for node in nodes_to_color:
 		node.self_modulate = team_color

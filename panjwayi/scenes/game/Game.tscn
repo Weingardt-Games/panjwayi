@@ -180,9 +180,9 @@ __meta__ = {
 }
 
 [node name="PlacementUIGoA" type="Control" parent="PositionMarkers"]
-margin_left = 27.0
+margin_left = 80.0
 margin_top = 309.0
-margin_right = 67.0
+margin_right = 120.0
 margin_bottom = 349.0
 __meta__ = {
 "_edit_lock_": true,
@@ -190,9 +190,9 @@ __meta__ = {
 }
 
 [node name="PlacementUITaliban" type="Control" parent="PositionMarkers"]
-margin_left = 1424.0
+margin_left = 1379.0
 margin_top = 309.0
-margin_right = 1464.0
+margin_right = 1419.0
 margin_bottom = 349.0
 __meta__ = {
 "_edit_lock_": true,
@@ -200,5 +200,5 @@ __meta__ = {
 }
 [connection signal="pressed" from="HUD/VBoxContainer/HBoxContainer/PhaseCompleteButton" to="PhaseController" method="_on_PhaseCompleteButton_pressed"]
 [connection signal="phase_changed" from="PhaseController" to="." method="_on_PhaseController_phase_changed"]
-[connection signal="phase_changed" from="PhaseController" to="DisabledZone" method="_on_PhaseController_phase_changed"]
 [connection signal="phase_changed" from="PhaseController" to="HUD/VBoxContainer/HBoxContainer/PhaseLabel" method="_on_PhaseController_phase_changed"]
+[connection signal="phase_changed" from="PhaseController" to="DisabledZone" method="_on_PhaseController_phase_changed"]

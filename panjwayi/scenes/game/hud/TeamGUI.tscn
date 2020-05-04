@@ -1,10 +1,9 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://assets/gui/HeadingLabel.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/game/hud/TeamGUI.gd" type="Script" id=2]
 [ext_resource path="res://assets/gui/LargeLabel.tscn" type="PackedScene" id=3]
 [ext_resource path="res://assets/tokens/afghan.png" type="Texture" id=4]
-[ext_resource path="res://assets/tokens/tal.png" type="Texture" id=5]
 [ext_resource path="res://scenes/game/hud/UIPanel.tscn" type="PackedScene" id=8]
 
 [node name="TeamGUI" type="Control"]
@@ -16,7 +15,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 team_name = "Team"
-flag = ExtResource( 5 )
 starting_villages = 5
 
 [node name="Control" type="Control" parent="."]

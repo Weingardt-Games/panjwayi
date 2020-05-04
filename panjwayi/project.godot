@@ -33,13 +33,19 @@ _global_script_classes=[ {
 "class": "PlacementButton",
 "language": "GDScript",
 "path": "res://scenes/game/hud/PlacementButton.gd"
+}, {
+"base": "NinePatchRect",
+"class": "UIPanel",
+"language": "GDScript",
+"path": "res://scenes/game/hud/UIPanel.gd"
 } ]
 _global_script_class_icons={
 "Actor": "",
 "Constants": "",
 "Pawn": "",
 "PhaseController": "",
-"PlacementButton": ""
+"PlacementButton": "",
+"UIPanel": ""
 }
 
 [application]
