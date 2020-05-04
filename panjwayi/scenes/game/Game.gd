@@ -1,14 +1,18 @@
 extends Node2D
 
-var placement_mode = false
-
 onready var Grid = $Grid
 onready var PlacementTool = $PlacementTool
 onready var PlacementUI = find_node("PlacementUI")
 onready var GoaGUI = find_node("GoaGUI")
 onready var TalibanGUI = find_node("TalibanGUI")
 
+onready var TEAM_GUI_DICT = {
+	Actor.TEAM.GOA:	GoaGUI,
+	Actor.TEAM.TALIBAN: TalibanGUI
+}
+
 # Placement Mode Variables
+var placement_mode = false
 var valid_color = Color.greenyellow
 var invalid_color = Color.red
 var current_color
@@ -16,6 +20,10 @@ var can_place = false
 var in_menu = false
 var current_tile = Vector2()
 var current_phase = PhaseController.PHASES.GOA_SETUP
+
+onready var PlacementButtonContainer = find_node("PlacementUI").find_node("Container")
+onready var PlacementButton = preload("res://scenes/game/hud/PlacementButton.tscn")
+
 
 var ACTOR_SCENES_DICT = {
 	Actor.ACTOR_TYPES.AIR: load("res://game_pieces/goa_pieces/AIR.tscn"),
@@ -34,15 +42,15 @@ var ACTOR_SCENES_DICT = {
 onready var pieces: Array = [
 	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.AIR],
 	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
 ]
 	
 
-export(int, 1, 10) var number_of_taliban = 9
+export(int, 1, 10) var number_of_taliban = 2
 export(PackedScene) var taliban_piece
 
 var current_piece: Actor
@@ -206,8 +214,7 @@ func _on_Select_Piece_button_mouse_exited() -> void:
 
 ################ SETUP ###################
 
-onready var PlacementButtonContainer = find_node("PlacementUI").find_node("Container")
-onready var PlacementButton = preload("res://scenes/game/hud/PlacementButton.tscn")
+
 
 func _ready_placement(pieces):
 
@@ -270,4 +277,22 @@ func _ready_turn(team_turn):
 			actor.is_enabled = false
 	pass
 	
+### ATTACKS #################
+func _on_Grid_piece_destroyed(actor: Actor) -> void:
+	""" Occurs when an actor has been destroyed and removed from the Grid
+	Put the Actor in it's team's Destroyed box.
+	"""
+	print("generating placement buttons for: ", actor.actor_name)
+	var button = PlacementButton.instance()
+	button.get_node("TextureRect").texture = actor.sprite
+#	button.goa_piece_index = i
+	(TEAM_GUI_DICT[actor.team] as TeamGUI).add_actor_to_destroyed(button)
+#	PlacementButtonContainer.add_child(button)
+	button.connect("selected", self, "_on_Select_Piece_button_down")
+	button.connect("mouse_entered", self, "_on_Select_Piece_button_mouse_entered")
+	button.connect("mouse_exited", self, "_on_Select_Piece_button_mouse_exited")	
 	
+	
+
+
+

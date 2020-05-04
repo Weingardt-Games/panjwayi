@@ -8,6 +8,8 @@ const BOARD_OFFSET = Vector2(398, 0)
 onready var movement_highlight = load("res://scenes/game/grid/MovementHighlight.tscn")
 onready var attack_highlight = load("res://scenes/game/grid/AttackHighlight.tscn")
 
+signal piece_destroyed(actor)
+
 func _ready():
 	# Fill the TileMap Grid with PLACEMENT_CELL_TYPES
 	for x in BOARD_SIZE.x:
@@ -42,6 +44,16 @@ func request_move(actor: Actor, new_position, final=false):
 		return get_world_position(cell_target)
 	
 	match cell_target_type:
+		Pawn.CELL_TYPES.CAN_ATTACK:
+			if final:
+				var destroyed_actor: Actor = get_actor(cell_target)
+				remove_child(destroyed_actor)
+				emit_signal("piece_destroyed", destroyed_actor)
+				# Actually moving the actor there:
+				return update_pawn_position(actor, cell_start, cell_target)
+			else:
+				# Just checking if we can move there...
+				return get_world_position(cell_target)
 		Actor.CELL_TYPES.CAN_MOVE_TO:
 			if final:
 				# Actually moving the actor there
@@ -72,8 +84,12 @@ func get_world_position(cell_target):
 #### INDICATORS / HIGLIGHTS
 
 func prep_movement(actor: Actor):
+	""" Highlights the legal movement locations and sets their cell type
+	to Pawn.CELL_TYPES.CAN_MOVE_TO,  and indicates potential attacks and 
+	sets cell type to Pawn.CELL_TYPES.CAN_ATTACK
+	"""
 	# clear previous highlights:
-	get_tree().call_group("map_movement_highlights", "queue_free")
+	get_tree().call_group("map_indicators", "queue_free")
 	var cell = world_to_map(actor.position)
 	var move_array = actor.get_movement_array()
 	var offset = Vector2(int(len(move_array)/2), int(len(move_array)/2))
@@ -84,12 +100,14 @@ func prep_movement(actor: Actor):
 			if move_array[x][y] == 1:
 				var valid_move_cell = cell + Vector2(x, y) - offset
 				var cell_type = get_cellv(valid_move_cell)
+				
 				if cell_type == Pawn.CELL_TYPES.OPEN:
 					# cell is open, so highlight it as moveable spot
 					var highlight = movement_highlight.instance()
 					highlight.position = get_world_position(valid_move_cell)
 					set_cellv(valid_move_cell, Pawn.CELL_TYPES.CAN_MOVE_TO)
 					add_child(highlight)
+					
 				elif cell_type == Pawn.CELL_TYPES.ACTOR:
 					# cell has another actor, check what kind of actor to see if we can attack it
 					var actor_at_cell: Actor = get_actor(valid_move_cell)
@@ -98,10 +116,12 @@ func prep_movement(actor: Actor):
 						# Highlight cell as attackable
 						var highlight = attack_highlight.instance()
 						highlight.position = get_world_position(valid_move_cell)
-	#					set_cellv(valid_move_cell, Pawn.CELL_TYPES.CAN_ATTACK)
+						set_cellv(valid_move_cell, Pawn.CELL_TYPES.CAN_ATTACK)
 						add_child(highlight)
 
 func get_actor(cell: Vector2) -> Actor:
+	""" Returns the Actor in the cell
+	"""
 	var actors = get_tree().get_nodes_in_group("actors")
 	for actor in actors:
 		if cell == world_to_map(actor.position):
@@ -113,5 +133,8 @@ func clear_movement():
 	get_tree().call_group("map_indicators", "queue_free")
 	for x in BOARD_SIZE.x:
 		for y in BOARD_SIZE.y:
-			if get_cell(x, y) == Pawn.CELL_TYPES.CAN_MOVE_TO or get_cell(x, y) == Pawn.CELL_TYPES.CAN_ATTACK:
+			if get_cell(x, y) == Pawn.CELL_TYPES.CAN_MOVE_TO:
 				set_cell(x, y, Pawn.CELL_TYPES.OPEN)
+			elif get_cell(x,y) == Pawn.CELL_TYPES.CAN_ATTACK:
+				set_cell(x, y, Pawn.CELL_TYPES.ACTOR)
+				

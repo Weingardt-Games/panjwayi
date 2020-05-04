@@ -106,37 +106,31 @@ __meta__ = {
 [node name="CreateGameButton" parent="Menu/Control/Buttons" instance=ExtResource( 2 )]
 margin_top = 69.0
 margin_bottom = 149.0
-rect_min_size = Vector2( 480, 80 )
 scene_to_load = ExtResource( 14 )
 
 [node name="LoadGameButton" parent="Menu/Control/Buttons" instance=ExtResource( 4 )]
 margin_top = 181.0
 margin_bottom = 261.0
-rect_min_size = Vector2( 480, 80 )
 disabled = true
 
 [node name="RulebookButton" parent="Menu/Control/Buttons" instance=ExtResource( 11 )]
 margin_top = 293.0
 margin_bottom = 373.0
-rect_min_size = Vector2( 480, 80 )
 uri_to_open = "https://github.com/Weingardt-Games/panjwayi/raw/master/panjwayi/assets/docs/PanjwayiRulebook.pdf"
 
 [node name="DesignerNotesButton" parent="Menu/Control/Buttons" instance=ExtResource( 3 )]
 margin_top = 405.0
 margin_bottom = 485.0
-rect_min_size = Vector2( 480, 80 )
 disabled = true
 
 [node name="FeedbackButton" parent="Menu/Control/Buttons" instance=ExtResource( 9 )]
 margin_top = 517.0
 margin_bottom = 597.0
-rect_min_size = Vector2( 480, 80 )
 uri_to_open = "mailto:feedback@weingardtgames.com?subject=Feedback"
 
 [node name="BuyHardCopyButton" parent="Menu/Control/Buttons" instance=ExtResource( 10 )]
 margin_top = 629.0
 margin_bottom = 709.0
-rect_min_size = Vector2( 480, 80 )
 uri_to_open = "https://www.thegamecrafter.com/games/panjwayi:-counterinsurgency-in-afghanistan"
 
 [node name="MarginContainer" type="MarginContainer" parent="Menu/Control"]

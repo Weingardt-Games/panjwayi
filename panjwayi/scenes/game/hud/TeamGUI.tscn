@@ -79,34 +79,37 @@ stretch_mode = 4
 [node name="WinConditionContainer" type="HBoxContainer" parent="Control/Control/VBoxContainer"]
 margin_top = 91.0
 margin_right = 366.0
-margin_bottom = 129.0
+margin_bottom = 121.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="LargeLabel" parent="Control/Control/VBoxContainer/WinConditionContainer" instance=ExtResource( 3 )]
-margin_right = 233.0
+margin_right = 162.0
+margin_bottom = 30.0
 text = "Villages Controlled: "
 
 [node name="Villages" parent="Control/Control/VBoxContainer/WinConditionContainer" instance=ExtResource( 3 )]
-margin_left = 237.0
-margin_right = 315.0
+margin_left = 166.0
+margin_right = 325.0
+margin_bottom = 30.0
 size_flags_horizontal = 3
 text = "8"
 align = 2
 
 [node name="LargeLabel2" parent="Control/Control/VBoxContainer/WinConditionContainer" instance=ExtResource( 3 )]
-margin_left = 319.0
+margin_left = 329.0
 margin_right = 366.0
+margin_bottom = 30.0
 text = " / 10"
 
 [node name="ReinforcementsPanel" parent="Control/Control/VBoxContainer" instance=ExtResource( 8 )]
-margin_top = 145.0
-margin_bottom = 560.0
+margin_top = 137.0
+margin_bottom = 556.0
 panel_heading = "Reinforcements"
 
 [node name="DestroyedPanel" parent="Control/Control/VBoxContainer" instance=ExtResource( 8 )]
-margin_top = 576.0
+margin_top = 572.0
 margin_bottom = 992.0
 panel_heading = "Destroyed"
 
