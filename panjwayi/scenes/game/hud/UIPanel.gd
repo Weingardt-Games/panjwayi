@@ -1,4 +1,4 @@
-extends NinePatchRect
+extends Control
 class_name UIPanel
 
 export (String) var panel_heading = "Panel Heading"

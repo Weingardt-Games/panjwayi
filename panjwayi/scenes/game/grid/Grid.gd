@@ -1,4 +1,5 @@
 extends TileMap
+class_name PanjwayiTileMap
 
 enum { EMPTY = -1, ACTOR, OBSTACLE, OBJECT}
 

@@ -1,5 +1,6 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
+[ext_resource path="res://scenes/game/PlacementTool.gd" type="Script" id=1]
 [ext_resource path="res://scenes/game/DisabledZone.gd" type="Script" id=2]
 [ext_resource path="res://assets/board1024-v2.png" type="Texture" id=3]
 [ext_resource path="res://scenes/game/grid/Grid.tscn" type="PackedScene" id=4]
@@ -138,11 +139,12 @@ starting_villages = 2
 margin_left = 26.0
 margin_top = 307.0
 margin_right = 392.0
-margin_bottom = 730.0
+margin_bottom = 607.0
 panel_heading = "Starting Pieces"
 
 [node name="PlacementTool" type="Node2D" parent="."]
 visible = false
+script = ExtResource( 1 )
 
 [node name="TextureRect" type="TextureRect" parent="PlacementTool"]
 margin_left = -32.0
@@ -200,6 +202,7 @@ __meta__ = {
 }
 [connection signal="piece_destroyed" from="Grid" to="." method="_on_Grid_piece_destroyed"]
 [connection signal="pressed" from="HUD/VBoxContainer/HBoxContainer/PhaseCompleteButton" to="PhaseController" method="_on_PhaseCompleteButton_pressed"]
-[connection signal="phase_changed" from="PhaseController" to="HUD/VBoxContainer/HBoxContainer/PhaseLabel" method="_on_PhaseController_phase_changed"]
+[connection signal="actor_placed" from="PlacementTool" to="." method="_on_PlacementTool_actor_placed"]
 [connection signal="phase_changed" from="PhaseController" to="." method="_on_PhaseController_phase_changed"]
+[connection signal="phase_changed" from="PhaseController" to="HUD/VBoxContainer/HBoxContainer/PhaseLabel" method="_on_PhaseController_phase_changed"]
 [connection signal="phase_changed" from="PhaseController" to="DisabledZone" method="_on_PhaseController_phase_changed"]
