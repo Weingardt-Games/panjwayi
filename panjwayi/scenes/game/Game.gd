@@ -76,7 +76,7 @@ func _on_PhaseController_phase_changed(phase) -> void:
 	match current_phase:
 		PhaseController.PHASES.GOA_SETUP:
 			#pieces start with all the GoA scenes as an export	
-			_ready_placement(pieces)
+			_ready_placement()
 			PlacementUI.set_color(GoaGUI.team_color)
 			PlacementUI.visible = true
 			PlacementUI.rect_position = $PositionMarkers/PlacementUIGoA.rect_position
@@ -87,7 +87,7 @@ func _on_PhaseController_phase_changed(phase) -> void:
 			for i in number_of_taliban:
 				pieces.append(taliban_piece)
 	
-			_ready_placement(pieces)
+			_ready_placement()
 			PlacementUI.set_color(TalibanGUI.team_color)
 			PlacementUI.visible = true
 			PlacementUI.rect_position = $PositionMarkers/PlacementUITaliban.rect_position
@@ -147,7 +147,9 @@ func _on_GamePiece_flip_pressed(actor: Actor):
 
 func _on_Select_Piece_button_down(button: PlacementButton) -> void:
 	current_button = button
-	PlacementTool.start_new_placement(pieces[button.goa_piece_index].instance())
+	# TEMPRARY DISABLE TILL GET REINFORCEMENTS WORKING
+	if current_phase == PhaseController.PHASES.GOA_SETUP or current_phase == PhaseController.PHASES.TALIBAN_SETUP:
+		PlacementTool.start_new_placement(pieces[button.goa_piece_index].instance())
 
 func _on_Select_Piece_button_mouse_entered() -> void:
 	PlacementTool.in_menu = true
@@ -158,7 +160,7 @@ func _on_Select_Piece_button_mouse_exited() -> void:
 
 ################ SETUP ###################
 
-func _ready_placement(pieces):
+func _ready_placement():
 
 	for i in pieces.size():
 		var piece = pieces[i]

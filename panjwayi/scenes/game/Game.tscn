@@ -203,6 +203,6 @@ __meta__ = {
 [connection signal="piece_destroyed" from="Grid" to="." method="_on_Grid_piece_destroyed"]
 [connection signal="pressed" from="HUD/VBoxContainer/HBoxContainer/PhaseCompleteButton" to="PhaseController" method="_on_PhaseCompleteButton_pressed"]
 [connection signal="actor_placed" from="PlacementTool" to="." method="_on_PlacementTool_actor_placed"]
-[connection signal="phase_changed" from="PhaseController" to="." method="_on_PhaseController_phase_changed"]
-[connection signal="phase_changed" from="PhaseController" to="HUD/VBoxContainer/HBoxContainer/PhaseLabel" method="_on_PhaseController_phase_changed"]
 [connection signal="phase_changed" from="PhaseController" to="DisabledZone" method="_on_PhaseController_phase_changed"]
+[connection signal="phase_changed" from="PhaseController" to="HUD/VBoxContainer/HBoxContainer/PhaseLabel" method="_on_PhaseController_phase_changed"]
+[connection signal="phase_changed" from="PhaseController" to="." method="_on_PhaseController_phase_changed"]

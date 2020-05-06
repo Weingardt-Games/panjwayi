@@ -6,6 +6,8 @@ enum { EMPTY = -1, ACTOR, OBSTACLE, OBJECT}
 const BOARD_SIZE = Vector2(16, 16)
 const BOARD_OFFSET = Vector2(398, 0)
 
+var grid_contents: Array  # 2D array holds the nodes at each cell 
+
 onready var movement_highlight = load("res://scenes/game/grid/MovementHighlight.tscn")
 onready var attack_highlight = load("res://scenes/game/grid/AttackHighlight.tscn")
 
@@ -22,18 +24,26 @@ func _ready():
 			else:
 				set_cell(x, y, Pawn.CELL_TYPES.ILLEGAL_PLACEMENT)
 				
+	# Also initialize the grid contents
+	for x in BOARD_SIZE.x:
+		grid_contents.append([])
+		for y in BOARD_SIZE.y:
+			grid_contents[x].append(null)
+			
+#func _set_grid_contents(actor: Actor, cell: Vector2):
+#	grid_contents[cell.x][cell.y] = actor
+				
 func prepare_board_for_game_start():
 	for x in BOARD_SIZE.x:
 		for y in BOARD_SIZE.y:
 			if get_cell(x, y) != Pawn.CELL_TYPES.ACTOR:
 				set_cell(x, y, Pawn.CELL_TYPES.OPEN)
 
-				
-func get_cell_pawn(coordinates):
-	for node in get_children():
-		if world_to_map(node.position) == coordinates:
-			return(node)
 
+func get_cell_highlight(coordinates):
+	for node in get_children():
+		if node.is_in_group("indicators") and world_to_map(node.position) == coordinates:
+			return(node)
 
 func request_move(actor: Actor, new_position, final=false):
 	var cell_start = world_to_map(actor.position)
@@ -76,6 +86,7 @@ func request_move(actor: Actor, new_position, final=false):
 
 func update_pawn_position(actor: Actor, cell_start, cell_target):
 	set_cellv(cell_target, actor.type)
+	
 	set_cellv(cell_start, Pawn.CELL_TYPES.OPEN)
 	return get_world_position(cell_target)
 	
@@ -119,23 +130,62 @@ func prep_movement(actor: Actor):
 						highlight.position = get_world_position(valid_move_cell)
 						set_cellv(valid_move_cell, Pawn.CELL_TYPES.CAN_ATTACK)
 						add_child(highlight)
+						# at the end we'll remove movement beyond enemies
+						# since enemies block movement
+	_remove_move_cells_beyond_enemies(actor)
+	
+func _remove_move_cells_beyond_enemies(actor):
+	var actor_cell = world_to_map(actor.position)
+	var attack_highlights = get_tree().get_nodes_in_group("map_attack_highlights")
+	var attack_cell: Vector2  # a specific cell the actor can attack
+	var blocked_cell: Vector2  # the cell that is blocked by an enemy
+	var ray: Vector2
+	var cell_type: int   # Pawn.CELL_TYPES
+	for attack_spot in attack_highlights:
+		attack_cell = world_to_map(attack_spot.position)
+		ray = attack_cell - actor_cell
+		# increment the cell in the direction of attacker and remove movement
+		for i in range(BOARD_SIZE.x):  # this is overkill, should limit to x,y > (0,0)
+			if ray.y < 0 :  # The attack spot is to north 
+				ray.y -= 1
+			elif ray.y > 0:  # to the south
+				ray.y += 1
+			if ray.x < 0:  # to the left
+				ray.x -= 1
+			elif ray.x > 0:  # to the right
+				ray.x += 1
+			blocked_cell = actor_cell + ray
+			cell_type = get_cellv(blocked_cell)
+			if cell_type == Pawn.CELL_TYPES.CAN_MOVE_TO or Pawn.CELL_TYPES.CAN_ATTACK:
+				_clear_movement_in_cell(blocked_cell)
+				
 
 func get_actor(cell: Vector2) -> Actor:
 	""" Returns the Actor in the cell
 	"""
-	var actors = get_tree().get_nodes_in_group("actors")
-	for actor in actors:
-		if cell == world_to_map(actor.position):
-			return actor
-	print("Something went wrong, there should be SOMEONE here!")
+	return _get_item(cell, "actors") as Actor
+
+func _get_item(cell: Vector2, group: String) -> Node2D:
+	""" Returns the item in the cell and group
+	"""
+	var nodes = get_tree().get_nodes_in_group(group)
+	for node in nodes:
+		if cell == world_to_map(node.position):
+			return node	
 	return null
 
 func clear_movement():
 	get_tree().call_group("map_indicators", "queue_free")
 	for x in BOARD_SIZE.x:
 		for y in BOARD_SIZE.y:
-			if get_cell(x, y) == Pawn.CELL_TYPES.CAN_MOVE_TO:
-				set_cell(x, y, Pawn.CELL_TYPES.OPEN)
-			elif get_cell(x,y) == Pawn.CELL_TYPES.CAN_ATTACK:
-				set_cell(x, y, Pawn.CELL_TYPES.ACTOR)
+			_clear_movement_in_cell(Vector2(x, y))
+				
+func _clear_movement_in_cell(cell: Vector2):
+	var indicator = _get_item(cell, "map_indicators")
+	if indicator != null:
+		indicator.queue_free()
+	if get_cellv(cell) == Pawn.CELL_TYPES.CAN_MOVE_TO:
+		set_cellv(cell, Pawn.CELL_TYPES.OPEN)
+	elif get_cellv(cell) == Pawn.CELL_TYPES.CAN_ATTACK:
+		set_cellv(cell, Pawn.CELL_TYPES.ACTOR)	
 				
