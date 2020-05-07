@@ -30,15 +30,17 @@ func process_placement():
 		var mouse_pos = get_global_mouse_position()
 		current_tile = Grid.world_to_map(mouse_pos)
 		_update_placement_tool(Grid, current_piece, current_tile)
-		if Input.is_action_just_pressed("ui_place"):
+		if Input.is_action_just_pressed("ui_place") or Input.is_action_just_released("ui_place"):
 			_place_piece()
-			
+			print("placing!")
 		if Input.is_action_just_pressed("ui_cancel"):
 			_cancel_placement(true)
 			
 			
 func _place_piece():
-	if can_place and not in_menu:
+#	print("in_menu", in_menu)
+#	print("can_place", can_place)
+	if can_place: # and not in_menu:
 		Grid.set_cellv(current_tile, Pawn.CELL_TYPES.ACTOR)
 		current_piece.global_position = Grid.get_world_position(current_tile)
 		emit_signal("actor_placed", current_piece)
@@ -74,4 +76,6 @@ func _update_placement_tool(grid: PanjwayiTileMap, current_piece, current_tile):
 		can_place = false
 
 		$ColorRect.color = current_color
+		
+#	print("can_place", can_place)
 		
