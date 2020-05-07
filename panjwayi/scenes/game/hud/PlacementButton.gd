@@ -12,3 +12,4 @@ func _ready() -> void:
 	
 func _on_Button_down():
 	emit_signal("selected", self)
+	$Sound.play()

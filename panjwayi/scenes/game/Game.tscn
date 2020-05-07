@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://scenes/game/PlacementTool.gd" type="Script" id=1]
 [ext_resource path="res://scenes/game/DisabledZone.gd" type="Script" id=2]
@@ -11,7 +11,9 @@
 [ext_resource path="res://game_pieces/Village.tscn" type="PackedScene" id=9]
 [ext_resource path="res://scenes/game/Game.gd" type="Script" id=10]
 [ext_resource path="res://assets/tokens/taliban-flag.png" type="Texture" id=11]
+[ext_resource path="res://assets/sounds/click2.wav" type="AudioStream" id=12]
 [ext_resource path="res://scenes/game/hud/UIPanel.tscn" type="PackedScene" id=13]
+[ext_resource path="res://assets/sounds/shot.wav" type="AudioStream" id=14]
 [ext_resource path="res://game_pieces/taliban_pieces/INS.tscn" type="PackedScene" id=21]
 [ext_resource path="res://scenes/game/Camera2D.gd" type="Script" id=26]
 
@@ -253,9 +255,15 @@ __meta__ = {
 "_edit_lock_": true,
 "_edit_use_anchors_": false
 }
+
+[node name="ClickSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 12 )
+
+[node name="DeathSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 14 )
 [connection signal="piece_destroyed" from="Grid" to="." method="_on_Grid_piece_destroyed"]
 [connection signal="pressed" from="HUD/VBoxContainer/HBoxContainer/PhaseCompleteButton" to="PhaseController" method="_on_PhaseCompleteButton_pressed"]
 [connection signal="actor_placed" from="PlacementTool" to="." method="_on_PlacementTool_actor_placed"]
 [connection signal="phase_changed" from="PhaseController" to="." method="_on_PhaseController_phase_changed"]
-[connection signal="phase_changed" from="PhaseController" to="DisabledZone" method="_on_PhaseController_phase_changed"]
 [connection signal="phase_changed" from="PhaseController" to="HUD/VBoxContainer/HBoxContainer/PhaseLabel" method="_on_PhaseController_phase_changed"]
+[connection signal="phase_changed" from="PhaseController" to="DisabledZone" method="_on_PhaseController_phase_changed"]

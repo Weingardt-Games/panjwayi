@@ -5,6 +5,8 @@ onready var PlacementTool = $PlacementTool
 onready var PlacementUI = find_node("PlacementUI")
 onready var GoaGUI = find_node("GoaGUI")
 onready var TalibanGUI = find_node("TalibanGUI")
+onready var clickSound = $ClickSound
+onready var deathSound = $DeathSound
 
 var current_button
 
@@ -115,6 +117,7 @@ func is_all_pieces_placed():
 func _on_PlacementTool_actor_placed(current_actor) -> void:
 	insert_actor(current_actor)
 	PlacementButtonContainer.remove_child(current_button)
+	clickSound.play()
 	
 	if is_all_pieces_placed():
 		if current_phase == PhaseController.PHASES.TALIBAN_SETUP:
@@ -146,6 +149,7 @@ func _on_GamePiece_flip_pressed(actor: Actor):
 	flip_piece.global_position = actor.global_position
 	insert_actor(flip_piece)
 	actor.queue_free()
+	clickSound.play()
 
 func _on_Select_Piece_button_down(button: PlacementButton) -> void:
 	current_button = button
@@ -155,6 +159,7 @@ func _on_Select_Piece_button_down(button: PlacementButton) -> void:
 			pieces[button.goa_piece_index].instance(),
 			button.get_node("TextureRect").texture
 		)
+	clickSound.play()
 
 func _on_Select_Piece_button_mouse_entered() -> void:
 	PlacementTool.in_menu = true
@@ -191,12 +196,14 @@ func _on_GamePiece_movement_cancelled():
 	
 func _on_GamePiece_selected(actor: Actor):
 	Grid.prep_movement(actor)
+	clickSound.play()
 
 func _on_GamePiece_dropped(actor: Actor, new_location: Vector2) -> void:
 	var potential_location = Grid.request_move(actor, new_location, true)
 	Grid.clear_movement()
 	if potential_location:
 		actor.move(potential_location)
+		clickSound.play()
 	else:
 		actor.cancel_move()
 		print("Can't go there!")
@@ -239,5 +246,7 @@ func _on_Grid_piece_destroyed(actor: Actor) -> void:
 #	PlacementButtonContainer.add_child(button)
 	button.connect("selected", self, "_on_Select_Piece_button_down")
 	button.connect("mouse_entered", self, "_on_Select_Piece_button_mouse_entered")
-	button.connect("mouse_exited", self, "_on_Select_Piece_button_mouse_exited")	
+	button.connect("mouse_exited", self, "_on_Select_Piece_button_mouse_exited")
+	deathSound.play()
+		
 	
