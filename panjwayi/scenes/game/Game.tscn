@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://scenes/game/PlacementTool.gd" type="Script" id=1]
 [ext_resource path="res://scenes/game/DisabledZone.gd" type="Script" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://scenes/game/hud/PhaseLabel.gd" type="Script" id=6]
 [ext_resource path="res://scenes/game/hud/TeamGUI.tscn" type="PackedScene" id=7]
 [ext_resource path="res://assets/tokens/afghan.png" type="Texture" id=8]
+[ext_resource path="res://game_pieces/Village.tscn" type="PackedScene" id=9]
 [ext_resource path="res://scenes/game/Game.gd" type="Script" id=10]
 [ext_resource path="res://assets/tokens/taliban-flag.png" type="Texture" id=11]
 [ext_resource path="res://scenes/game/hud/UIPanel.tscn" type="PackedScene" id=13]
@@ -37,6 +38,56 @@ __meta__ = {
 }
 
 [node name="Grid" parent="." instance=ExtResource( 4 )]
+
+[node name="Village" parent="Grid" instance=ExtResource( 9 )]
+position = Vector2( 128, 192 )
+team = 1
+village_name = "Howz e Medad"
+
+[node name="Village2" parent="Grid" instance=ExtResource( 9 )]
+position = Vector2( 320, 320 )
+team = 1
+village_name = "Pashmul"
+
+[node name="Village3" parent="Grid" instance=ExtResource( 9 )]
+position = Vector2( 512, 448 )
+team = 1
+village_name = "Bazaar e Panjwayi"
+
+[node name="Village4" parent="Grid" instance=ExtResource( 9 )]
+position = Vector2( 448, 512 )
+team = 1
+village_name = "Bazaar e Panjwayi"
+
+[node name="Village10" parent="Grid" instance=ExtResource( 9 )]
+position = Vector2( 64, 576 )
+team = 2
+village_name = "Nalgham"
+
+[node name="Village7" parent="Grid" instance=ExtResource( 9 )]
+position = Vector2( 640, 640 )
+team = 1
+village_name = "Salavat"
+
+[node name="Village8" parent="Grid" instance=ExtResource( 9 )]
+position = Vector2( 832, 768 )
+team = 1
+village_name = "Nakhonay"
+
+[node name="Village9" parent="Grid" instance=ExtResource( 9 )]
+position = Vector2( 192, 832 )
+team = 2
+village_name = "Zangabad"
+
+[node name="Village5" parent="Grid" instance=ExtResource( 9 )]
+position = Vector2( 896, 384 )
+team = 1
+village_name = "Salehan"
+
+[node name="Village6" parent="Grid" instance=ExtResource( 9 )]
+position = Vector2( 768, 128 )
+team = 1
+village_name = "Sanjaray"
 
 [node name="HUD" type="Control" parent="."]
 anchor_right = 1.0
@@ -118,6 +169,7 @@ __meta__ = {
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="GoaGUI" parent="UI" instance=ExtResource( 7 )]
+visible = false
 team_name = "GOA"
 flag = ExtResource( 8 )
 starting_villages = 8
@@ -136,6 +188,7 @@ flag = ExtResource( 11 )
 starting_villages = 2
 
 [node name="PlacementUI" parent="UI" instance=ExtResource( 13 )]
+visible = false
 margin_left = 26.0
 margin_top = 307.0
 margin_right = 392.0

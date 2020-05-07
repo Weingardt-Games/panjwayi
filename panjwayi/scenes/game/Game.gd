@@ -51,6 +51,8 @@ export(PackedScene) var taliban_piece
 func _ready():
 	# Wait till the game is ready or signals can fire before the game is ready for them!
 	$PhaseController.start()
+	GoaGUI.show()
+	TalibanGUI.show()
 
 func _process(delta: float) -> void:
 	

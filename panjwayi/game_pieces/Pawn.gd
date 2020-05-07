@@ -7,9 +7,12 @@ Including dummy objects to hold the status of a tile
 i.e. a gameboard piece
 
 """
+# Might not need TEAM, can use groups instead
+enum TEAM{ NONE, GOA, TALIBAN }
+export(TEAM) var team = TEAM.NONE
 
 enum CELL_TYPES {
-	ACTOR, OBSTACLE, OBJECT,
+	ACTOR, VILLAGE, OBJECT,
 	LEGAL_GOA_PLACEMENT, LEGAL_TALIBAN_PLACEMENT, ILLEGAL_PLACEMENT,
 	OPEN,
 	CAN_MOVE_TO, CAN_ATTACK
