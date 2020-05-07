@@ -149,7 +149,10 @@ func _on_Select_Piece_button_down(button: PlacementButton) -> void:
 	current_button = button
 	# TEMPRARY DISABLE TILL GET REINFORCEMENTS WORKING
 	if current_phase == PhaseController.PHASES.GOA_SETUP or current_phase == PhaseController.PHASES.TALIBAN_SETUP:
-		PlacementTool.start_new_placement(pieces[button.goa_piece_index].instance())
+		PlacementTool.start_new_placement(
+			pieces[button.goa_piece_index].instance(),
+			button.get_node("TextureRect").texture
+		)
 
 func _on_Select_Piece_button_mouse_entered() -> void:
 	PlacementTool.in_menu = true

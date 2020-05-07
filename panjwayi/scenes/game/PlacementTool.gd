@@ -19,10 +19,10 @@ signal actor_placed(current_actor)
 func _ready() -> void:
 	pass
 	
-func start_new_placement(actor: Actor):
+func start_new_placement(actor: Actor, texture: Texture):
 	placement_mode = true
 	current_piece = actor
-	$TextureRect.texture = actor.get_node("Sprite").texture
+	$TextureRect.texture = texture
 	show()
 	
 func process_placement():
