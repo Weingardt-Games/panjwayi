@@ -9,17 +9,25 @@ onready var clickSound = $ClickSound
 onready var deathSound = $DeathSound
 onready var phase_controller = $PhaseController
 
-
+enum ACTIONS {
+	PLACE_IED,
+	REMOVE_IED,
+	REPLACE_IED,
+	FLIP,
+	MOVE,
+	REINFORCEMENT		
+}
+var last_action
+var current_action
 var current_button
 var current_actor: Actor
-
 
 onready var TEAM_GUI_DICT = {
 	Actor.TEAM.GOA:	GoaGUI,
 	Actor.TEAM.TALIBAN: TalibanGUI
 }
 
-onready var movementConfimationDialog = $UI/MovementConfirmationDialog
+onready var confimationDialog = $UI/ConfirmationDialog
 onready var placementButtonContainer = find_node("PlacementUI").find_node("Container")
 onready var PlacementButton = preload("res://scenes/game/hud/PlacementButton.tscn")
 
@@ -34,9 +42,6 @@ var ACTOR_SCENES_DICT = {
 	Actor.ACTOR_TYPES.IED: load("res://game_pieces/taliban_pieces/IED.tscn"),
 }
 
-# Piece Scenes
-#export(Array, PackedScene) var pieces
-
 onready var pieces: Array = [
 	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.AIR],
 #	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
@@ -46,10 +51,11 @@ onready var pieces: Array = [
 #	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
 #	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
 ]
-	
 
 export(int, 1, 10) var number_of_taliban = 1
 export(PackedScene) var taliban_piece
+
+
 
 func _ready():
 	# Wait till the game is ready or signals can fire before the game is ready for them!
@@ -57,7 +63,7 @@ func _ready():
 	GoaGUI.show()
 	TalibanGUI.show()
 	
-	movementConfimationDialog.get_cancel().connect("pressed", self, "_on_MovementConfirmationDialog_cancelled")
+	confimationDialog.get_cancel().connect("pressed", self, "_on_ConfirmationDialog_cancelled")
 
 func _process(delta: float) -> void:
 	
@@ -150,11 +156,16 @@ func insert_actor(actor: Actor):
 
 func _on_GamePiece_flip_pressed(actor: Actor):
 	var flip_scene = ACTOR_SCENES_DICT.get(actor.flip_side)
-	var flip_piece = flip_scene.instance()
-	flip_piece.global_position = actor.global_position
-	insert_actor(flip_piece)
+	var flip_actor = flip_scene.instance()
+	flip_actor.global_position = actor.global_position
+	insert_actor(flip_actor)
 	actor.queue_free()
 	clickSound.play()
+	current_actor = flip_actor
+	current_action = ACTIONS.FLIP
+	if not phase_controller.is_setup():
+		confimationDialog.popup_centered()
+	
 
 func _on_Select_Piece_button_down(button: PlacementButton) -> void:
 	current_button = button
@@ -210,7 +221,8 @@ func _on_GamePiece_dropped(actor: Actor, new_location: Vector2) -> void:
 	if potential_location:
 		actor.move(potential_location)
 		clickSound.play()
-		movementConfimationDialog.popup_centered()
+		current_action = ACTIONS.MOVE
+		confimationDialog.popup_centered()
 	else:
 		actor.cancel_move()
 		print("Can't go there!")
@@ -224,21 +236,28 @@ func _on_GamePiece_dragged(actor: Actor, new_location: Vector2) -> void:
 		print("Can't go there!")
 		
 
-func _on_MovementConfirmationDialog_cancelled() -> void:
+func _on_ConfirmationDialog_cancelled() -> void:
 	print("Cancelling")
 	# move the piece back to its previous position.  Must be open so no need to check
-	current_actor.move(
-		Grid.request_move(current_actor, current_actor.previous_position, false, true)
-	)
+	match current_action:
+		ACTIONS.MOVE:
+			current_actor.move(
+				Grid.request_move(current_actor, current_actor.previous_position, false, true)
+			)
+		ACTIONS.FLIP:
+			_on_GamePiece_flip_pressed(current_actor)
+		ACTIONS.PLACE_IED:
+			pass
+		ACTIONS.REINFORCEMENT:
+			pass
+		ACTIONS.REMOVE_IED:
+			pass
+		ACTIONS.REPLACE_IED:
+			pass
 
-func _on_MovementConfirmationDialog_confirmed() -> void:
+func _on_ConfirmationDialog_confirmed() -> void:
+	last_action = current_action
 	$PhaseController.next_phase()
-
-#
-#func _on_GamePiece_movement_undo(actor: Actor):
-#	# move the piece back to its previous position.  Must be open so no need to check
-#	print("CANCELLEINGIGNEINFOINFODHFJIO")
-#	actor.move(Grid.request_move(actor, actor.previous_position, false, true))
 	
 func get_current_actors_on_board() -> Array:
 	var actors: Array

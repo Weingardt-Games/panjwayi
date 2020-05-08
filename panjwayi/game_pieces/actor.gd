@@ -146,7 +146,9 @@ func reset_ghost():
 func _set_is_enabled(value: bool):
 	""" This team's turn!"""
 	print("is_enabled ", value, actor_name)
-	is_enabled = value	
+	is_enabled = value
+	$FlipButton.disabled = !value
+	
 	
 func _on_FlipButton_pressed() -> void:
 	# Flip to new actor type
