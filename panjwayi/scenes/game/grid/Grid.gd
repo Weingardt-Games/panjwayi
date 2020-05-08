@@ -12,6 +12,7 @@ onready var movement_highlight = load("res://scenes/game/grid/MovementHighlight.
 onready var attack_highlight = load("res://scenes/game/grid/AttackHighlight.tscn")
 
 signal piece_destroyed(actor)
+signal piece_attacked(actor)
 
 func _ready():
 	# Fill the TileMap Grid with PLACEMENT_CELL_TYPES
