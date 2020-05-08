@@ -7,6 +7,8 @@ onready var GoaGUI = find_node("GoaGUI")
 onready var TalibanGUI = find_node("TalibanGUI")
 onready var clickSound = $ClickSound
 onready var deathSound = $DeathSound
+onready var phase_controller = $PhaseController
+
 
 var current_button
 
@@ -15,8 +17,6 @@ onready var TEAM_GUI_DICT = {
 	Actor.TEAM.GOA:	GoaGUI,
 	Actor.TEAM.TALIBAN: TalibanGUI
 }
-
-var current_phase = PhaseController.PHASES.GOA_SETUP
 
 onready var PlacementButtonContainer = find_node("PlacementUI").find_node("Container")
 onready var PlacementButton = preload("res://scenes/game/hud/PlacementButton.tscn")
@@ -38,16 +38,16 @@ var ACTOR_SCENES_DICT = {
 
 onready var pieces: Array = [
 	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.AIR],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
 ]
 	
 
-export(int, 1, 10) var number_of_taliban = 9
+export(int, 1, 10) var number_of_taliban = 1
 export(PackedScene) var taliban_piece
 
 func _ready():
@@ -58,7 +58,7 @@ func _ready():
 
 func _process(delta: float) -> void:
 	
-	match current_phase:
+	match phase_controller.phase:
 		PhaseController.PHASES.GOA_SETUP:
 			PlacementTool.process_placement()
 			
@@ -75,9 +75,11 @@ func _process(delta: float) -> void:
 			pass
 
 func _on_PhaseController_phase_changed(phase) -> void:
-	current_phase = phase
-	print("Game current pahse:", current_phase)
-	match current_phase:
+	print("Game current phase:", phase)
+	GoaGUI.set_phase(phase, phase_controller.get_phase_string())
+	TalibanGUI.set_phase(phase, phase_controller.get_phase_string())
+	
+	match phase:
 		PhaseController.PHASES.GOA_SETUP:
 			#pieces start with all the GoA scenes as an export	
 			_ready_placement()
@@ -118,13 +120,13 @@ func _on_PlacementTool_actor_placed(current_actor) -> void:
 	insert_actor(current_actor)
 	PlacementButtonContainer.remove_child(current_button)
 	clickSound.play()
-	
+
+	# when all the pieces are placed, activate button to finish setup phase
 	if is_all_pieces_placed():
-		if current_phase == PhaseController.PHASES.TALIBAN_SETUP:
-			placement_complete()
-			_ready_game_for_turns()
-			
-		$PhaseController.next_phase()
+		if phase_controller.is_taliban_setup():
+			TalibanGUI.button_is_active = true
+		elif phase_controller.is_goa_setup():
+			GoaGUI.button_is_active = true
 	
 func placement_complete():
 	# remove placement container?  or reuse for Reinforcemnts box?
@@ -154,7 +156,7 @@ func _on_GamePiece_flip_pressed(actor: Actor):
 func _on_Select_Piece_button_down(button: PlacementButton) -> void:
 	current_button = button
 	# TEMPRARY DISABLE TILL GET REINFORCEMENTS WORKING
-	if current_phase == PhaseController.PHASES.GOA_SETUP or current_phase == PhaseController.PHASES.TALIBAN_SETUP:
+	if phase_controller.is_setup():
 		PlacementTool.start_new_placement(
 			pieces[button.goa_piece_index].instance(),
 			button.get_node("TextureRect").texture
@@ -248,5 +250,15 @@ func _on_Grid_piece_destroyed(actor: Actor) -> void:
 	button.connect("mouse_entered", self, "_on_Select_Piece_button_mouse_entered")
 	button.connect("mouse_exited", self, "_on_Select_Piece_button_mouse_exited")
 	deathSound.play()
-		
-	
+
+
+func _on_GoaGUI_done_button_clicked() -> void:
+	$PhaseController.next_phase()
+	clickSound.play()
+
+
+func _on_TalibanGUI_done_button_clicked() -> void:
+	$PhaseController.next_phase()
+	placement_complete()
+	_ready_game_for_turns()
+	clickSound.play()

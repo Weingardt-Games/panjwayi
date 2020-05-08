@@ -137,6 +137,35 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="PhaseContainer" type="HBoxContainer" parent="Control/Control/VBoxContainer/ControlPanel"]
+margin_right = 366.0
+margin_bottom = 30.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LargeLabel" parent="Control/Control/VBoxContainer/ControlPanel/PhaseContainer" instance=ExtResource( 3 )]
+margin_right = 53.0
+margin_bottom = 30.0
+text = "Phase:"
+
+[node name="PhaseLabel" parent="Control/Control/VBoxContainer/ControlPanel/PhaseContainer" instance=ExtResource( 3 )]
+margin_left = 57.0
+margin_right = 366.0
+margin_bottom = 30.0
+size_flags_horizontal = 3
+text = "Current Phase"
+align = 2
+
+[node name="DoneButton" type="Button" parent="Control/Control/VBoxContainer/ControlPanel"]
+margin_top = 34.0
+margin_right = 366.0
+margin_bottom = 64.0
+rect_min_size = Vector2( 0, 30 )
+disabled = true
+text = "Done"
+[connection signal="pressed" from="Control/Control/VBoxContainer/ControlPanel/DoneButton" to="." method="_on_DoneButton_pressed"]
+
 [editable path="Control/Control/VBoxContainer/ReinforcementsPanel"]
 
 [editable path="Control/Control/VBoxContainer/DestroyedPanel"]

@@ -1,11 +1,10 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://scenes/game/PlacementTool.gd" type="Script" id=1]
 [ext_resource path="res://scenes/game/DisabledZone.gd" type="Script" id=2]
 [ext_resource path="res://assets/board1024-v2.png" type="Texture" id=3]
 [ext_resource path="res://scenes/game/grid/Grid.tscn" type="PackedScene" id=4]
 [ext_resource path="res://scenes/game/PhaseController.gd" type="Script" id=5]
-[ext_resource path="res://scenes/game/hud/PhaseLabel.gd" type="Script" id=6]
 [ext_resource path="res://scenes/game/hud/TeamGUI.tscn" type="PackedScene" id=7]
 [ext_resource path="res://assets/tokens/afghan.png" type="Texture" id=8]
 [ext_resource path="res://game_pieces/Village.tscn" type="PackedScene" id=9]
@@ -44,7 +43,7 @@ __meta__ = {
 [node name="Village" parent="Grid" instance=ExtResource( 9 )]
 position = Vector2( 128, 192 )
 team = 1
-village_name = "Howz e Medad"
+village_name = "Howz e Medad "
 
 [node name="Village2" parent="Grid" instance=ExtResource( 9 )]
 position = Vector2( 320, 320 )
@@ -90,83 +89,6 @@ village_name = "Salehan"
 position = Vector2( 768, 128 )
 team = 1
 village_name = "Sanjaray"
-
-[node name="HUD" type="Control" parent="."]
-anchor_right = 1.0
-anchor_bottom = 1.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="VBoxContainer" type="VBoxContainer" parent="HUD"]
-margin_left = 15.0
-margin_top = 15.0
-margin_right = 40.0
-margin_bottom = 40.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="HBoxContainer" type="HBoxContainer" parent="HUD/VBoxContainer"]
-margin_right = 285.0
-margin_bottom = 20.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Label" type="Label" parent="HUD/VBoxContainer/HBoxContainer"]
-margin_top = 3.0
-margin_right = 42.0
-margin_bottom = 17.0
-text = "Phase:"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="PhaseLabel" type="Label" parent="HUD/VBoxContainer/HBoxContainer"]
-margin_left = 46.0
-margin_top = 3.0
-margin_right = 156.0
-margin_bottom = 17.0
-text = "GoA Player Setup"
-script = ExtResource( 6 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="PhaseCompleteButton" type="Button" parent="HUD/VBoxContainer/HBoxContainer"]
-margin_left = 160.0
-margin_right = 276.0
-margin_bottom = 20.0
-text = "Phase Complete"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="HUD/VBoxContainer"]
-margin_top = 24.0
-margin_right = 285.0
-margin_bottom = 72.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Label" type="Label" parent="HUD/VBoxContainer/HBoxContainer2"]
-margin_right = 43.0
-margin_bottom = 48.0
-size_flags_vertical = 5
-text = "Status:"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="StatusLabel" type="Label" parent="HUD/VBoxContainer/HBoxContainer2"]
-margin_left = 47.0
-margin_right = 285.0
-margin_bottom = 48.0
-text = "Click to place your seven Goa Pieces:
-- to the North of the red line 
-- max one piece per square."
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -262,8 +184,8 @@ stream = ExtResource( 12 )
 [node name="DeathSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 14 )
 [connection signal="piece_destroyed" from="Grid" to="." method="_on_Grid_piece_destroyed"]
-[connection signal="pressed" from="HUD/VBoxContainer/HBoxContainer/PhaseCompleteButton" to="PhaseController" method="_on_PhaseCompleteButton_pressed"]
+[connection signal="done_button_clicked" from="UI/GoaGUI" to="." method="_on_GoaGUI_done_button_clicked"]
+[connection signal="done_button_clicked" from="UI/TalibanGUI" to="." method="_on_TalibanGUI_done_button_clicked"]
 [connection signal="actor_placed" from="PlacementTool" to="." method="_on_PlacementTool_actor_placed"]
-[connection signal="phase_changed" from="PhaseController" to="." method="_on_PhaseController_phase_changed"]
-[connection signal="phase_changed" from="PhaseController" to="HUD/VBoxContainer/HBoxContainer/PhaseLabel" method="_on_PhaseController_phase_changed"]
 [connection signal="phase_changed" from="PhaseController" to="DisabledZone" method="_on_PhaseController_phase_changed"]
+[connection signal="phase_changed" from="PhaseController" to="." method="_on_PhaseController_phase_changed"]
