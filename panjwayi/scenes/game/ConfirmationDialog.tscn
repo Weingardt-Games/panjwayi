@@ -1,0 +1,12 @@
+[gd_scene format=2]
+
+[node name="ConfirmationDialog" type="ConfirmationDialog"]
+margin_left = 40.0
+margin_top = -72.0
+margin_right = 240.0
+margin_bottom = -2.0
+popup_exclusive = true
+dialog_text = "Are you sure you want to move here?"
+__meta__ = {
+"_edit_use_anchors_": false
+}

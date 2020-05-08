@@ -11,6 +11,7 @@ onready var phase_controller = $PhaseController
 
 
 var current_button
+var current_actor: Actor
 
 
 onready var TEAM_GUI_DICT = {
@@ -18,9 +19,9 @@ onready var TEAM_GUI_DICT = {
 	Actor.TEAM.TALIBAN: TalibanGUI
 }
 
-onready var PlacementButtonContainer = find_node("PlacementUI").find_node("Container")
+onready var movementConfimationDialog = $UI/MovementConfirmationDialog
+onready var placementButtonContainer = find_node("PlacementUI").find_node("Container")
 onready var PlacementButton = preload("res://scenes/game/hud/PlacementButton.tscn")
-
 
 var ACTOR_SCENES_DICT = {
 	Actor.ACTOR_TYPES.AIR: load("res://game_pieces/goa_pieces/AIR.tscn"),
@@ -55,6 +56,8 @@ func _ready():
 	$PhaseController.start()
 	GoaGUI.show()
 	TalibanGUI.show()
+	
+	movementConfimationDialog.get_cancel().connect("pressed", self, "_on_MovementConfirmationDialog_cancelled")
 
 func _process(delta: float) -> void:
 	
@@ -113,12 +116,12 @@ func _on_PhaseController_phase_changed(phase) -> void:
 
 		
 func is_all_pieces_placed():
-	return PlacementButtonContainer.get_child_count() == 0
+	return placementButtonContainer.get_child_count() == 0
 	
 
 func _on_PlacementTool_actor_placed(current_actor) -> void:
 	insert_actor(current_actor)
-	PlacementButtonContainer.remove_child(current_button)
+	placementButtonContainer.remove_child(current_button)
 	clickSound.play()
 
 	# when all the pieces are placed, activate button to finish setup phase
@@ -181,14 +184,14 @@ func _ready_placement():
 		var button = PlacementButton.instance()
 		button.get_node("TextureRect").texture = piece.sprite
 		button.goa_piece_index = i
-		PlacementButtonContainer.add_child(button)
+		placementButtonContainer.add_child(button)
 		
 		button.connect("selected", self, "_on_Select_Piece_button_down")
 		button.connect("mouse_entered", self, "_on_Select_Piece_button_mouse_entered")
 		button.connect("mouse_exited", self, "_on_Select_Piece_button_mouse_exited")
 		
 
-###############  TURN ######################
+###############  TURN / MOVEMENT ######################
 func _ready_game_for_turns():
 	# reset the Grid for movement:
 	Grid.prepare_board_for_game_start()
@@ -197,6 +200,7 @@ func _on_GamePiece_movement_cancelled():
 	Grid.clear_movement()
 	
 func _on_GamePiece_selected(actor: Actor):
+	current_actor = actor
 	Grid.prep_movement(actor)
 	clickSound.play()
 
@@ -206,6 +210,7 @@ func _on_GamePiece_dropped(actor: Actor, new_location: Vector2) -> void:
 	if potential_location:
 		actor.move(potential_location)
 		clickSound.play()
+		movementConfimationDialog.popup_centered()
 	else:
 		actor.cancel_move()
 		print("Can't go there!")
@@ -217,6 +222,23 @@ func _on_GamePiece_dragged(actor: Actor, new_location: Vector2) -> void:
 	else:
 		actor.potential_move(actor.position)
 		print("Can't go there!")
+		
+
+func _on_MovementConfirmationDialog_cancelled() -> void:
+	print("Cancelling")
+	# move the piece back to its previous position.  Must be open so no need to check
+	current_actor.move(
+		Grid.request_move(current_actor, current_actor.previous_position, false, true)
+	)
+
+func _on_MovementConfirmationDialog_confirmed() -> void:
+	$PhaseController.next_phase()
+
+#
+#func _on_GamePiece_movement_undo(actor: Actor):
+#	# move the piece back to its previous position.  Must be open so no need to check
+#	print("CANCELLEINGIGNEINFOINFODHFJIO")
+#	actor.move(Grid.request_move(actor, actor.previous_position, false, true))
 	
 func get_current_actors_on_board() -> Array:
 	var actors: Array
@@ -245,7 +267,7 @@ func _on_Grid_piece_destroyed(actor: Actor) -> void:
 	button.get_node("TextureRect").texture = actor.sprite
 #	button.goa_piece_index = i
 	(TEAM_GUI_DICT[actor.team] as TeamGUI).add_actor_to_destroyed(button)
-#	PlacementButtonContainer.add_child(button)
+#	placementButtonContainer.add_child(button)
 	button.connect("selected", self, "_on_Select_Piece_button_down")
 	button.connect("mouse_entered", self, "_on_Select_Piece_button_mouse_entered")
 	button.connect("mouse_exited", self, "_on_Select_Piece_button_mouse_exited")
@@ -262,3 +284,4 @@ func _on_TalibanGUI_done_button_clicked() -> void:
 	placement_complete()
 	_ready_game_for_turns()
 	clickSound.play()
+

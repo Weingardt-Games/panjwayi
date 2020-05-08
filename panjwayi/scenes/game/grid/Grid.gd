@@ -45,7 +45,7 @@ func get_cell_highlight(coordinates):
 		if node.is_in_group("indicators") and world_to_map(node.position) == coordinates:
 			return(node)
 
-func request_move(actor: Actor, new_position, final=false):
+func request_move(actor: Actor, new_position, final=false, force=false):
 	var cell_start = world_to_map(actor.position)
 	var cell_target = world_to_map(new_position)
 	var cell_target_type = get_cellv(cell_target)
@@ -53,6 +53,9 @@ func request_move(actor: Actor, new_position, final=false):
 	if cell_start == cell_target:
 		# hasn't moved yet
 		return get_world_position(cell_target)
+		
+	if force:
+		return update_pawn_position(actor, cell_start, cell_target)
 	
 	match cell_target_type:
 		Pawn.CELL_TYPES.CAN_ATTACK:

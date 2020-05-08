@@ -37,9 +37,12 @@ export(bool) var captures_villages
 export(String) var Special
 export(ACTOR_TYPES) var flip_side = ACTOR_TYPES.NONE
 
+var is_mouse_still_inside = true  # tracks whether the mouse has left the actor or not
 var is_dragging = false
 var is_enabled = true setget _set_is_enabled
 var is_selected = false
+
+var previous_position: Vector2
 
 signal game_piece_dropped(actor, new_location)
 signal game_piece_dragged(actor, new_location)
@@ -57,20 +60,21 @@ func _ready() -> void:
 		$FlipButton.visible = false
 		
 	
-func _input(event):
+func _unhandled_input(event: InputEvent) -> void:
 	# ALL input events
 	
 	# There is no _is_action_just_pressed here because of the echo thing...
 	#https://godotengine.org/qa/45910/how-to-get-key_a-or-any-other-key-just-pressed
-	var just_pressed = event.is_pressed() and not event.is_echo()
+#	var just_pressed = event.is_pressed() and not event.is_echo()
 	
 	if is_selected:
-		if event.is_action_released("ui_select"): # or (event.is_action_pressed("ui_select") and just_pressed): 
-			# place the piece if left-click or equivalent is:
-			# released (if they are holding the button)
-			# just pressed (if they were not holding the button)
-			print("Released: ", actor_name)
-			emit_signal("game_piece_dropped", self, get_global_mouse_position())
+		if event.is_action_released("ui_select") or event.is_action_pressed("ui_select"): 
+			# if the mouse is still over the piece, leave it selected
+			if not is_mouse_still_inside:	
+				print("Released: ", actor_name)
+				emit_signal("game_piece_dropped", self, get_global_mouse_position())
+				# so it doesn't immediately reselect the actor if it was placed with a click (instead of release)
+				get_tree().set_input_as_handled()
 			
 		if event is InputEventMouseMotion:
 #			print("Dragged: ", actor_name)
@@ -96,6 +100,7 @@ func _on_Area2D_input_event(_viewport: Node, event: InputEvent, _shape_idx: int)
 
 func move(new_location):
 	print("Moved: ", actor_name)
+	previous_position = position
 	is_dragging = false
 	is_selected = false
 	position = new_location
@@ -118,6 +123,7 @@ func set_selected():
 	$Highlight.visible = true
 	is_selected = true
 	is_dragging = true
+	is_mouse_still_inside = true
 	
 func update_line(target_position):
 	$Line2D.visible = true
@@ -194,3 +200,7 @@ func get_movement_array() -> Array:
 					else:
 						move_array[y].append(0)
 	return move_array	
+
+
+func _on_Area2D_mouse_exited() -> void:
+	is_mouse_still_inside = false	

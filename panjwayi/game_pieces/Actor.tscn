@@ -51,3 +51,4 @@ __meta__ = {
 shape = SubResource( 1 )
 [connection signal="pressed" from="FlipButton" to="." method="_on_FlipButton_pressed"]
 [connection signal="input_event" from="Area2D" to="." method="_on_Area2D_input_event"]
+[connection signal="mouse_exited" from="Area2D" to="." method="_on_Area2D_mouse_exited"]
