@@ -64,7 +64,7 @@ village_name = "Bazaar e Panjwayi"
 
 [node name="Village10" parent="Grid" instance=ExtResource( 9 )]
 position = Vector2( 64, 576 )
-team = 2
+team = 1
 village_name = "Nalgham"
 
 [node name="Village7" parent="Grid" instance=ExtResource( 9 )]
@@ -74,7 +74,7 @@ village_name = "Salavat"
 
 [node name="Village8" parent="Grid" instance=ExtResource( 9 )]
 position = Vector2( 832, 768 )
-team = 1
+team = 2
 village_name = "Nakhonay"
 
 [node name="Village9" parent="Grid" instance=ExtResource( 9 )]

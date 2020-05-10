@@ -8,3 +8,4 @@ sprite = ExtResource( 2 )
 actor_type = 4
 actor_name = "Afghan National Police"
 attackable_units = [ 6 ]
+captures_villages = true

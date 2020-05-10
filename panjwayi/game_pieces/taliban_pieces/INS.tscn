@@ -8,4 +8,5 @@ sprite = ExtResource( 2 )
 actor_type = 7
 actor_name = "Insurgent"
 attackable_units = [ 2, 5, 3, 4 ]
+captures_villages = true
 flip_side = 6

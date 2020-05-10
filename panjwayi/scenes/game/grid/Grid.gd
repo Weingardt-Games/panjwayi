@@ -31,6 +31,7 @@ func _ready():
 func _init_villages() -> void:
 	var villages = get_tree().get_nodes_in_group("villages")
 	for village in villages:
+		village._ready()
 		var cell = world_to_map(village.position)
 		if get_cellv(cell) == Pawn.CELL_TYPES.ACTOR:
 			set_cellv(cell, Pawn.CELL_TYPES.OCCUPIED_VILLAGE)
@@ -103,12 +104,14 @@ func request_move(actor: Actor, new_position, final=false, force=false):
 #			pass
 
 func update_pawn_position(actor: Actor, cell_start, cell_target):
-	if get_cellv(cell_target) != Pawn.CELL_TYPES.OCCUPIED_VILLAGE:
+	""" If an actor is moving here, then it's either an attackable or a moveable cell """
+	if is_village(cell_target):
+		set_cellv(cell_target, Pawn.CELL_TYPES.OCCUPIED_VILLAGE)
+	else:
 		set_cellv(cell_target, actor.type)
-	# otherwise leave it as an occupied village type
-	
-	# check if they are moving out of a village
-	if get_cellv(cell_start) == Pawn.CELL_TYPES.OCCUPIED_VILLAGE:
+		
+		
+	if is_village(cell_start):
 		set_cellv(cell_start, Pawn.CELL_TYPES.VILLAGE)
 	else:
 		set_cellv(cell_start, Pawn.CELL_TYPES.OPEN)
@@ -145,7 +148,7 @@ func prep_movement(actor: Actor):
 				if cell_type == Pawn.CELL_TYPES.VILLAGE:
 					var village_at_cell = get_village(valid_move_cell)
 					print("FOUND A VILLAGE")
-					print(valid_move_cell)
+#					print(valid_move_cell)
 					print(village_at_cell.team)
 					print(actor.team)
 					if village_at_cell.team != actor.team and actor.captures_villages:
@@ -248,9 +251,18 @@ func _clear_movement_in_cell(cell: Vector2):
 		indicator.queue_free()
 	var cell_type = get_cellv(cell)
 	if cell_type == Pawn.CELL_TYPES.CAN_MOVE_TO:
-		set_cellv(cell, Pawn.CELL_TYPES.OPEN)
+		if is_village(cell):
+			set_cellv(cell, Pawn.CELL_TYPES.VILLAGE)
+		else:
+			set_cellv(cell, Pawn.CELL_TYPES.OPEN)
 	elif cell_type == Pawn.CELL_TYPES.CAN_ATTACK:
-		set_cellv(cell, Pawn.CELL_TYPES.ACTOR)	
+		if is_village(cell) and is_actor(cell):
+			set_cellv(cell, Pawn.CELL_TYPES.OCCUPIED_VILLAGE)
+		elif is_village(cell):
+			set_cellv(cell, Pawn.CELL_TYPES.VILLAGE)
+		else:
+			set_cellv(cell, Pawn.CELL_TYPES.ACTOR)	
+			
 	elif cell_type == Pawn.CELL_TYPES.MOVEMENT_BLOCKING_ACTOR:
 		set_cellv(cell, Pawn.CELL_TYPES.ACTOR)
 				

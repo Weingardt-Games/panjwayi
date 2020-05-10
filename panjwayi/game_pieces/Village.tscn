@@ -9,7 +9,9 @@
 ]]
 script = ExtResource( 1 )
 type = 1
+sprite = ExtResource( 3 )
 village_name = "Village"
+GOA_COLOR = Color( 1, 0, 0, 1 )
 
 [node name="Sprite" type="Sprite" parent="."]
 position = Vector2( 32, 32 )

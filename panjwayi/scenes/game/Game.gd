@@ -319,6 +319,6 @@ func _on_TalibanGUI_done_button_clicked() -> void:
 
 
 func _on_Grid_village_captured(village: Village) -> void:
-	print(village.name, " Captured!")
-	clickSound.play()
+	print(village.village_name, " Captured!")
+	deathSound.play()
 	village.toggle_team()
