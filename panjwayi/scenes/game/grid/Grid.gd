@@ -134,42 +134,51 @@ func prep_movement(actor: Actor):
 						highlight.position = get_world_position(valid_move_cell)
 						set_cellv(valid_move_cell, Pawn.CELL_TYPES.CAN_ATTACK)
 						add_child(highlight)
-						# at the end we'll remove movement beyond enemies
-						# since enemies block movement
-	_remove_move_cells_beyond_enemies(actor)
+					elif actor.pass_overable_units.find(actor_at_cell.actor_type) == -1:
+						# Not in the pass overable list, so this should block movement too
+						set_cellv(valid_move_cell, Pawn.CELL_TYPES.MOVEMENT_BLOCKING_ACTOR)
+
+	# at the end we'll remove movement beyond blocking elements		
+	_remove_move_cells_beyond_blocked(actor)
 	
-func _remove_move_cells_beyond_enemies(actor):
+func _remove_move_cells_beyond_blocked(actor):
 	var actor_cell = world_to_map(actor.position)
-	var attack_highlights = get_tree().get_nodes_in_group("map_attack_highlights")
-	var attack_cell: Vector2  # a specific cell the actor can attack
-	var blocked_cell: Vector2  # the cell that is blocked by an enemy
-	var ray: Vector2
-	var cell_type: int   # Pawn.CELL_TYPES
-	for attack_spot in attack_highlights:
-		attack_cell = world_to_map(attack_spot.position)
-		ray = attack_cell - actor_cell
-		# increment the cell in the direction of attacker and remove movement
-		for i in range(BOARD_SIZE.x):  # this is overkill, should limit to x,y > (0,0)
-			if ray.y < 0 :  # The attack spot is to north 
-				ray.y -= 1
-			elif ray.y > 0:  # to the south
-				ray.y += 1
-			if ray.x < 0:  # to the left
-				ray.x -= 1
-			elif ray.x > 0:  # to the right
-				ray.x += 1
-			blocked_cell = actor_cell + ray
-			cell_type = get_cellv(blocked_cell)
-			if cell_type == Pawn.CELL_TYPES.CAN_MOVE_TO or Pawn.CELL_TYPES.CAN_ATTACK:
-				_clear_movement_in_cell(blocked_cell)
-				
+	var blocking_cells = get_used_cells_by_id(Pawn.CELL_TYPES.CAN_ATTACK)
+	for blocking_cell in blocking_cells: 
+		_remove_movement_beyond_cell(actor_cell, blocking_cell)
+	blocking_cells = get_used_cells_by_id(Pawn.CELL_TYPES.MOVEMENT_BLOCKING_ACTOR)
+	for blocking_cell in blocking_cells: 
+		_remove_movement_beyond_cell(actor_cell, blocking_cell)
+
+func _remove_movement_beyond_cell(origin_cell: Vector2, blocking_cell: Vector2):
+	""" Removes all cells as moveable locations that are beyond a specific blocking cell
+	This assumes straight movement on a square grid, so movement only in 8 directions.
+	"""
+	var blocked_cell: Vector2 # the cell that is blocked by an obstacle
+
+	# Generate a "ray" that extends from the origin_cell to the blocking cell
+	var ray: Vector2 = blocking_cell - origin_cell
+	
+	# increment the cell in the direction of blocking cell and remove movement
+	for i in range(BOARD_SIZE.x):  # this is overkill, should limit to x,y > (0,0)
+		if ray.y < 0 :  # The attack spot is to north 
+			ray.y -= 1
+		elif ray.y > 0:  # to the south
+			ray.y += 1
+		if ray.x < 0:  # to the left
+			ray.x -= 1
+		elif ray.x > 0:  # to the right
+			ray.x += 1
+		blocked_cell = origin_cell + ray
+		if get_cellv(blocked_cell) == Pawn.CELL_TYPES.CAN_MOVE_TO or Pawn.CELL_TYPES.CAN_ATTACK:
+			_clear_movement_in_cell(blocked_cell)
 
 func get_actor(cell: Vector2) -> Actor:
 	""" Returns the Actor in the cell
 	"""
-	return _get_item(cell, "actors") as Actor
+	return _get_node(cell, "actors") as Actor
 
-func _get_item(cell: Vector2, group: String) -> Node2D:
+func _get_node(cell: Vector2, group: String) -> Node2D:
 	""" Returns the item in the cell and group
 	"""
 	var nodes = get_tree().get_nodes_in_group(group)
@@ -185,11 +194,14 @@ func clear_movement():
 			_clear_movement_in_cell(Vector2(x, y))
 				
 func _clear_movement_in_cell(cell: Vector2):
-	var indicator = _get_item(cell, "map_indicators")
+	var indicator = _get_node(cell, "map_indicators")
 	if indicator != null:
 		indicator.queue_free()
-	if get_cellv(cell) == Pawn.CELL_TYPES.CAN_MOVE_TO:
+	var cell_type = get_cellv(cell)
+	if cell_type == Pawn.CELL_TYPES.CAN_MOVE_TO:
 		set_cellv(cell, Pawn.CELL_TYPES.OPEN)
-	elif get_cellv(cell) == Pawn.CELL_TYPES.CAN_ATTACK:
+	elif cell_type == Pawn.CELL_TYPES.CAN_ATTACK:
 		set_cellv(cell, Pawn.CELL_TYPES.ACTOR)	
+	elif cell_type == Pawn.CELL_TYPES.MOVEMENT_BLOCKING_ACTOR:
+		set_cellv(cell, Pawn.CELL_TYPES.ACTOR)
 				

@@ -32,7 +32,10 @@ export(String) var actor_name
 export(String) var moves
 export(MOVEMENT_TYPES) var movement_type = MOVEMENT_TYPES.KING
 export(String) var attacks
+
 export(Array, ACTOR_TYPES) var attackable_units = [ACTOR_TYPES.NONE]
+export(Array, ACTOR_TYPES) var pass_overable_units = [ACTOR_TYPES.NONE]
+
 export(bool) var captures_villages
 export(String) var Special
 export(ACTOR_TYPES) var flip_side = ACTOR_TYPES.NONE

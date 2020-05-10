@@ -193,5 +193,5 @@ stream = ExtResource( 14 )
 [connection signal="done_button_clicked" from="UI/TalibanGUI" to="." method="_on_TalibanGUI_done_button_clicked"]
 [connection signal="confirmed" from="UI/ConfirmationDialog" to="." method="_on_ConfirmationDialog_confirmed"]
 [connection signal="actor_placed" from="PlacementTool" to="." method="_on_PlacementTool_actor_placed"]
-[connection signal="phase_changed" from="PhaseController" to="DisabledZone" method="_on_PhaseController_phase_changed"]
 [connection signal="phase_changed" from="PhaseController" to="." method="_on_PhaseController_phase_changed"]
+[connection signal="phase_changed" from="PhaseController" to="DisabledZone" method="_on_PhaseController_phase_changed"]

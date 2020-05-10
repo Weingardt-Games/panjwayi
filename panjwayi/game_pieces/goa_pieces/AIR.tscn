@@ -5,6 +5,8 @@
 
 [node name="AIR" instance=ExtResource( 1 )]
 sprite = ExtResource( 2 )
+actor_type = 1
 actor_name = "Air Support"
 movement_type = 3
 attackable_units = [ 7 ]
+pass_overable_units = [ 2, 3, 4, 5, 8 ]
