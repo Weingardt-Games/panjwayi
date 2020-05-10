@@ -6,13 +6,12 @@ enum { EMPTY = -1, ACTOR, OBSTACLE, OBJECT}
 const BOARD_SIZE = Vector2(16, 16)
 const BOARD_OFFSET = Vector2(398, 0)
 
-var grid_contents: Array  # 2D array holds the nodes at each cell 
-
 onready var movement_highlight = load("res://scenes/game/grid/MovementHighlight.tscn")
 onready var attack_highlight = load("res://scenes/game/grid/AttackHighlight.tscn")
 
 signal piece_destroyed(actor)
 signal piece_attacked(actor)
+signal village_captured(village)
 
 func _ready():
 	# Fill the TileMap Grid with PLACEMENT_CELL_TYPES
@@ -24,21 +23,31 @@ func _ready():
 				set_cell(x, y, Pawn.CELL_TYPES.LEGAL_TALIBAN_PLACEMENT)
 			else:
 				set_cell(x, y, Pawn.CELL_TYPES.ILLEGAL_PLACEMENT)
-				
-	# Also initialize the grid contents
-	for x in BOARD_SIZE.x:
-		grid_contents.append([])
-		for y in BOARD_SIZE.y:
-			grid_contents[x].append(null)
+
 			
 #func _set_grid_contents(actor: Actor, cell: Vector2):
 #	grid_contents[cell.x][cell.y] = actor
+
+func _init_villages() -> void:
+	var villages = get_tree().get_nodes_in_group("villages")
+	for village in villages:
+		var cell = world_to_map(village.position)
+		if get_cellv(cell) == Pawn.CELL_TYPES.ACTOR:
+			set_cellv(cell, Pawn.CELL_TYPES.OCCUPIED_VILLAGE)
+			print("Occupied Village at: ", cell)
+		else:
+			print("Empty Village at cell: ", cell)
+			set_cellv(cell, Pawn.CELL_TYPES.VILLAGE)
 				
 func prepare_board_for_game_start():
+	_init_villages()
 	for x in BOARD_SIZE.x:
 		for y in BOARD_SIZE.y:
-			if get_cell(x, y) != Pawn.CELL_TYPES.ACTOR:
+			var cell = get_cell(x, y)
+			if cell != Pawn.CELL_TYPES.ACTOR and cell != Pawn.CELL_TYPES.VILLAGE and cell != Pawn.CELL_TYPES.OCCUPIED_VILLAGE:
 				set_cell(x, y, Pawn.CELL_TYPES.OPEN)
+			else:
+				print(x, ", ",y, ": ", get_cell(x, y))
 
 
 func get_cell_highlight(coordinates):
@@ -53,7 +62,7 @@ func request_move(actor: Actor, new_position, final=false, force=false):
 	
 	if cell_start == cell_target:
 		# hasn't moved yet
-		return get_world_position(cell_target)
+		return null
 		
 	if force:
 		return update_pawn_position(actor, cell_start, cell_target)
@@ -61,14 +70,19 @@ func request_move(actor: Actor, new_position, final=false, force=false):
 	match cell_target_type:
 		Pawn.CELL_TYPES.CAN_ATTACK:
 			if final:
-				var destroyed_actor: Actor = get_actor(cell_target)
-				remove_child(destroyed_actor)
-				emit_signal("piece_destroyed", destroyed_actor)
+				if is_actor(cell_target): # could also be a village
+					var destroyed_actor: Actor = get_actor(cell_target)
+					remove_child(destroyed_actor)
+					emit_signal("piece_destroyed", destroyed_actor)
 				# Actually moving the actor there:
+				if is_village(cell_target):
+					# handle village occupation!
+					emit_signal("village_captured", get_village(cell_target))
 				return update_pawn_position(actor, cell_start, cell_target)
 			else:
 				# Just checking if we can move there...
 				return get_world_position(cell_target)
+				
 		Actor.CELL_TYPES.CAN_MOVE_TO:
 			if final:
 				# Actually moving the actor there
@@ -89,9 +103,16 @@ func request_move(actor: Actor, new_position, final=false, force=false):
 #			pass
 
 func update_pawn_position(actor: Actor, cell_start, cell_target):
-	set_cellv(cell_target, actor.type)
+	if get_cellv(cell_target) != Pawn.CELL_TYPES.OCCUPIED_VILLAGE:
+		set_cellv(cell_target, actor.type)
+	# otherwise leave it as an occupied village type
 	
-	set_cellv(cell_start, Pawn.CELL_TYPES.OPEN)
+	# check if they are moving out of a village
+	if get_cellv(cell_start) == Pawn.CELL_TYPES.OCCUPIED_VILLAGE:
+		set_cellv(cell_start, Pawn.CELL_TYPES.VILLAGE)
+	else:
+		set_cellv(cell_start, Pawn.CELL_TYPES.OPEN)
+		
 	return get_world_position(cell_target)
 	
 func get_world_position(cell_target):
@@ -119,27 +140,44 @@ func prep_movement(actor: Actor):
 				
 				if cell_type == Pawn.CELL_TYPES.OPEN:
 					# cell is open, so highlight it as moveable spot
-					var highlight = movement_highlight.instance()
-					highlight.position = get_world_position(valid_move_cell)
-					set_cellv(valid_move_cell, Pawn.CELL_TYPES.CAN_MOVE_TO)
-					add_child(highlight)
+					_set_cell_moveable(valid_move_cell)
 					
-				elif cell_type == Pawn.CELL_TYPES.ACTOR:
+				if cell_type == Pawn.CELL_TYPES.VILLAGE:
+					var village_at_cell = get_village(valid_move_cell)
+					print("FOUND A VILLAGE")
+					print(valid_move_cell)
+					print(village_at_cell.team)
+					print(actor.team)
+					if village_at_cell.team != actor.team and actor.captures_villages:
+						_set_cell_attackable(valid_move_cell)
+					else:
+						_set_cell_moveable(valid_move_cell)
+					
+				elif cell_type == Pawn.CELL_TYPES.ACTOR or cell_type == Pawn.CELL_TYPES.OCCUPIED_VILLAGE:
 					# cell has another actor, check what kind of actor to see if we can attack it
 					var actor_at_cell: Actor = get_actor(valid_move_cell)
 					# if actor type is in the attackable_unit Array
 					if actor.attackable_units.find(actor_at_cell.actor_type) != -1:
-						# Highlight cell as attackable
-						var highlight = attack_highlight.instance()
-						highlight.position = get_world_position(valid_move_cell)
-						set_cellv(valid_move_cell, Pawn.CELL_TYPES.CAN_ATTACK)
-						add_child(highlight)
+						_set_cell_attackable(valid_move_cell)
 					elif actor.pass_overable_units.find(actor_at_cell.actor_type) == -1:
 						# Not in the pass overable list, so this should block movement too
 						set_cellv(valid_move_cell, Pawn.CELL_TYPES.MOVEMENT_BLOCKING_ACTOR)
 
 	# at the end we'll remove movement beyond blocking elements		
 	_remove_move_cells_beyond_blocked(actor)
+
+func _set_cell_moveable(cell):
+	var highlight = movement_highlight.instance()
+	highlight.position = get_world_position(cell)
+	set_cellv(cell, Pawn.CELL_TYPES.CAN_MOVE_TO)
+	add_child(highlight)
+	
+func _set_cell_attackable(cell):
+	# Highlight cell as attackable
+	var highlight = attack_highlight.instance()
+	highlight.position = get_world_position(cell)
+	set_cellv(cell, Pawn.CELL_TYPES.CAN_ATTACK)
+	add_child(highlight)
 	
 func _remove_move_cells_beyond_blocked(actor):
 	var actor_cell = world_to_map(actor.position)
@@ -176,16 +214,27 @@ func _remove_movement_beyond_cell(origin_cell: Vector2, blocking_cell: Vector2):
 func get_actor(cell: Vector2) -> Actor:
 	""" Returns the Actor in the cell
 	"""
-	return _get_node(cell, "actors") as Actor
+	return _get_node_in_group(cell, "actors") as Actor
+	
+func get_village(cell: Vector2) -> Village:
+	""" Returns the Actor in the cell
+	"""
+	return _get_node_in_group(cell, "villages") as Village
 
-func _get_node(cell: Vector2, group: String) -> Node2D:
+func _get_node_in_group(cell: Vector2, group: String) -> Node2D:
 	""" Returns the item in the cell and group
 	"""
 	var nodes = get_tree().get_nodes_in_group(group)
 	for node in nodes:
 		if cell == world_to_map(node.position):
 			return node	
-	return null
+	return null	
+	
+func is_village(cell: Vector2) -> bool:
+	return _get_node_in_group(cell, "villages") != null
+	
+func is_actor(cell: Vector2) -> bool:
+	return _get_node_in_group(cell, "actors") != null
 
 func clear_movement():
 	get_tree().call_group("map_indicators", "queue_free")
@@ -194,7 +243,7 @@ func clear_movement():
 			_clear_movement_in_cell(Vector2(x, y))
 				
 func _clear_movement_in_cell(cell: Vector2):
-	var indicator = _get_node(cell, "map_indicators")
+	var indicator = _get_node_in_group(cell, "map_indicators")
 	if indicator != null:
 		indicator.queue_free()
 	var cell_type = get_cellv(cell)

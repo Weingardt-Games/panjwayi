@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://scenes/game/PlacementTool.gd" type="Script" id=1]
 [ext_resource path="res://scenes/game/DisabledZone.gd" type="Script" id=2]
@@ -14,6 +14,7 @@
 [ext_resource path="res://assets/sounds/click2.wav" type="AudioStream" id=12]
 [ext_resource path="res://scenes/game/hud/UIPanel.tscn" type="PackedScene" id=13]
 [ext_resource path="res://assets/sounds/shot.wav" type="AudioStream" id=14]
+[ext_resource path="res://scenes/game/InfoPanel.gd" type="Script" id=15]
 [ext_resource path="res://game_pieces/taliban_pieces/INS.tscn" type="PackedScene" id=21]
 [ext_resource path="res://scenes/game/Camera2D.gd" type="Script" id=26]
 
@@ -92,6 +93,56 @@ team = 1
 village_name = "Sanjaray"
 
 [node name="UI" type="CanvasLayer" parent="."]
+
+[node name="InfoPanel" type="Control" parent="UI"]
+margin_left = 406.0
+margin_top = 15.0
+margin_right = 446.0
+margin_bottom = 55.0
+mouse_filter = 1
+script = ExtResource( 15 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/InfoPanel"]
+modulate = Color( 0, 0.0627451, 1, 1 )
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Heading" type="Label" parent="UI/InfoPanel/VBoxContainer"]
+margin_right = 83.0
+margin_bottom = 14.0
+text = "DEBUG INFO"
+
+[node name="Cell" type="Label" parent="UI/InfoPanel/VBoxContainer"]
+margin_top = 18.0
+margin_right = 83.0
+margin_bottom = 32.0
+
+[node name="Type" type="Label" parent="UI/InfoPanel/VBoxContainer"]
+margin_top = 36.0
+margin_right = 83.0
+margin_bottom = 50.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Village" type="Label" parent="UI/InfoPanel/VBoxContainer"]
+margin_top = 54.0
+margin_right = 83.0
+margin_bottom = 68.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Actor" type="Label" parent="UI/InfoPanel/VBoxContainer"]
+margin_top = 72.0
+margin_right = 83.0
+margin_bottom = 86.0
 
 [node name="GoaGUI" parent="UI" instance=ExtResource( 7 )]
 visible = false
@@ -189,9 +240,10 @@ stream = ExtResource( 12 )
 [node name="DeathSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 14 )
 [connection signal="piece_destroyed" from="Grid" to="." method="_on_Grid_piece_destroyed"]
+[connection signal="village_captured" from="Grid" to="." method="_on_Grid_village_captured"]
 [connection signal="done_button_clicked" from="UI/GoaGUI" to="." method="_on_GoaGUI_done_button_clicked"]
 [connection signal="done_button_clicked" from="UI/TalibanGUI" to="." method="_on_TalibanGUI_done_button_clicked"]
 [connection signal="confirmed" from="UI/ConfirmationDialog" to="." method="_on_ConfirmationDialog_confirmed"]
 [connection signal="actor_placed" from="PlacementTool" to="." method="_on_PlacementTool_actor_placed"]
-[connection signal="phase_changed" from="PhaseController" to="." method="_on_PhaseController_phase_changed"]
 [connection signal="phase_changed" from="PhaseController" to="DisabledZone" method="_on_PhaseController_phase_changed"]
+[connection signal="phase_changed" from="PhaseController" to="." method="_on_PhaseController_phase_changed"]

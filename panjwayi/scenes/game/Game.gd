@@ -8,6 +8,7 @@ onready var TalibanGUI = find_node("TalibanGUI")
 onready var clickSound = $ClickSound
 onready var deathSound = $DeathSound
 onready var phase_controller = $PhaseController
+onready var info_panel = $UI/InfoPanel
 
 enum ACTIONS {
 	PLACE_IED,
@@ -83,6 +84,18 @@ func _process(delta: float) -> void:
 			
 		_:
 			pass
+	update_info_panel()
+	
+	
+func update_info_panel():
+	var mouse_pos = get_global_mouse_position()
+	var cell = Grid.world_to_map(mouse_pos)
+	info_panel.set_cell(cell)
+	info_panel.set_type(Grid.get_cellv(cell))
+	
+	info_panel.set_actor(Grid.get_actor(cell))
+	info_panel.set_village(Grid.get_village(cell))
+		
 
 func _on_PhaseController_phase_changed(phase) -> void:
 	print("Game current phase:", phase)
@@ -230,11 +243,11 @@ func _on_GamePiece_dropped(actor: Actor, new_location: Vector2) -> void:
 
 func _on_GamePiece_dragged(actor: Actor, new_location: Vector2) -> void:
 	var potential_location = Grid.request_move(actor, new_location)
+#	print(potential_location)
 	if potential_location:
 		actor.potential_move(potential_location)
 	else:
 		actor.potential_move(actor.position)
-		print("Can't go there!")
 		
 
 func _on_ConfirmationDialog_cancelled() -> void:
@@ -269,7 +282,6 @@ func get_current_actors_on_board() -> Array:
 
 func _ready_turn(team_turn):
 	for a in get_current_actors_on_board():
-		print(a.actor_name, a.name)
 		var actor = a as Actor
 		if actor.team == team_turn:
 			actor.is_enabled = true
@@ -305,3 +317,8 @@ func _on_TalibanGUI_done_button_clicked() -> void:
 	_ready_game_for_turns()
 	clickSound.play()
 
+
+func _on_Grid_village_captured(village: Village) -> void:
+	print(village.name, " Captured!")
+	clickSound.play()
+	village.toggle_team()
