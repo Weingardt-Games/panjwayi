@@ -58,7 +58,6 @@ export(int, 1, 10) var number_of_taliban = 9
 export(PackedScene) var taliban_piece
 
 
-
 func _ready():
 	# Wait till the game is ready or signals can fire before the game is ready for them!
 	$PhaseController.start()
