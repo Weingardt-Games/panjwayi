@@ -102,14 +102,12 @@ func _on_PhaseController_phase_changed(phase) -> void:
 	
 	match phase:
 		PhaseController.PHASES.GOA_SETUP:
-			Grid.ready_setup(Pawn.TEAM.GOA)
 			_ready_placement()
 			PlacementUI.set_color(GoaGUI.team_color)
 			PlacementUI.visible = true
 			PlacementUI.rect_position = $PositionMarkers/PlacementUIGoA.rect_position
 		
 		PhaseController.PHASES.TALIBAN_SETUP:
-			Grid.ready_setup(Pawn.TEAM.TALIBAN)
 			# fill out the taliban actors:
 			starting_actors = []  # should already be empty
 			for i in number_of_taliban:
@@ -156,10 +154,7 @@ func _on_PlacementTool_actor_placed(new_current_actor) -> void:
 			GoaGUI.button_is_active = true
 	
 func placement_complete():
-	# remove placement container?  or reuse for Reinforcemnts box?
-	$DisabledZone.visible = false
 	PlacementUI.visible = false
-	pass
 	
 func insert_actor(actor: Actor):
 	# connect to the flip signal if needed
@@ -195,7 +190,10 @@ func _on_Select_Piece_button_down(button: PlacementButton) -> void:
 		button.get_node("TextureRect").texture
 	)
 	
-	Grid.prep_placement(button.actor_type, button.team)
+	if phase_controller.is_setup():
+		Grid.prep_setup_placement(button.team)
+	else:
+		Grid.prep_placement(button.actor_type, button.team)
 	clickSound.play()
 
 func _on_Select_Piece_button_mouse_entered() -> void:
@@ -208,7 +206,6 @@ func _on_Select_Piece_button_mouse_exited() -> void:
 ################ SETUP ###################
 
 func _ready_placement():
-
 	for i in starting_actors.size():
 		var actor = starting_actors[i].instance()
 		var button = create_button(actor)

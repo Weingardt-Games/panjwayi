@@ -8,4 +8,3 @@ sprite = ExtResource( 1 )
 actor_name = "Improvised Explosive Device"
 actor_type = 8
 movement_type = 5
-flip_side = 8

@@ -16,15 +16,15 @@ signal village_captured(village)
 func _ready():
 	pass
 	
-func ready_setup(team: int):
+func prep_setup_placement(team: int):
 	# Fill the TileMap Grid with PLACEMENT_CELL_TYPES
 	for x in BOARD_SIZE.x:
 		for y in BOARD_SIZE.y:
-			# should generisize this and only have "LEGAL" locations, and set each turn rather than all at once
-			if y < 4 and team == Pawn.TEAM.GOA:
-				set_cell(x, y, Pawn.CELL_TYPES.LEGAL_PLACEMENT)
-			elif y >= 12 and team == Pawn.TEAM.TALIBAN:
-				set_cell(x, y, Pawn.CELL_TYPES.LEGAL_PLACEMENT)
+			if get_cell(x, y) != Pawn.CELL_TYPES.ACTOR:
+				if y < 4 and team == Pawn.TEAM.GOA:
+					_set_cell_placeable(Vector2(x,y))
+				elif y >= 12 and team == Pawn.TEAM.TALIBAN:
+					_set_cell_placeable(Vector2(x,y))
 
 #func _set_grid_contents(actor: Actor, cell: Vector2):
 #	grid_contents[cell.x][cell.y] = actor

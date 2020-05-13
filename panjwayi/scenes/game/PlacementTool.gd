@@ -1,6 +1,6 @@
 extends Node2D
 
-var valid_color = Color.greenyellow
+var valid_color = Color.transparent
 var invalid_color = Color.red
 var current_color
 var can_place
