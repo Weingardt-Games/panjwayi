@@ -10,7 +10,7 @@ onready var movement_highlight = load("res://scenes/game/grid/MovementHighlight.
 onready var attack_highlight = load("res://scenes/game/grid/AttackHighlight.tscn")
 
 signal actor_destroyed(actor)
-signal actor_attacked(actor)
+#signal actor_attacked(actor)
 signal village_captured(village)
 
 func _ready():

@@ -146,12 +146,16 @@ func _on_PlacementTool_actor_placed(new_current_actor) -> void:
 	clickSound.play()
 	Grid.clear_placement()
 
-	# when all the starting_actors are placed, activate button to finish setup phase
-	if is_all_starting_actors_placed():
-		if phase_controller.is_taliban_setup():
-			TalibanGUI.button_is_active = true
-		elif phase_controller.is_goa_setup():
-			GoaGUI.button_is_active = true
+	if phase_controller.is_setup():
+		# when all the starting_actors are placed, activate button to finish setup phase
+		if is_all_starting_actors_placed():
+			if phase_controller.is_taliban_setup():
+				TalibanGUI.button_is_active = true
+			elif phase_controller.is_goa_setup():
+				GoaGUI.button_is_active = true
+	else:
+		current_action = ACTIONS.REINFORCEMENT
+		confimationDialog.popup_centered()
 	
 func placement_complete():
 	PlacementUI.visible = false
