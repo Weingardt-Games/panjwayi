@@ -125,13 +125,18 @@ func get_world_position(cell_target):
 #### INDICATORS / HIGLIGHTS
 
 func prep_placement(actor_type: int, team: int):
-	for village in get_tree().get_nodes_in_group("villages"):
-		var cell = world_to_map(village.position)
-		print(village.team)
-		print(get_cellv(cell)) 
-		print(village.village_name)
-		if village.team == team and get_cellv(cell) == Pawn.CELL_TYPES.VILLAGE: # CELL_TYPES.VILLAGE are open villages only
-			_set_cell_placeable(cell)
+	if actor_type == Actor.ACTOR_TYPES.IED:
+		for actor in get_tree().get_nodes_in_group("taliban"):
+			if actor.actor_type != Actor.ACTOR_TYPES.IED:
+				_set_placeable_IED_cells_around_actor(actor)
+	else:
+		for village in get_tree().get_nodes_in_group("villages"):
+			var cell = world_to_map(village.position)
+#			print(village.team)
+#			print(get_cellv(cell)) 
+#			print(village.village_name)
+			if village.team == team and get_cellv(cell) == Pawn.CELL_TYPES.VILLAGE: # CELL_TYPES.VILLAGE are open villages only
+				_set_cell_placeable(cell)
 
 
 func prep_movement(actor: Actor):
@@ -180,6 +185,19 @@ func prep_movement(actor: Actor):
 
 	# at the end we'll remove movement beyond blocking elements		
 	_remove_move_cells_beyond_blocked(actor)
+
+func _set_placeable_IED_cells_around_actor(actor):
+	""" IEDs a can IEDs can be placed in any empty, non-village square adjacent
+	    (including diagonally) to a POP/INS.
+		The actor provided to this method is assumed to be POP or INS.
+	"""
+	var cell = world_to_map(actor.position)
+	for x in [-1, 0, 1]:
+		for y in [-1, 0, 1]:
+			var adjacent_cell = Vector2(cell.x + x, cell.y + y)
+			if get_cellv(adjacent_cell) == Pawn.CELL_TYPES.OPEN:
+				_set_cell_placeable(adjacent_cell)
+
 
 func _set_cell_placeable(cell):
 	set_cellv(cell, Pawn.CELL_TYPES.LEGAL_PLACEMENT)
@@ -267,6 +285,12 @@ func clear_placement():
 		var cell = world_to_map(village.position)
 		if get_cellv(cell) == Pawn.CELL_TYPES.LEGAL_PLACEMENT:
 			set_cellv(cell, Pawn.CELL_TYPES.VILLAGE)
+	
+	# IEDs are not placed in villages but open cells, so clear up remaining
+	# after village cells have been reset
+	for cell in get_used_cells_by_id(Pawn.CELL_TYPES.LEGAL_PLACEMENT):
+		set_cellv(cell, Pawn.CELL_TYPES.OPEN)
+	
 				
 func _clear_movement_in_cell(cell: Vector2):
 	var indicator = _get_node_in_group(cell, "map_indicators")
