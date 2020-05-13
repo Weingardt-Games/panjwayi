@@ -20,6 +20,8 @@ func set_color(color: Color):
 	
 func add_to_container(node):
 	container.add_child(node)
+	container.queue_sort()
+	print("sorting children....bleep bloop")
 	
 func remove_from_container(node: Node):
 	""" Does not destroy it! """

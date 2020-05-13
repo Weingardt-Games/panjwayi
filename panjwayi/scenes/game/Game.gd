@@ -47,14 +47,14 @@ var ACTOR_SCENES_DICT = {
 onready var pieces: Array = [
 	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.AIR],
 	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
 ]
 
-export(int, 1, 10) var number_of_taliban = 9
+export(int, 1, 10) var number_of_taliban = 1
 export(PackedScene) var taliban_piece
 
 
@@ -76,10 +76,10 @@ func _process(delta: float) -> void:
 			PlacementTool.process_placement()
 			
 		PhaseController.PHASES.GOA_TURN:
-			pass
+			PlacementTool.process_placement()
 			
 		PhaseController.PHASES.TALIBAN_TURN:
-			pass
+			PlacementTool.process_placement()
 			
 		_:
 			pass
@@ -103,19 +103,21 @@ func _on_PhaseController_phase_changed(phase) -> void:
 	
 	match phase:
 		PhaseController.PHASES.GOA_SETUP:
-			#pieces start with all the GoA scenes as an export	
+			Grid.ready_setup(Pawn.TEAM.GOA)
 			_ready_placement()
 			PlacementUI.set_color(GoaGUI.team_color)
 			PlacementUI.visible = true
 			PlacementUI.rect_position = $PositionMarkers/PlacementUIGoA.rect_position
 		
 		PhaseController.PHASES.TALIBAN_SETUP:
+			Grid.ready_setup(Pawn.TEAM.TALIBAN)
 			# fill out the taliban pieces:
 			pieces = []
 			for i in number_of_taliban:
 				pieces.append(taliban_piece)
 	
 			_ready_placement()
+			_ready_reinforcements()
 			PlacementUI.set_color(TalibanGUI.team_color)
 			PlacementUI.visible = true
 			PlacementUI.rect_position = $PositionMarkers/PlacementUITaliban.rect_position
@@ -140,8 +142,10 @@ func is_all_pieces_placed():
 
 func _on_PlacementTool_actor_placed(current_actor) -> void:
 	insert_actor(current_actor)
-	placementButtonContainer.remove_child(current_button)
+	# get parent because could be any one of three panels (setup, reinforcements, destroyed)
+	current_button.get_parent().remove_child(current_button)
 	clickSound.play()
+	Grid.clear_placement()
 
 	# when all the pieces are placed, activate button to finish setup phase
 	if is_all_pieces_placed():
@@ -183,11 +187,14 @@ func _on_GamePiece_flip_pressed(actor: Actor):
 func _on_Select_Piece_button_down(button: PlacementButton) -> void:
 	current_button = button
 	# TEMPRARY DISABLE TILL GET REINFORCEMENTS WORKING
-	if phase_controller.is_setup():
-		PlacementTool.start_new_placement(
-			pieces[button.goa_piece_index].instance(),
-			button.get_node("TextureRect").texture
-		)
+#	if phase_controller.is_setup():
+	PlacementTool.start_new_placement(
+		# should generate the piece from the dict, not here.
+		ACTOR_SCENES_DICT[button.actor_type].instance(),
+		button.get_node("TextureRect").texture
+	)
+	
+	Grid.prep_placement(button.actor_type, button.team)
 	clickSound.play()
 
 func _on_Select_Piece_button_mouse_entered() -> void:
@@ -202,18 +209,29 @@ func _on_Select_Piece_button_mouse_exited() -> void:
 func _ready_placement():
 
 	for i in pieces.size():
-		var piece = pieces[i]
-		piece = piece.instance()
-		print("generating placement buttons for: ", piece.actor_name)
-		var button = PlacementButton.instance()
-		button.get_node("TextureRect").texture = piece.sprite
-		button.goa_piece_index = i
+		var actor = pieces[i].instance()
+		var button = create_button(actor)
 		placementButtonContainer.add_child(button)
 		
-		button.connect("selected", self, "_on_Select_Piece_button_down")
-		button.connect("mouse_entered", self, "_on_Select_Piece_button_mouse_entered")
-		button.connect("mouse_exited", self, "_on_Select_Piece_button_mouse_exited")
+func _ready_reinforcements():
+	""" Taliban start with two IED units in the reinforcements box """
+	var num_ieds = 2
+
+	for i in num_ieds:
+		var ied = ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.IED].instance()
+		var button = create_button(ied)
+		TalibanGUI.add_actor_to_reinforcements(button)
 		
+func create_button(actor):
+	print("generating placement buttons for: ", actor.actor_name)
+	var button = PlacementButton.instance()
+	button.get_node("TextureRect").texture = actor.sprite
+	button.actor_type = actor.actor_type
+	button.team = actor.team
+	button.connect("selected", self, "_on_Select_Piece_button_down")
+	button.connect("mouse_entered", self, "_on_Select_Piece_button_mouse_entered")
+	button.connect("mouse_exited", self, "_on_Select_Piece_button_mouse_exited")
+	return button
 
 ###############  TURN / MOVEMENT ######################
 func _ready_game_for_turns():
@@ -296,8 +314,8 @@ func _on_Grid_piece_destroyed(actor: Actor) -> void:
 	print("generating placement buttons for: ", actor.actor_name)
 	var button = PlacementButton.instance()
 	button.get_node("TextureRect").texture = actor.sprite
-#	button.goa_piece_index = i
-	(TEAM_GUI_DICT[actor.team] as TeamGUI).add_actor_to_destroyed(button)
+	button.actor_type = actor.actor_type
+	(TEAM_GUI_DICT[actor.team] as TeamGUI).add_actor_to_reinforcements(button)
 #	placementButtonContainer.add_child(button)
 	button.connect("selected", self, "_on_Select_Piece_button_down")
 	button.connect("mouse_entered", self, "_on_Select_Piece_button_mouse_entered")

@@ -14,17 +14,18 @@ signal piece_attacked(actor)
 signal village_captured(village)
 
 func _ready():
+	pass
+	
+func ready_setup(team: int):
 	# Fill the TileMap Grid with PLACEMENT_CELL_TYPES
 	for x in BOARD_SIZE.x:
 		for y in BOARD_SIZE.y:
-			if y < 4:
-				set_cell(x, y, Pawn.CELL_TYPES.LEGAL_GOA_PLACEMENT)
-			elif y >= 12:
-				set_cell(x, y, Pawn.CELL_TYPES.LEGAL_TALIBAN_PLACEMENT)
-			else:
-				set_cell(x, y, Pawn.CELL_TYPES.ILLEGAL_PLACEMENT)
+			# should generisize this and only have "LEGAL" locations, and set each turn rather than all at once
+			if y < 4 and team == Pawn.TEAM.GOA:
+				set_cell(x, y, Pawn.CELL_TYPES.LEGAL_PLACEMENT)
+			elif y >= 12 and team == Pawn.TEAM.TALIBAN:
+				set_cell(x, y, Pawn.CELL_TYPES.LEGAL_PLACEMENT)
 
-			
 #func _set_grid_contents(actor: Actor, cell: Vector2):
 #	grid_contents[cell.x][cell.y] = actor
 
@@ -123,6 +124,13 @@ func get_world_position(cell_target):
 	
 #### INDICATORS / HIGLIGHTS
 
+func prep_placement(actor_type: int, team: int):
+	for village in get_tree().get_nodes_in_group("villages"):
+		var cell = world_to_map(village.position)
+		if village.team == team and get_cellv(cell) == Pawn.CELL_TYPES.VILLAGE: # CELL_TYPES.VILLAGE are open villages only
+			_set_cell_placeable(cell)
+
+
 func prep_movement(actor: Actor):
 	""" Highlights the legal movement locations and sets their cell type
 	to Pawn.CELL_TYPES.CAN_MOVE_TO,  and indicates potential attacks and 
@@ -131,6 +139,7 @@ func prep_movement(actor: Actor):
 	# clear previous highlights:
 	get_tree().call_group("map_indicators", "queue_free")
 	var cell = world_to_map(actor.position)
+
 	var move_array = actor.get_movement_array()
 	var offset = Vector2(int(len(move_array)/2), int(len(move_array)/2))
 	var max_distance = len(move_array)
@@ -169,17 +178,20 @@ func prep_movement(actor: Actor):
 	# at the end we'll remove movement beyond blocking elements		
 	_remove_move_cells_beyond_blocked(actor)
 
+func _set_cell_placeable(cell):
+	set_cellv(cell, Pawn.CELL_TYPES.LEGAL_PLACEMENT)
+	_highlight_cell(cell, movement_highlight.instance())
+
 func _set_cell_moveable(cell):
-	var highlight = movement_highlight.instance()
-	highlight.position = get_world_position(cell)
 	set_cellv(cell, Pawn.CELL_TYPES.CAN_MOVE_TO)
-	add_child(highlight)
+	_highlight_cell(cell, movement_highlight.instance())
 	
 func _set_cell_attackable(cell):
-	# Highlight cell as attackable
-	var highlight = attack_highlight.instance()
-	highlight.position = get_world_position(cell)
 	set_cellv(cell, Pawn.CELL_TYPES.CAN_ATTACK)
+	_highlight_cell(cell, attack_highlight.instance())
+	
+func _highlight_cell(cell, highlight):
+	highlight.position = get_world_position(cell)
 	add_child(highlight)
 	
 func _remove_move_cells_beyond_blocked(actor):
@@ -244,6 +256,14 @@ func clear_movement():
 	for x in BOARD_SIZE.x:
 		for y in BOARD_SIZE.y:
 			_clear_movement_in_cell(Vector2(x, y))
+			
+func clear_placement():
+	# all legal moves should be converted bakc to empty vill
+	get_tree().call_group("map_indicators", "queue_free")
+	for village in get_tree().get_nodes_in_group("villages"):
+		var cell = world_to_map(village.position)
+		if get_cellv(cell) == Pawn.CELL_TYPES.LEGAL_PLACEMENT:
+			set_cellv(cell, Pawn.CELL_TYPES.VILLAGE)
 				
 func _clear_movement_in_cell(cell: Vector2):
 	var indicator = _get_node_in_group(cell, "map_indicators")

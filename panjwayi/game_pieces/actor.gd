@@ -23,22 +23,33 @@ enum MOVEMENT_TYPES {
 	KING,
 	KING_TWICE, 
 	QUEEN,
-	ROOK	
+	ROOK,
+	IED
 }
 
-export(ACTOR_TYPES) var actor_type = ACTOR_TYPES.NONE
+enum STATUSES {
+	ACTIVE,
+	DESTROYED,
+	REINFORCEMENT,
+	PERMANENTLY_DESTROYED	
+}
 
 export(String) var actor_name
-export(String) var moves
+export(ACTOR_TYPES) var actor_type = ACTOR_TYPES.NONE
+
 export(MOVEMENT_TYPES) var movement_type = MOVEMENT_TYPES.KING
-export(String) var attacks
+export(Array, ACTOR_TYPES) var pass_overable_units = [ACTOR_TYPES.NONE]
+export(String) var movement_description
 
 export(Array, ACTOR_TYPES) var attackable_units = [ACTOR_TYPES.NONE]
-export(Array, ACTOR_TYPES) var pass_overable_units = [ACTOR_TYPES.NONE]
-
+export(String) var attack_description
 export(bool) var captures_villages
+
 export(String) var Special
+
 export(ACTOR_TYPES) var flip_side = ACTOR_TYPES.NONE
+
+export(STATUSES) var status
 
 var is_mouse_still_inside = true  # tracks whether the mouse has left the actor or not
 var is_dragging = false

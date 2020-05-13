@@ -29,7 +29,7 @@ func process_placement():
 	if placement_mode:
 		var mouse_pos = get_global_mouse_position()
 		current_tile = Grid.world_to_map(mouse_pos)
-		_update_placement_tool(Grid, current_piece, current_tile)
+		_update_placement_tool(Grid)
 		if Input.is_action_just_pressed("ui_place") or Input.is_action_just_released("ui_place"):
 			_place_piece()
 			print("placing!")
@@ -51,31 +51,18 @@ func _cancel_placement(replace=false):
 	current_piece = null
 	hide()
 
-func _update_placement_tool(grid: PanjwayiTileMap, current_piece, current_tile):
+func _update_placement_tool(grid: PanjwayiTileMap):
 
-#	print("CURRENT TILE: ", current_tile)
 	position = grid.get_world_position(current_tile)
-	
-#	print(Grid.get_cellv(current_tile))
-#	print(current_tile)
-	
-	var legal_placement_cell
-	if current_piece.team == Actor.TEAM.GOA:
-		legal_placement_cell = Pawn.CELL_TYPES.LEGAL_GOA_PLACEMENT
-	else:
-		legal_placement_cell = Pawn.CELL_TYPES.LEGAL_TALIBAN_PLACEMENT
 
 	var current_cell_type = grid.get_cellv(current_tile)
-	if current_cell_type == legal_placement_cell and current_color != valid_color:
+	if current_cell_type == Pawn.CELL_TYPES.LEGAL_PLACEMENT and current_color != valid_color:
 		current_color = valid_color
 		can_place = true
 		$ColorRect.color = current_color
 
-	if current_cell_type != legal_placement_cell and current_color != invalid_color:
+	if current_cell_type != Pawn.CELL_TYPES.LEGAL_PLACEMENT and current_color != invalid_color:
 		current_color = invalid_color
 		can_place = false
 
 		$ColorRect.color = current_color
-		
-#	print("can_place", can_place)
-		
