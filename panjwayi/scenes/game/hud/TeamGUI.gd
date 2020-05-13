@@ -70,7 +70,16 @@ func set_button_is_active(enabled: bool):
 		done_button.self_modulate = Color.green
 	else:
 		done_button.self_modulate = Color.white
+		
+func set_disabled(disabled: bool):
+	reinforcements_panel.set_disabled(disabled)
+	destroyed_panel.set_disabled(disabled)
+	
+	
+############# SIGNALS ####################
 
 func _on_DoneButton_pressed() -> void:
 	self.button_is_active = false
 	emit_signal("done_button_clicked")
+	
+	

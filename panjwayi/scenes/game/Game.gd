@@ -76,9 +76,13 @@ func _process(delta: float) -> void:
 			
 		PhaseController.PHASES.GOA_TURN:
 			PlacementTool.process_placement()
+			TalibanGUI.set_disabled(true)
+			GoaGUI.set_disabled(false)
 			
 		PhaseController.PHASES.TALIBAN_TURN:
 			PlacementTool.process_placement()
+			TalibanGUI.set_disabled(false)
+			GoaGUI.set_disabled(true)
 			
 		_:
 			pass

@@ -29,3 +29,9 @@ func remove_from_container(node: Node):
 	
 func get_nodes_in_container() -> Array:
 	return container.get_children()
+	
+func set_disabled(disabled):
+	for button in get_nodes_in_container():
+		button.set_disabled(disabled)
+			
+	
