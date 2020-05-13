@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://scenes/game/PlacementTool.gd" type="Script" id=1]
 [ext_resource path="res://scenes/game/DisabledZone.gd" type="Script" id=2]
@@ -15,12 +15,10 @@
 [ext_resource path="res://scenes/game/hud/UIPanel.tscn" type="PackedScene" id=13]
 [ext_resource path="res://assets/sounds/shot.wav" type="AudioStream" id=14]
 [ext_resource path="res://scenes/game/InfoPanel.gd" type="Script" id=15]
-[ext_resource path="res://game_pieces/taliban_pieces/INS.tscn" type="PackedScene" id=21]
 [ext_resource path="res://scenes/game/Camera2D.gd" type="Script" id=26]
 
 [node name="Game" type="Node2D"]
 script = ExtResource( 10 )
-taliban_piece = ExtResource( 21 )
 
 [node name="sprite" type="Sprite" parent="."]
 texture = ExtResource( 3 )
@@ -239,7 +237,7 @@ stream = ExtResource( 12 )
 
 [node name="DeathSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 14 )
-[connection signal="piece_destroyed" from="Grid" to="." method="_on_Grid_piece_destroyed"]
+[connection signal="actor_destroyed" from="Grid" to="." method="_on_Grid_actor_destroyed"]
 [connection signal="village_captured" from="Grid" to="." method="_on_Grid_village_captured"]
 [connection signal="done_button_clicked" from="UI/GoaGUI" to="." method="_on_GoaGUI_done_button_clicked"]
 [connection signal="done_button_clicked" from="UI/TalibanGUI" to="." method="_on_TalibanGUI_done_button_clicked"]

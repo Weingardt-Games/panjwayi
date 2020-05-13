@@ -60,7 +60,7 @@ func get_reinforcements() -> Array:
 func get_destroyed() -> Array:
 	return destroyed_panel.get_nodes_in_container()
 	
-func set_phase(phase: int, phase_str: String):
+func set_phase(phase_str: String):
 	phase_label.text = phase_str
 
 func set_button_is_active(enabled: bool):

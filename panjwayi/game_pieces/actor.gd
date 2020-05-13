@@ -58,11 +58,11 @@ var is_selected = false
 
 var previous_position: Vector2
 
-signal game_piece_dropped(actor, new_location)
-signal game_piece_dragged(actor, new_location)
-signal game_piece_selected(actor)
-signal game_piece_flip_pressed(actor)
-signal game_piece_movement_cancelled()
+signal dropped(actor, new_location)
+signal dragged(actor, new_location)
+signal selected(actor)
+signal flip_pressed(actor)
+signal movement_cancelled()
 
 func _ready() -> void:
 	$Sprite.texture = sprite
@@ -83,21 +83,21 @@ func _unhandled_input(event: InputEvent) -> void:
 	
 	if is_selected:
 		if event.is_action_released("ui_select") or event.is_action_pressed("ui_select"): 
-			# if the mouse is still over the piece, leave it selected
+			# if the mouse is still over the actor, leave it selected
 			if not is_mouse_still_inside:	
 				print("Released: ", actor_name)
-				emit_signal("game_piece_dropped", self, get_global_mouse_position())
+				emit_signal("dropped", self, get_global_mouse_position())
 				# so it doesn't immediately reselect the actor if it was placed with a click (instead of release)
 				get_tree().set_input_as_handled()
 			
 		if event is InputEventMouseMotion:
 #			print("Dragged: ", actor_name)
-			emit_signal("game_piece_dragged", self, get_global_mouse_position())
+			emit_signal("dragged", self, get_global_mouse_position())
 			
 		if event.is_action_pressed("ui_cancel"):
 			cancel_move()
 			print("Cancelled: ", actor_name)
-			emit_signal("game_piece_movement_cancelled")
+			emit_signal("movement_cancelled")
 
 ##### GETTERS AND SETTERS ########
 
@@ -133,7 +133,7 @@ func update_look_direction(direction):
 	$Pivot/Sprite.rotation = direction.angle()
 
 func set_selected():
-	emit_signal("game_piece_selected", self)
+	emit_signal("selected", self)
 	$Highlight.visible = true
 	is_selected = true
 	is_dragging = true
@@ -168,7 +168,7 @@ func _on_FlipButton_pressed() -> void:
 	# Flip to new actor type
 	if is_enabled:
 		print("flipping!")
-		emit_signal("game_piece_flip_pressed", self)
+		emit_signal("flip_pressed", self)
 	
 
 ############## MOVEMENT ###################

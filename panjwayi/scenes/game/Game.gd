@@ -44,7 +44,7 @@ var ACTOR_SCENES_DICT = {
 	Actor.ACTOR_TYPES.IED: load("res://game_pieces/taliban_pieces/IED.tscn"),
 }
 
-onready var pieces: Array = [
+onready var starting_actors: Array = [
 	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.AIR],
 	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
 #	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
@@ -55,7 +55,6 @@ onready var pieces: Array = [
 ]
 
 export(int, 1, 10) var number_of_taliban = 1
-export(PackedScene) var taliban_piece
 
 
 func _ready():
@@ -98,8 +97,8 @@ func update_info_panel():
 
 func _on_PhaseController_phase_changed(phase) -> void:
 	print("Game current phase:", phase)
-	GoaGUI.set_phase(phase, phase_controller.get_phase_string())
-	TalibanGUI.set_phase(phase, phase_controller.get_phase_string())
+	GoaGUI.set_phase(phase_controller.get_phase_string())
+	TalibanGUI.set_phase(phase_controller.get_phase_string())
 	
 	match phase:
 		PhaseController.PHASES.GOA_SETUP:
@@ -111,10 +110,11 @@ func _on_PhaseController_phase_changed(phase) -> void:
 		
 		PhaseController.PHASES.TALIBAN_SETUP:
 			Grid.ready_setup(Pawn.TEAM.TALIBAN)
-			# fill out the taliban pieces:
-			pieces = []
+			# fill out the taliban actors:
+			starting_actors = []  # should already be empty
 			for i in number_of_taliban:
-				pieces.append(taliban_piece)
+				var taliban_actor = ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.INS]
+				starting_actors.append(taliban_actor)
 	
 			_ready_placement()
 			_ready_reinforcements()
@@ -136,19 +136,20 @@ func _on_PhaseController_phase_changed(phase) -> void:
 ######### PLACEMENT / SETUP ####################
 
 		
-func is_all_pieces_placed():
+func is_all_starting_actors_placed():
 	return placementButtonContainer.get_child_count() == 0
 	
 
-func _on_PlacementTool_actor_placed(current_actor) -> void:
+func _on_PlacementTool_actor_placed(new_current_actor) -> void:
+	current_actor = new_current_actor
 	insert_actor(current_actor)
 	# get parent because could be any one of three panels (setup, reinforcements, destroyed)
 	current_button.get_parent().remove_child(current_button)
 	clickSound.play()
 	Grid.clear_placement()
 
-	# when all the pieces are placed, activate button to finish setup phase
-	if is_all_pieces_placed():
+	# when all the starting_actors are placed, activate button to finish setup phase
+	if is_all_starting_actors_placed():
 		if phase_controller.is_taliban_setup():
 			TalibanGUI.button_is_active = true
 		elif phase_controller.is_goa_setup():
@@ -162,16 +163,16 @@ func placement_complete():
 	
 func insert_actor(actor: Actor):
 	# connect to the flip signal if needed
-	actor.connect("game_piece_flip_pressed", self, "_on_GamePiece_flip_pressed")
-	actor.connect("game_piece_dragged", self, "_on_GamePiece_dragged")
-	actor.connect("game_piece_dropped", self, "_on_GamePiece_dropped")
-	actor.connect("game_piece_selected", self, "_on_GamePiece_selected")
-	actor.connect("game_piece_movement_cancelled", self, "_on_GamePiece_movement_cancelled")
+	actor.connect("flip_pressed", self, "_on_Actor_flip_pressed")
+	actor.connect("dragged", self, "_on_Actor_dragged")
+	actor.connect("dropped", self, "_on_Actor_dropped")
+	actor.connect("selected", self, "_on_Actor_selected")
+	actor.connect("movement_cancelled", self, "_on_Actor_movement_cancelled")
 	
 	Grid.add_child(actor)
 	
 
-func _on_GamePiece_flip_pressed(actor: Actor):
+func _on_Actor_flip_pressed(actor: Actor):
 	var flip_scene = ACTOR_SCENES_DICT.get(actor.flip_side)
 	var flip_actor = flip_scene.instance()
 	flip_actor.global_position = actor.global_position
@@ -208,8 +209,8 @@ func _on_Select_Piece_button_mouse_exited() -> void:
 
 func _ready_placement():
 
-	for i in pieces.size():
-		var actor = pieces[i].instance()
+	for i in starting_actors.size():
+		var actor = starting_actors[i].instance()
 		var button = create_button(actor)
 		placementButtonContainer.add_child(button)
 		
@@ -238,15 +239,15 @@ func _ready_game_for_turns():
 	# reset the Grid for movement:
 	Grid.prepare_board_for_game_start()
 
-func _on_GamePiece_movement_cancelled():
+func _on_Actor_movement_cancelled():
 	Grid.clear_movement()
 	
-func _on_GamePiece_selected(actor: Actor):
+func _on_Actor_selected(actor: Actor):
 	current_actor = actor
 	Grid.prep_movement(actor)
 	clickSound.play()
 
-func _on_GamePiece_dropped(actor: Actor, new_location: Vector2) -> void:
+func _on_Actor_dropped(actor: Actor, new_location: Vector2) -> void:
 	var potential_location = Grid.request_move(actor, new_location, true)
 	Grid.clear_movement()
 	if potential_location:
@@ -258,7 +259,7 @@ func _on_GamePiece_dropped(actor: Actor, new_location: Vector2) -> void:
 		actor.cancel_move()
 		print("Can't go there!")
 
-func _on_GamePiece_dragged(actor: Actor, new_location: Vector2) -> void:
+func _on_Actor_dragged(actor: Actor, new_location: Vector2) -> void:
 	var potential_location = Grid.request_move(actor, new_location)
 #	print(potential_location)
 	if potential_location:
@@ -276,7 +277,7 @@ func _on_ConfirmationDialog_cancelled() -> void:
 				Grid.request_move(current_actor, current_actor.previous_position, false, true)
 			)
 		ACTIONS.FLIP:
-			_on_GamePiece_flip_pressed(current_actor)
+			_on_Actor_flip_pressed(current_actor)
 		ACTIONS.PLACE_IED:
 			pass
 		ACTIONS.REINFORCEMENT:
@@ -291,7 +292,7 @@ func _on_ConfirmationDialog_confirmed() -> void:
 	$PhaseController.next_phase()
 	
 func get_current_actors_on_board() -> Array:
-	var actors: Array
+	var actors = []
 	for child in Grid.get_children():
 		if child is Actor:
 			actors.append(child)
@@ -307,7 +308,7 @@ func _ready_turn(team_turn):
 	pass
 	
 ### ATTACKS #################
-func _on_Grid_piece_destroyed(actor: Actor) -> void:
+func _on_Grid_actor_destroyed(actor: Actor) -> void:
 	""" Occurs when an actor has been destroyed and removed from the Grid
 	Put the Actor in it's team's Destroyed box.
 	"""

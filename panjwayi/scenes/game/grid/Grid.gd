@@ -9,8 +9,8 @@ const BOARD_OFFSET = Vector2(398, 0)
 onready var movement_highlight = load("res://scenes/game/grid/MovementHighlight.tscn")
 onready var attack_highlight = load("res://scenes/game/grid/AttackHighlight.tscn")
 
-signal piece_destroyed(actor)
-signal piece_attacked(actor)
+signal actor_destroyed(actor)
+signal actor_attacked(actor)
 signal village_captured(village)
 
 func _ready():
@@ -75,7 +75,7 @@ func request_move(actor: Actor, new_position, final=false, force=false):
 				if is_actor(cell_target): # could also be a village
 					var destroyed_actor: Actor = get_actor(cell_target)
 					remove_child(destroyed_actor)
-					emit_signal("piece_destroyed", destroyed_actor)
+					emit_signal("actor_destroyed", destroyed_actor)
 				# Actually moving the actor there:
 				if is_village(cell_target):
 					# handle village occupation!

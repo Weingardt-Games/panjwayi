@@ -9,7 +9,7 @@ var can_place
 var placement_mode = false
 var in_menu = false
 var current_tile = Vector2()
-var current_piece: Actor
+var current_actor: Actor
 
 
 onready var Grid = get_node("/root/Game/Grid")
@@ -21,7 +21,7 @@ func _ready() -> void:
 	
 func start_new_placement(actor: Actor, texture: Texture):
 	placement_mode = true
-	current_piece = actor
+	current_actor = actor
 	$TextureRect.texture = texture
 	show()
 	
@@ -31,24 +31,24 @@ func process_placement():
 		current_tile = Grid.world_to_map(mouse_pos)
 		_update_placement_tool(Grid)
 		if Input.is_action_just_pressed("ui_place") or Input.is_action_just_released("ui_place"):
-			_place_piece()
+			_place_actor()
 			print("placing!")
 		if Input.is_action_just_pressed("ui_cancel"):
 			_cancel_placement(true)
 			
 			
-func _place_piece():
+func _place_actor():
 #	print("in_menu", in_menu)
 #	print("can_place", can_place)
 	if can_place: # and not in_menu:
 		Grid.set_cellv(current_tile, Pawn.CELL_TYPES.ACTOR)
-		current_piece.global_position = Grid.get_world_position(current_tile)
-		emit_signal("actor_placed", current_piece)
+		current_actor.global_position = Grid.get_world_position(current_tile)
+		emit_signal("actor_placed", current_actor)
 		_cancel_placement()
 		
 func _cancel_placement(replace=false):
 	placement_mode = false
-	current_piece = null
+	current_actor = null
 	hide()
 
 func _update_placement_tool(grid: PanjwayiTileMap):
