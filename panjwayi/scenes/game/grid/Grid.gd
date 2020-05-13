@@ -127,6 +127,9 @@ func get_world_position(cell_target):
 func prep_placement(actor_type: int, team: int):
 	for village in get_tree().get_nodes_in_group("villages"):
 		var cell = world_to_map(village.position)
+		print(village.team)
+		print(get_cellv(cell)) 
+		print(village.village_name)
 		if village.team == team and get_cellv(cell) == Pawn.CELL_TYPES.VILLAGE: # CELL_TYPES.VILLAGE are open villages only
 			_set_cell_placeable(cell)
 

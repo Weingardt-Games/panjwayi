@@ -318,14 +318,15 @@ func _on_Grid_actor_destroyed(actor: Actor) -> void:
 	Put the Actor in it's team's Destroyed box.
 	"""
 	print("generating placement buttons for: ", actor.actor_name)
-	var button = PlacementButton.instance()
-	button.get_node("TextureRect").texture = actor.sprite
-	button.actor_type = actor.actor_type
+	var button = create_button(actor)
+#	var button = PlacementButton.instance()
+#	button.get_node("TextureRect").texture = actor.sprite
+#	button.actor_type = actor.actor_type
 	(TEAM_GUI_DICT[actor.team] as TeamGUI).add_actor_to_reinforcements(button)
 #	placementButtonContainer.add_child(button)
-	button.connect("selected", self, "_on_Select_Piece_button_down")
-	button.connect("mouse_entered", self, "_on_Select_Piece_button_mouse_entered")
-	button.connect("mouse_exited", self, "_on_Select_Piece_button_mouse_exited")
+#	button.connect("selected", self, "_on_Select_Piece_button_down")
+#	button.connect("mouse_entered", self, "_on_Select_Piece_button_mouse_entered")
+#	button.connect("mouse_exited", self, "_on_Select_Piece_button_mouse_exited")
 	deathSound.play()
 
 
