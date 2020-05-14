@@ -47,14 +47,14 @@ var ACTOR_SCENES_DICT = {
 onready var starting_actors: Array = [
 	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.AIR],
 	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
 ]
 
-export(int, 1, 10) var number_of_taliban = 9
+export(int, 1, 10) var number_of_taliban = 1
 
 
 func _ready():
@@ -141,6 +141,10 @@ func _on_PhaseController_phase_changed(phase) -> void:
 func is_all_starting_actors_placed():
 	return placementButtonContainer.get_child_count() == 0
 	
+	
+func _on_PlacementTool_placement_cancelled(new_current_actor) -> void:
+	Grid.clear_placement()
+
 
 func _on_PlacementTool_actor_placed(new_current_actor) -> void:
 	current_actor = new_current_actor
@@ -308,6 +312,7 @@ func _ready_turn(team_turn):
 		var actor = a as Actor
 		if actor.team == team_turn:
 			actor.is_enabled = true
+			actor.set_selectable()
 		else:
 			actor.is_enabled = false
 	pass
@@ -319,14 +324,7 @@ func _on_Grid_actor_destroyed(actor: Actor) -> void:
 	"""
 	print("generating placement buttons for: ", actor.actor_name)
 	var button = create_button(actor)
-#	var button = PlacementButton.instance()
-#	button.get_node("TextureRect").texture = actor.sprite
-#	button.actor_type = actor.actor_type
-	(TEAM_GUI_DICT[actor.team] as TeamGUI).add_actor_to_reinforcements(button)
-#	placementButtonContainer.add_child(button)
-#	button.connect("selected", self, "_on_Select_Piece_button_down")
-#	button.connect("mouse_entered", self, "_on_Select_Piece_button_mouse_entered")
-#	button.connect("mouse_exited", self, "_on_Select_Piece_button_mouse_exited")
+	(TEAM_GUI_DICT[actor.team] as TeamGUI).add_actor_to_destroyed(button)
 	deathSound.play()
 
 

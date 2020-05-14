@@ -15,6 +15,7 @@ var current_actor: Actor
 onready var Grid = get_node("/root/Game/Grid")
 
 signal actor_placed(current_actor)
+signal placement_cancelled(current_actor)
 
 func _ready() -> void:
 	pass
@@ -34,6 +35,7 @@ func process_placement():
 			_place_actor()
 			print("placing!")
 		if Input.is_action_just_pressed("ui_cancel"):
+			emit_signal("placement_cancelled", current_actor)
 			_cancel_placement(true)
 			
 			

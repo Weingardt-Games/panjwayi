@@ -123,6 +123,7 @@ func move(new_location):
 	
 func cancel_move():
 	move(self.position)
+	set_selectable()
 #	is_selected = false
 	
 func potential_move(potential_location):
@@ -134,10 +135,18 @@ func update_look_direction(direction):
 
 func set_selected():
 	emit_signal("selected", self)
-	$Highlight.visible = true
+	$SelectedHighlight.visible = true
+	$SelectableHighlight.visible = false
 	is_selected = true
 	is_dragging = true
 	is_mouse_still_inside = true
+	
+func set_selectable():
+	if not is_selected and is_enabled:
+		$SelectableHighlight.visible = true
+		
+func reset_selectable():
+	$SelectableHighlight.visible = false
 	
 func update_line(target_position):
 	$Line2D.visible = true
@@ -152,7 +161,8 @@ func update_ghost(target_position):
 	$Ghost.position = target_position - position
 	
 func reset_ghost():
-	$Highlight.visible = false
+	$SelectedHighlight.visible = false
+	reset_selectable()
 	$Ghost.visible = false
 	$Ghost.position = Vector2.ZERO
 	
@@ -162,6 +172,9 @@ func _set_is_enabled(value: bool):
 #	print("is_enabled ", value, actor_name)
 	is_enabled = value
 	$FlipButton.disabled = !value
+	
+	if not is_enabled:
+		reset_selectable()
 	
 	
 func _on_FlipButton_pressed() -> void:
