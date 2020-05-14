@@ -132,9 +132,6 @@ func prep_placement(actor_type: int, team: int):
 	else:
 		for village in get_tree().get_nodes_in_group("villages"):
 			var cell = world_to_map(village.position)
-#			print(village.team)
-#			print(get_cellv(cell)) 
-#			print(village.village_name)
 			if village.team == team and get_cellv(cell) == Pawn.CELL_TYPES.VILLAGE: # CELL_TYPES.VILLAGE are open villages only
 				_set_cell_placeable(cell)
 
@@ -146,8 +143,21 @@ func prep_movement(actor: Actor):
 	"""
 	# clear previous highlights:
 	get_tree().call_group("map_indicators", "queue_free")
-	var cell = world_to_map(actor.position)
+	
+	if actor.actor_type == Actor.ACTOR_TYPES.IED:
+		for placing_actor in get_tree().get_nodes_in_group("taliban"):
+			if placing_actor.actor_type != Actor.ACTOR_TYPES.IED:
+				var cell = world_to_map(placing_actor.position)
+				_set_movement_from_cell_referece(actor, cell)
+	else:
+		# movement is base on self
+		var cell = world_to_map(actor.position)
+		var move_array = actor.get_movement_array()
+		_set_movement_from_cell_referece(actor, cell)
 
+	
+	
+func _set_movement_from_cell_referece(actor: Actor, cell: Vector2):
 	var move_array = actor.get_movement_array()
 	var offset = Vector2(int(len(move_array)/2), int(len(move_array)/2))
 	var max_distance = len(move_array)
@@ -170,7 +180,7 @@ func prep_movement(actor: Actor):
 					print(actor.team)
 					if village_at_cell.team != actor.team and actor.captures_villages:
 						_set_cell_attackable(valid_move_cell)
-					else:
+					elif actor.actor_type != Actor.ACTOR_TYPES.IED:
 						_set_cell_moveable(valid_move_cell)
 					
 				elif cell_type == Pawn.CELL_TYPES.ACTOR or cell_type == Pawn.CELL_TYPES.OCCUPIED_VILLAGE:
@@ -181,10 +191,12 @@ func prep_movement(actor: Actor):
 						_set_cell_attackable(valid_move_cell)
 					elif actor.pass_overable_units.find(actor_at_cell.actor_type) == -1:
 						# Not in the pass overable list, so this should block movement too
-						set_cellv(valid_move_cell, Pawn.CELL_TYPES.MOVEMENT_BLOCKING_ACTOR)
+						if actor.actor_type != Actor.ACTOR_TYPES.IED:
+							set_cellv(valid_move_cell, Pawn.CELL_TYPES.MOVEMENT_BLOCKING_ACTOR)
 
 	# at the end we'll remove movement beyond blocking elements		
-	_remove_move_cells_beyond_blocked(actor)
+	_remove_move_cells_beyond_blocked(cell)
+	
 
 func _set_placeable_IED_cells_around_actor(actor):
 	""" IEDs a can IEDs can be placed in any empty, non-village square adjacent
@@ -215,8 +227,7 @@ func _highlight_cell(cell, highlight):
 	highlight.position = get_world_position(cell)
 	add_child(highlight)
 	
-func _remove_move_cells_beyond_blocked(actor):
-	var actor_cell = world_to_map(actor.position)
+func _remove_move_cells_beyond_blocked(actor_cell):
 	var blocking_cells = get_used_cells_by_id(Pawn.CELL_TYPES.CAN_ATTACK)
 	for blocking_cell in blocking_cells: 
 		_remove_movement_beyond_cell(actor_cell, blocking_cell)

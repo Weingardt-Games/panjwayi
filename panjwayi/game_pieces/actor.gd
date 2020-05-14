@@ -120,6 +120,7 @@ func move(new_location):
 	position = new_location
 	reset_line()
 	reset_ghost()
+	z_index = 0
 	
 func cancel_move():
 	move(self.position)
@@ -140,6 +141,7 @@ func set_selected():
 	is_selected = true
 	is_dragging = true
 	is_mouse_still_inside = true
+	z_index = 100
 	
 func set_selectable():
 	if not is_selected and is_enabled:
@@ -191,8 +193,15 @@ func get_movement_array() -> Array:
 	var center = Vector2(15,15) 
 	var move_array: Array = []
 	match movement_type:
+		# but not around self...
+		MOVEMENT_TYPES.IED:
+			move_array = [
+				[1, 1, 1],
+				[1, 0, 1],
+				[1, 1, 1]
+			]
 		MOVEMENT_TYPES.STATIONARY:
-			pass
+			move_array = []
 		MOVEMENT_TYPES.KING:
 			move_array = [
 				[1, 1, 1],
