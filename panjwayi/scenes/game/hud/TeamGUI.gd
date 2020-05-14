@@ -15,11 +15,14 @@ onready var destroyed_panel: UIPanel = find_node("DestroyedPanel")
 onready var reinforcements_panel: UIPanel = find_node("ReinforcementsPanel")
 onready var phase_label: Label = find_node("PhaseLabel")
 onready var done_button: Button = find_node("DoneButton")
+onready var team_heading: Label = find_node("TeamHeading")
+onready var flag1: TextureRect = find_node("Flag")
+onready var flag2: TextureRect = find_node("Flag2")
 
 func _ready() -> void:
-	find_node("TeamHeading").text = team_name
-	find_node("Flag").texture = flag
-	find_node("Flag2").texture = flag
+	team_heading.text = team_name
+	flag1.texture = flag
+	flag2.texture = flag
 	num_villages.text = str(starting_villages)
 	color_gui()
 	done_button.disabled = !button_is_active
@@ -74,6 +77,9 @@ func set_button_is_active(enabled: bool):
 func set_disabled(disabled: bool):
 	reinforcements_panel.set_disabled(disabled)
 	destroyed_panel.set_disabled(disabled)
+
+	flag1.visible = !disabled
+	flag2.visible = !disabled
 	
 	
 ############# SIGNALS ####################
