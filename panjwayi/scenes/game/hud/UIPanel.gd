@@ -30,8 +30,12 @@ func remove_from_container(node: Node):
 func get_nodes_in_container() -> Array:
 	return container.get_children()
 	
-func set_disabled(disabled):
+func set_disabled(is_disabled):
 	for button in get_nodes_in_container():
-		button.set_disabled(disabled)
+		button.set_disabled(is_disabled)
+	
+		
+func set_highlighted(is_highlighted):
+	find_node("HighlightTexture").visible = is_highlighted
 			
 	

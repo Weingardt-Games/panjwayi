@@ -81,6 +81,9 @@ func set_disabled(disabled: bool):
 	flag1.visible = !disabled
 	flag2.visible = !disabled
 	
+
+func enable_reinforcements_placement(enable: bool):
+	reinforcements_panel.set_highlighted(enable)
 	
 ############# SIGNALS ####################
 

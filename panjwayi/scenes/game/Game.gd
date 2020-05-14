@@ -23,6 +23,7 @@ var last_action
 var current_action
 var current_button
 var current_actor: Actor
+var current_team
 
 onready var TEAM_GUI_DICT = {
 	Actor.TEAM.GOA:	GoaGUI,
@@ -47,14 +48,14 @@ var ACTOR_SCENES_DICT = {
 onready var starting_actors: Array = [
 	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.AIR],
 	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
 ]
 
-export(int, 1, 10) var number_of_taliban = 9
+export(int, 1, 10) var number_of_taliban = 1
 
 
 func _ready():
@@ -78,12 +79,13 @@ func _process(delta: float) -> void:
 			PlacementTool.process_placement()
 			TalibanGUI.set_disabled(true)
 			GoaGUI.set_disabled(false)
+			current_team = Actor.TEAM.GOA
 			
 		PhaseController.PHASES.TALIBAN_TURN:
 			PlacementTool.process_placement()
 			TalibanGUI.set_disabled(false)
 			GoaGUI.set_disabled(true)
-			
+			current_team = Actor.TEAM.TALIBAN
 		_:
 			pass
 	update_info_panel()
@@ -250,11 +252,15 @@ func _ready_game_for_turns():
 
 func _on_Actor_movement_cancelled():
 	Grid.clear_movement()
+	TEAM_GUI_DICT[current_team].enable_reinforcements_placement(false)
 	
 func _on_Actor_selected(actor: Actor):
 	current_actor = actor
 	Grid.prep_movement(actor)
 	clickSound.play()
+	
+	if actor.actor_type == Actor.ACTOR_TYPES.IED:
+		TEAM_GUI_DICT[actor.team].enable_reinforcements_placement(true)
 
 func _on_Actor_dropped(actor: Actor, new_location: Vector2) -> void:
 	var potential_location = Grid.request_move(actor, new_location, true)
