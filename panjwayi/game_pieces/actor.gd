@@ -53,7 +53,7 @@ export(STATUSES) var status
 
 var is_mouse_still_inside = true  # tracks whether the mouse has left the actor or not
 var is_dragging = false
-var is_enabled = true setget _set_is_enabled
+var is_enabled = false setget _set_is_enabled
 var is_selected = false
 
 var previous_position: Vector2
