@@ -8,10 +8,15 @@ export (Color) var panel_color = Color.gray setget set_color
 onready var label = find_node("Label")
 onready var container = find_node("Container")
 
+signal action_button_pressed
+
 func _ready() -> void:
 	label.text = panel_heading
 	# self to call setter
 	self.set_color(panel_color)
+	
+func set_button_text(text: String):
+	$ActionButton.text = text
 	
 func set_color(color: Color):
 	panel_color = color
@@ -34,8 +39,10 @@ func set_disabled(is_disabled):
 	for button in get_nodes_in_container():
 		button.set_disabled(is_disabled)
 	
-		
 func set_highlighted(is_highlighted):
 	find_node("HighlightTexture").visible = is_highlighted
-			
+
+func _on_ActionButton_pressed() -> void:
+	emit_signal("action_button_pressed")
 	
+

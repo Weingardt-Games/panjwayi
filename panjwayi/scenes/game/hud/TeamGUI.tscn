@@ -158,12 +158,15 @@ text = "Current Phase"
 align = 2
 
 [node name="DoneButton" type="Button" parent="Control/Control/VBoxContainer/ControlPanel"]
+visible = false
 margin_top = 34.0
 margin_right = 366.0
 margin_bottom = 64.0
 rect_min_size = Vector2( 0, 30 )
 disabled = true
 text = "Done"
+[connection signal="action_button_pressed" from="Control/Control/VBoxContainer/ReinforcementsPanel" to="." method="_on_ReinforcementsPanel_action_button_pressed"]
+[connection signal="action_button_pressed" from="Control/Control/VBoxContainer/DestroyedPanel" to="." method="_on_DestroyedPanel_action_button_pressed"]
 [connection signal="pressed" from="Control/Control/VBoxContainer/ControlPanel/DoneButton" to="." method="_on_DoneButton_pressed"]
 
 [editable path="Control/Control/VBoxContainer/ReinforcementsPanel"]

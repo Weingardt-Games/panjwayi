@@ -13,9 +13,8 @@ graph_offset = Vector2( -67, -300 )
 shader = SubResource( 1 )
 
 [node name="Panel" type="Control"]
-margin_top = 121.0
 margin_right = 366.0
-margin_bottom = 384.0
+margin_bottom = 300.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 3 )
@@ -52,7 +51,7 @@ valign = 1
 [node name="NinePatchRect2" type="NinePatchRect" parent="HBoxContainer"]
 margin_top = 50.0
 margin_right = 366.0
-margin_bottom = 263.0
+margin_bottom = 300.0
 size_flags_vertical = 3
 texture = ExtResource( 1 )
 patch_margin_bottom = 6
@@ -72,9 +71,9 @@ __meta__ = {
 
 [node name="Container" type="GridContainer" parent="HBoxContainer/NinePatchRect2/CenterContainer"]
 margin_left = 183.0
-margin_top = 106.0
+margin_top = 125.0
 margin_right = 183.0
-margin_bottom = 106.0
+margin_bottom = 125.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 columns = 4
@@ -95,3 +94,16 @@ expand = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="ActionButton" type="Button" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -84.0
+margin_top = 16.0
+margin_right = -10.0
+margin_bottom = 45.0
+text = "Action"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="pressed" from="ActionButton" to="." method="_on_ActionButton_pressed"]

@@ -55,11 +55,12 @@ onready var starting_actors: Array = [
 	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
 ]
 
-export(int, 1, 10) var number_of_taliban = 9
+export(int, 1, 10) var number_of_taliban = 9 #9
 
 
 func _ready():
 	# Wait till the game is ready or signals can fire before the game is ready for them!
+	PlacementUI.set_button_text("Complete")
 	$PhaseController.start()
 	GoaGUI.show()
 	TalibanGUI.show()
@@ -101,10 +102,15 @@ func update_info_panel():
 	info_panel.set_village(Grid.get_village(cell))
 		
 
-func _on_PhaseController_phase_changed(phase) -> void:
+func _on_PhaseController_phase_changed(phase, previous_phase) -> void:
 	print("Game current phase:", phase)
 	GoaGUI.set_phase(phase_controller.get_phase_string())
 	TalibanGUI.set_phase(phase_controller.get_phase_string())
+	
+	if previous_phase == PhaseController.PHASES.TALIBAN_SETUP:
+		# Game is starting
+		placement_complete()
+		_ready_game_for_turns()
 	
 	match phase:
 		PhaseController.PHASES.GOA_SETUP:
@@ -158,11 +164,12 @@ func _on_PlacementTool_actor_placed(new_current_actor) -> void:
 
 	if phase_controller.is_setup():
 		# when all the starting_actors are placed, activate button to finish setup phase
-		if is_all_starting_actors_placed():
-			if phase_controller.is_taliban_setup():
-				TalibanGUI.button_is_active = true
-			elif phase_controller.is_goa_setup():
-				GoaGUI.button_is_active = true
+#		if is_all_starting_actors_placed():
+#			if phase_controller.is_taliban_setup():
+#				TalibanGUI.button_is_active = true
+#			elif phase_controller.is_goa_setup():
+#				GoaGUI.button_is_active = true
+		pass
 	else:
 		current_action = ACTIONS.REINFORCEMENT
 		confimationDialog.popup_centered()
@@ -333,20 +340,43 @@ func _on_Grid_actor_destroyed(actor: Actor) -> void:
 	(TEAM_GUI_DICT[actor.team] as TeamGUI).add_actor_to_destroyed(button)
 	deathSound.play()
 
-
-func _on_GoaGUI_done_button_clicked() -> void:
-	$PhaseController.next_phase()
-	clickSound.play()
-
-
-func _on_TalibanGUI_done_button_clicked() -> void:
-	$PhaseController.next_phase()
-	placement_complete()
-	_ready_game_for_turns()
-	clickSound.play()
-
-
 func _on_Grid_village_captured(village: Village) -> void:
 	print(village.village_name, " Captured!")
 	deathSound.play()
 	village.toggle_team()
+	
+	# Destroyed to reinforcements when village captured
+	# 2 for taliban, 1 for GoA
+	var num: int
+	match village.team:
+		Pawn.TEAM.GOA:
+			num = 1
+		Pawn.TEAM.TALIBAN:
+			num = 2
+	
+	_move_destroyed_to_reinforcements(TEAM_GUI_DICT[village.team], num)
+			
+func _move_destroyed_to_reinforcements(gui: TeamGUI, num: int):
+	var destroyed = gui.get_destroyed()
+	for i in min(num, len(destroyed)):
+		gui.move_to_reinforcements(destroyed[i])
+
+func _on_GoaGUI_destroyed_button_pressed() -> void:
+	pass # Replace with function body.
+
+
+func _on_TalibanGUI_destroyed_button_pressed() -> void:
+	pass # Replace with function body.
+
+
+func _on_TalibanGUI_reinforcements_button_pressed() -> void:
+	pass # Replace with function body.
+
+
+func _on_GoaGUI_reinforcements_button_pressed() -> void:
+	pass # Replace with function body.
+
+
+func _on_PlacementUI_button_pressed() -> void:
+	$PhaseController.next_phase()
+	clickSound.play()

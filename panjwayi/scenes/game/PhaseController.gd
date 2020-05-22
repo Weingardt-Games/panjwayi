@@ -16,16 +16,16 @@ var PHASE_STRINGS = {
 }
 var phase:int setget set_phase
 
-signal phase_changed(phase)
+signal phase_changed(new_phase, previous_phase)
 
 func start() -> void:
 	# call setter
 	self.phase = PHASES.GOA_SETUP
 
 func set_phase(new_phase):
-	phase = new_phase
 	print("New phase: ", phase)
-	emit_signal("phase_changed", phase)
+	emit_signal("phase_changed", new_phase, phase)
+	phase = new_phase
 
 func next_phase() -> int:
 	if phase == PHASES.GOA_SETUP:

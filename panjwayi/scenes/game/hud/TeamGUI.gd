@@ -6,15 +6,16 @@ export (Texture) var flag
 export (int) var starting_villages
 export (Color) var team_color = Color.gray
 
-var button_is_active = false setget set_button_is_active
+#var button_is_active = false setget set_button_is_active
 
 signal done_button_clicked
+signal reinforcements_button_pressed
+signal destroyed_button_pressed
 
 onready var num_villages = find_node("Villages")
 onready var destroyed_panel: UIPanel = find_node("DestroyedPanel")
 onready var reinforcements_panel: UIPanel = find_node("ReinforcementsPanel")
 onready var phase_label: Label = find_node("PhaseLabel")
-onready var done_button: Button = find_node("DoneButton")
 onready var team_heading: Label = find_node("TeamHeading")
 onready var flag1: TextureRect = find_node("Flag")
 onready var flag2: TextureRect = find_node("Flag2")
@@ -24,8 +25,9 @@ func _ready() -> void:
 	flag1.texture = flag
 	flag2.texture = flag
 	num_villages.text = str(starting_villages)
+	reinforcements_panel.set_button_text("Action")
+	destroyed_panel.set_button_text("Move")
 	color_gui()
-	done_button.disabled = !button_is_active
 	
 func color_gui() -> void:
 	reinforcements_panel.set_color(team_color)
@@ -41,18 +43,18 @@ func add_actor_to_reinforcements(actor) -> void:
 	actor.visible = true  # just in case
 	reinforcements_panel.add_to_container(actor)
 	
-func remove_actor_from_reinforcements(actor: Actor) -> void:
+func remove_actor_from_reinforcements(actor) -> void:
 	reinforcements_panel.remove_from_container(actor)
 	
 func add_actor_to_destroyed(actor) -> void:
 #	actor.visible = true  # just in case
 	destroyed_panel.add_to_container(actor)
 	
-func remove_actor_from_destroyed(actor: Actor) -> void:
+func remove_actor_from_destroyed(actor) -> void:
 	actor.visible = true  # just in case
 	destroyed_panel.remove_from_container(actor)
 	
-func move_to_reinforcements(actor: Actor) -> void:
+func move_to_reinforcements(actor) -> void:
 	""" Assumes the actor is already in the destroyed box """
 	remove_actor_from_destroyed(actor)
 	add_actor_to_reinforcements(actor)
@@ -66,17 +68,17 @@ func get_destroyed() -> Array:
 func set_phase(phase_str: String):
 	phase_label.text = phase_str
 
-func set_button_is_active(enabled: bool):
-	button_is_active = enabled
-	done_button.disabled = !enabled
-	if enabled:
-		done_button.self_modulate = Color.green
-	else:
-		done_button.self_modulate = Color.white
+#func set_button_is_active(enabled: bool):
+#	button_is_active = enabled
+#	done_button.disabled = !enabled
+#	if enabled:
+#		done_button.self_modulate = Color.green
+#	else:
+#		done_button.self_modulate = Color.white
 		
 func set_disabled(disabled: bool):
 	reinforcements_panel.set_disabled(disabled)
-	destroyed_panel.set_disabled(disabled)
+	destroyed_panel.set_disabled(true)
 
 	flag1.visible = !disabled
 	flag2.visible = !disabled
@@ -90,5 +92,9 @@ func enable_reinforcements_placement(enable: bool):
 func _on_DoneButton_pressed() -> void:
 	self.button_is_active = false
 	emit_signal("done_button_clicked")
+
+func _on_ReinforcementsPanel_action_button_pressed() -> void:
+	emit_signal("reinforcements_button_pressed")
 	
-	
+func _on_DestroyedPanel_action_button_pressed() -> void:
+	emit_signal("destroyed_button_pressed")
