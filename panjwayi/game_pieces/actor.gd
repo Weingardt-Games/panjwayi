@@ -66,7 +66,7 @@ signal flip_pressed(actor)
 signal movement_cancelled()
 
 func _ready() -> void:
-	$Sprite.texture = sprite
+	$Sprite.texture = sprite  # sprite is from Pawn
 	$Ghost.texture = sprite
 	
 	if flip_side != ACTOR_TYPES.NONE:

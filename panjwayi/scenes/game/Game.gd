@@ -206,15 +206,14 @@ func _on_Select_Piece_button_down(button: PlacementButton) -> void:
 	# TEMPRARY DISABLE TILL GET REINFORCEMENTS WORKING
 #	if phase_controller.is_setup():
 	PlacementTool.start_new_placement(
-		# should generate the piece from the dict, not here.
-		ACTOR_SCENES_DICT[button.actor_type].instance(),
-		button.get_node("TextureRect").texture
+		ACTOR_SCENES_DICT[button.get_actor_type()].instance(),
+		button.get_texture()
 	)
 	
 	if phase_controller.is_setup():
-		Grid.prep_setup_placement(button.team)
+		Grid.prep_setup_placement(button.get_team())
 	else:
-		Grid.prep_placement(button.actor_type, button.team)
+		Grid.prep_placement(button.get_actor_type(), button.get_team())
 	clickSound.play()
 
 func _on_Select_Piece_button_mouse_entered() -> void:
@@ -244,9 +243,8 @@ func _ready_reinforcements():
 func create_button(actor):
 	print("generating placement buttons for: ", actor.actor_name)
 	var button = PlacementButton.instance()
-	button.get_node("TextureRect").texture = actor.sprite
-	button.actor_type = actor.actor_type
-	button.team = actor.team
+#	button.get_node("TextureRect").texture = actor.sprite
+	button.set_actor(actor)
 	button.connect("selected", self, "_on_Select_Piece_button_down")
 	button.connect("mouse_entered", self, "_on_Select_Piece_button_mouse_entered")
 	button.connect("mouse_exited", self, "_on_Select_Piece_button_mouse_exited")
