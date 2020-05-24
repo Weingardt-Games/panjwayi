@@ -76,8 +76,9 @@ func request_move(actor: Actor, new_position, final=false, force=false):
 					var destroyed_actor: Actor = get_actor(cell_target)
 					remove_child(destroyed_actor)
 					emit_signal("actor_destroyed", destroyed_actor)
-				# Actually moving the actor there:
-				if is_village(cell_target):
+				
+				if is_village(cell_target) and actor.captures_villages:
+					# a village cell could be CAN_ATTACK if an attackable enemy is on it
 					# handle village occupation!
 					emit_signal("village_captured", get_village(cell_target))
 				return update_pawn_position(actor, cell_start, cell_target)
