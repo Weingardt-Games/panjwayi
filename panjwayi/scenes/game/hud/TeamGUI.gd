@@ -62,8 +62,14 @@ func move_to_reinforcements(actor) -> void:
 func get_reinforcements() -> Array:
 	return reinforcements_panel.get_nodes_in_container()
 	
-func get_destroyed() -> Array:
-	return destroyed_panel.get_nodes_in_container()
+func get_destroyed(only_reinforceable=true) -> Array:
+	var destroyed: Array = destroyed_panel.get_nodes_in_container()
+	if only_reinforceable:
+		for button in destroyed:
+	
+			if button.get_actor().destroyed_is_permanent:
+				destroyed.erase(button)
+	return destroyed
 	
 func set_phase(phase_str: String):
 	phase_label.text = phase_str

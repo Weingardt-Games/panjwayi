@@ -48,14 +48,14 @@ var ACTOR_SCENES_DICT = {
 onready var starting_actors: Array = [
 	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.AIR],
 	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
-	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
+#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
 	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
 ]
 
-export(int, 1, 10) var number_of_taliban = 9 #9
+export(int, 1, 10) var number_of_taliban = 2 #9
 
 
 func _ready():
@@ -355,7 +355,7 @@ func _on_Grid_village_captured(village: Village) -> void:
 	_move_destroyed_to_reinforcements(TEAM_GUI_DICT[village.team], num)
 			
 func _move_destroyed_to_reinforcements(gui: TeamGUI, num: int):
-	var destroyed = gui.get_destroyed()
+	var destroyed = gui.get_destroyed(true)
 	for i in min(num, len(destroyed)):
 		gui.move_to_reinforcements(destroyed[i])
 
