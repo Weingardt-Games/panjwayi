@@ -125,8 +125,7 @@ func move(new_location):
 	
 func cancel_move():
 	move(self.position)
-	set_selectable()
-#	is_selected = false
+	self.is_enabled = true # self to call setter	
 	
 func potential_move(potential_location):
 	update_ghost(potential_location)
@@ -152,8 +151,9 @@ func reset_selectable():
 	$SelectableHighlight.visible = false
 	
 func update_line(target_position):
-	$Line2D.visible = true
-	$Line2D.set_point_position(1, target_position - position)
+	pass
+#	$Line2D.visible = true
+#	$Line2D.set_point_position(1, target_position - position)
 	
 func reset_line():
 	$Line2D.visible = false
@@ -176,9 +176,10 @@ func _set_is_enabled(value: bool):
 	is_enabled = value
 	$FlipButton.disabled = !value
 	
-	if not is_enabled:
+	if is_enabled:
+		set_selectable()
+	else:
 		reset_selectable()
-	
 	
 func _on_FlipButton_pressed() -> void:
 	# Flip to new actor type

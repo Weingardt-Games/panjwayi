@@ -296,8 +296,11 @@ func _on_ConfirmationDialog_cancelled() -> void:
 			current_actor.move(
 				Grid.request_move(current_actor, current_actor.previous_position, false, true)
 			)
+			current_actor.cancel_move()
 		ACTIONS.FLIP:
+			# simulate flip button pressed to toggle back to original actor type
 			_on_Actor_flip_pressed(current_actor)
+			current_actor.cancel_move()			
 		ACTIONS.PLACE_IED:
 			pass
 		ACTIONS.REINFORCEMENT:
