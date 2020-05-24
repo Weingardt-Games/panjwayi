@@ -48,19 +48,19 @@ var ACTOR_SCENES_DICT = {
 onready var starting_actors: Array = [
 	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.AIR],
 	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
-#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
-#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
-#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
-#	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
+	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.LAV],
+	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
+	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANA],
+	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
 	ACTOR_SCENES_DICT[Actor.ACTOR_TYPES.ANP],
 ]
 
-export(int, 1, 10) var number_of_taliban = 2 #9
+export(int, 1, 10) var number_of_taliban = 9
 
 
 func _ready():
 	# Wait till the game is ready or signals can fire before the game is ready for them!
-	PlacementUI.set_button_text("Complete")
+	PlacementUI.set_button_text("Random")
 	$PhaseController.start()
 	GoaGUI.show()
 	TalibanGUI.show()
@@ -159,6 +159,7 @@ func _on_PlacementTool_actor_placed(new_current_actor) -> void:
 	insert_actor(current_actor)
 	# get parent because could be any one of three panels (setup, reinforcements, destroyed)
 	current_button.get_parent().remove_child(current_button)
+	print("removing button")
 	clickSound.play()
 	Grid.clear_placement()
 
@@ -379,5 +380,18 @@ func _on_GoaGUI_reinforcements_button_pressed() -> void:
 
 
 func _on_PlacementUI_button_pressed() -> void:
+	# place remaining randomly
+	var remaining_buttons = PlacementUI.get_nodes_in_container()
+	for button in remaining_buttons:
+		# current_button is used to remove it when placement is complete via
+		# _on_PlacementTool_actor_placed()
+		current_button = button
+		var actor = ACTOR_SCENES_DICT[button.get_actor_type()].instance()
+		PlacementTool.place_randomly(actor)
+#		PlacementUI.remove_child(button)
+
+	# then turn over
+	print("next phase?")
 	$PhaseController.next_phase()
 	clickSound.play()
+

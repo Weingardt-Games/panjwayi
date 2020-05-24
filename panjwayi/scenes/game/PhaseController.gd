@@ -23,9 +23,11 @@ func start() -> void:
 	self.phase = PHASES.GOA_SETUP
 
 func set_phase(new_phase):
-	print("New phase: ", phase)
-	emit_signal("phase_changed", new_phase, phase)
+	print("New phase: ", new_phase)
+	var previous_phase = phase
 	phase = new_phase
+	emit_signal("phase_changed", new_phase, previous_phase)
+	
 
 func next_phase() -> int:
 	if phase == PHASES.GOA_SETUP:
@@ -34,7 +36,6 @@ func next_phase() -> int:
 		self.phase = PHASES.TALIBAN_TURN
 	elif phase == PHASES.TALIBAN_TURN:
 		self.phase = PHASES.GOA_TURN
-
 	return -1
 			
 func get_phase_string() -> String:

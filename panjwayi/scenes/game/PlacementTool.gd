@@ -12,7 +12,7 @@ var current_tile = Vector2()
 var current_actor: Actor
 
 
-onready var Grid = get_node("/root/Game/Grid")
+onready var Grid: TileMap = get_node("/root/Game/Grid")
 
 signal actor_placed(current_actor)
 signal placement_cancelled(current_actor)
@@ -42,11 +42,12 @@ func process_placement():
 func _place_actor():
 #	print("in_menu", in_menu)
 #	print("can_place", can_place)
-	if can_place: # and not in_menu:
+	if can_place: # current cell is a valid placement cell
 		Grid.set_cellv(current_tile, Pawn.CELL_TYPES.ACTOR)
 		current_actor.global_position = Grid.get_world_position(current_tile)
 		emit_signal("actor_placed", current_actor)
 		_cancel_placement()
+#		print("Actor placed: ", current_actor)
 		
 func _cancel_placement(replace=false):
 	placement_mode = false
@@ -68,3 +69,18 @@ func _update_placement_tool(grid: PanjwayiTileMap):
 		can_place = false
 
 		$ColorRect.color = current_color
+
+func place_randomly(actor: Actor):
+	current_actor = actor
+	can_place = true
+	# pick a random cell/tile
+	Grid.prep_setup_placement(actor.team)
+	var placeable_cells = Grid.get_used_cells_by_id(Pawn.CELL_TYPES.LEGAL_PLACEMENT)
+	var i = randi() % len(placeable_cells)
+	current_tile = placeable_cells[i]
+	_place_actor()
+	print("Placing actor randomly in cell", current_tile)
+#	# Wait 5 seconds, then resume execution.
+#	yield(get_tree().create_timer(1.5), "timeout")
+#	can_place=false
+#
