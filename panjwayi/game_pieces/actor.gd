@@ -44,6 +44,7 @@ export(String) var movement_description
 export(Array, ACTOR_TYPES) var attackable_units = [ACTOR_TYPES.NONE]
 export(String) var attack_description
 export(bool) var captures_villages
+export(bool) var destroyed_is_permanent
 
 export(String) var Special
 

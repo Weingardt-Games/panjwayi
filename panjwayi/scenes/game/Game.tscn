@@ -166,17 +166,13 @@ visible = false
 script = ExtResource( 1 )
 
 [node name="TextureRect" type="TextureRect" parent="PlacementTool"]
-margin_left = -32.0
-margin_top = -32.0
-margin_right = 32.0
-margin_bottom = 32.0
+margin_right = 64.0
+margin_bottom = 64.0
 
 [node name="ColorRect" type="ColorRect" parent="PlacementTool"]
 self_modulate = Color( 1, 1, 1, 0.501961 )
-margin_left = -32.0
-margin_top = -32.0
-margin_right = 32.0
-margin_bottom = 32.0
+margin_right = 64.0
+margin_bottom = 64.0
 color = Color( 1, 1, 1, 0.501961 )
 __meta__ = {
 "_edit_use_anchors_": false

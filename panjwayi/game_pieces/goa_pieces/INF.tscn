@@ -5,8 +5,9 @@
 
 [node name="INF" instance=ExtResource( 1 )]
 sprite = ExtResource( 2 )
-actor_type = 5
 actor_name = "Infantry"
+actor_type = 5
 movement_type = 2
 attackable_units = [ 7 ]
+destroyed_is_permanent = true
 flip_side = 2

@@ -5,8 +5,9 @@
 
 [node name="LAV" instance=ExtResource( 1 )]
 sprite = ExtResource( 2 )
-actor_type = 2
 actor_name = "Light Armoured Vehicle"
+actor_type = 2
 movement_type = 4
 attackable_units = [ 7 ]
+destroyed_is_permanent = true
 flip_side = 5

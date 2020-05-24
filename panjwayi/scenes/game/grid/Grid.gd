@@ -120,7 +120,7 @@ func update_pawn_position(actor: Actor, cell_start, cell_target):
 	return get_world_position(cell_target)
 	
 func get_world_position(cell_target):
-	return map_to_world(cell_target) + cell_size / 2
+	return map_to_world(cell_target) #+ cell_size / 2
 	
 #### INDICATORS / HIGLIGHTS
 

@@ -6,3 +6,5 @@
 "map_movement_highlights",
 ] instance=ExtResource( 1 )]
 modulate = Color( 0, 1, 0, 0.25098 )
+position = Vector2( 0, 0 )
+centered = false

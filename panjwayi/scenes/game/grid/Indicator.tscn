@@ -5,5 +5,5 @@
 [node name="Indicator" type="Sprite" groups=[
 "map_indicators",
 ]]
-position = Vector2( 32, 32 )
 texture = ExtResource( 1 )
+centered = false
